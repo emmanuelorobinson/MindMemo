@@ -2,7 +2,7 @@ import React from 'react'
 
 const Task = () => {
   return (
-    <div className='p-20'><section className="mt-0">
+    <div className='p-20'><section className="md:mt-[-5rem]">
     <h2 className="font-semibold text-gray-900 text-left">Upcoming events</h2>
     <ol className="mt-2 divide-y divide-gray-200 text-sm leading-6 text-gray-500">
       <li className="py-4 sm:flex">

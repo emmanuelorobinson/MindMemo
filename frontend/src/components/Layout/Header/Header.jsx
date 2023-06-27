@@ -26,7 +26,7 @@ const Header = (props) => {
   }
 
   return (
-    <div className="flex flex-1 flex-col md:pl-64">
+    <div className="flex flex-1 flex-col md:pl-64 md:hidden">
       <div className="sticky top-0 z-10 flex h-16 flex-shrink-0 bg-white shadow">
         <button
           type="button"
@@ -38,7 +38,7 @@ const Header = (props) => {
         </button>
         <div className="flex flex-1 justify-between px-4">
           <div className="flex flex-1">
-            <form className="flex w-full md:ml-0" action="#" method="GET">
+            {/* <form className="flex w-full md:ml-0" action="#" method="GET">
               <label htmlFor="search-field" className="sr-only">
                 Search
               </label>
@@ -54,7 +54,7 @@ const Header = (props) => {
                   name="search"
                 />
               </div>
-            </form>
+            </form> */}
           </div>
           <div className="ml-4 flex items-center md:ml-6">
             <button

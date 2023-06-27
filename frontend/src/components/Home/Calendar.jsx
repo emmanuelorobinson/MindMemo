@@ -185,7 +185,7 @@ export default function Calendar() {
   const selectedDay = days.find((day) => day.isSelected);
 
   return (
-    <div className="lg:flex lg:h-full lg:flex-col p-10">
+    <div className="lg:flex lg:h-full lg:flex-col md:p-20">
       <header className="flex items-center justify-between border-b border-gray-200 py-4 px-6 lg:flex-none">
         <h1 className="text-lg font-semibold text-gray-900">{
           `${monthNames[month]} ${year}`

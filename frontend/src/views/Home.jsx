@@ -1,6 +1,6 @@
 import React from 'react'
-import Calendar from '../components/Calendar'
-import Task from '../components/Task'
+import Calendar from '../components/Home/Calendar'
+import Task from '../components/Home/Task'
 
 const Home = () => {
   return (

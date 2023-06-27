@@ -15,9 +15,12 @@ import {
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 // import logo from '../../public/logo.jpeg'
 
+import { UserButton } from "@clerk/clerk-react";
+import { useUser } from "@clerk/clerk-react";
+
 const navigation = [
   { name: "Home", href: "/", icon: HomeIcon, current: false },
-  { name: "Projects", href: "#", icon: FolderIcon, current: false },
+  { name: "Projects", href: "/project", icon: FolderIcon, current: false },
   { name: "Calendar", href: "#", icon: CalendarIcon, current: false },
 
   // { name: "Product", href: "/product", icon: FolderIcon, current: false },
@@ -30,15 +33,18 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
+
+
 export default function Sidebar(props) {
+
+  const { isLoaded, isSignedIn, user } = useUser();
+
 
   // const router = useRouter();
 
   // check if the current route is the same as the navigation href
   // if yes, then set the current property to true
   // else, set the current property to false
-
-
 
   // navigation.forEach((nav) => {
   //   if (nav.href === router.pathname) {
@@ -52,14 +58,13 @@ export default function Sidebar(props) {
   //     if (router.pathname.includes(nav.href) && nav.href !== "/") {
   //       nav.current = true;
   //     }
-      
+
   //   }
   // });
 
   const setSidebarOpen = (val) => {
     props.setSidebarOpen(val);
   };
-
 
   return (
     <>
@@ -169,7 +174,7 @@ export default function Sidebar(props) {
           <div className="mt-5 flex flex-grow flex-col">
             <nav className="flex-1 space-y-1 px-2 pb-4">
               {navigation.map((item) => (
-                <Link href={item.href} key={item.name}>
+                <Link to={item.href} key={item.name}>
                   <div
                     key={item.name}
                     className={classNames(
@@ -194,6 +199,13 @@ export default function Sidebar(props) {
                 </Link>
               ))}
             </nav>
+
+            <div className="flex align-middle text-center gap-x-2 p-5">
+              <UserButton />
+              {user && (
+              <p className="mt-0.5">{user.username}</p>
+              )}
+            </div>
           </div>
         </div>
       </div>

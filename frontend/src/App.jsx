@@ -17,9 +17,13 @@ import {
   Route,
   Outlet,
   useNavigate,
+  Link,
 } from "react-router-dom";
 import Layout from "./components/Layout/Layout";
 import Home from "./views/Home";
+import Project from "./views/Project";
+import Activity from "./views/Activity";
+import Task from "./views/Task";
 
 if (!process.env.REACT_APP_CLERK_PUBLISHABLE_KEY) {
   throw new Error("Missing Publishable Key");
@@ -54,6 +58,11 @@ function ClerkProviderWithRoutes() {
           }
         >
           <Route path="/" element={<Home/>} />
+          <Route path="/project" element={<Project />} />
+          <Route path="/project/:id" element={<Activity />} />
+          <Route path="/project/:id/:id" element={<Task />} />
+
+
           {/* <Route path="/" element={<Users />} />
             <Route path="/users" element={<Users />} />
             <Route path="/users/:id" element={<UserDetails />} />
