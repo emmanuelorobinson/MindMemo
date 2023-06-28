@@ -6,7 +6,7 @@ dotenv.config();
 
 const app: Express = express();
 const port = process.env.PORT;
-const prisma = new PrismaClient(app);
+const prisma = new PrismaClient();
 const http = require("http").Server(app);
 const cors = require("cors");
 

@@ -11,13 +11,171 @@ datasource db {
   relationMode = "prisma"
 }
 
-//To-Do: add varchar sizes
 model User {
   user_id Int @id @default(autoincrement())
-  first_name String 
-  last_name String
-  email String
-  username String
+  first_name String @db.VarChar(15)
+  last_name String @db.VarChar(15)
+  email String @db.VarChar(50)
+  username String @db.VarChar(15)
+  
+  project_list ProjectList?
+  activity_reminders ActivityReminder[]
+  task_reminders TaskReminder[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+ 
+model ProjectList {
+  project_list_id Int @id @default(autoincrement())
+  
+  user User @relation(fields: [user_id], references: [user_id])
+  user_id Int @unique
+  projects Project[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Project {
+  project_id Int @id @default(autoincrement())
+  project_name String @db.VarChar(100)
+  project_start_date DateTime
+  duration Int
+  days_till_renew Int
+  completed Boolean
+  
+  project_list ProjectList @relation(fields: [project_list_id], references: [project_list_id])
+  project_list_id Int
+  activity_list ActivityList?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([project_list_id], name: "project_list_id")
+}
+
+model ActivityList {
+  activity_list_id Int @id @default(autoincrement())
+  
+  project Project @relation(fields: [project_id], references: [project_id])
+  project_id Int @unique
+  activities Activity[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Activity {
+  activity_id Int @id @default(autoincrement())
+  activity_number Int
+  activity_name String @db.VarChar(100)
+  duration Int
+  completed Boolean
+  note String @db.VarChar(512)
+  
+  activity_list ActivityList @relation(fields: [activity_list_id], references: [activity_list_id])
+  activity_list_id Int
+  task_list TaskList?
+  tag_list ActivityTagList?
+  reminder ActivityReminder?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([activity_list_id], name: "activity_list_id")
+}
+
+model TaskList {
+  task_list_id Int @id @default(autoincrement())
+  
+  activity Activity @relation(fields: [activity_id], references: [activity_id])
+  activity_id Int @unique
+  tasks Task[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Task {
+  task_id Int @id @default(autoincrement())
+  task_number Int
+  task_name String @db.VarChar(100)
+  duration Int
+  completed Boolean
+  note String @db.VarChar(512)
+  
+  task_list TaskList @relation(fields: [task_list_id], references: [task_list_id])
+  task_list_id Int
+  tag_list TaskTagList?
+  reminder TaskReminder?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([task_list_id], name: "task_list_id")
+}
+
+model ActivityTagList {
+  activity_tag_list_id Int @id @default(autoincrement())
+  
+  activity Activity @relation(fields: [activity_id], references: [activity_id])
+  activity_id Int @unique
+  tags Tag[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model TaskTagList {
+  task_tag_list_id Int @id @default(autoincrement())
+  
+  task Task @relation(fields: [task_id], references: [task_id])
+  task_id Int @unique
+  tags Tag[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Tag {
+  tag_id Int @id @default(autoincrement())
+  tag_name String @db.VarChar(100)
+  
+  activity_tag_list ActivityTagList @relation(fields: [activity_tag_list_id], references: [activity_tag_list_id])
+  activity_tag_list_id Int
+  task_tag_list TaskTagList @relation(fields: [task_tag_list_id], references: [task_tag_list_id])
+  task_tag_list_id Int
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([activity_tag_list_id], name: "activity_tag_list_id")
+  @@index([task_tag_list_id], name: "task_tag_list_id")
+}
+
+model ActivityReminder {
+  activity_reminder_id Int @id @default(autoincrement())
+  reminder_date DateTime
+  
+  activity Activity @relation(fields: [activity_id], references: [activity_id])
+  activity_id Int @unique
+  user User @relation(fields: [user_id], references: [user_id])
+  user_id Int @unique
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model TaskReminder {
+  task_reminder_id Int @id @default(autoincrement())
+  reminder_date DateTime
+  
+  task Task @relation(fields: [task_id], references: [task_id])
+  task_id Int @unique
+  user User @relation(fields: [user_id], references: [user_id])
+  user_id Int @unique
+  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
