@@ -14,16 +14,16 @@ datasource db {
 model User {
   user_id Int @id @default(autoincrement())
   first_name String @db.VarChar(15)
-  last_name String @db.VarChar(15)
-  email String @db.VarChar(50)
-  username String @db.VarChar(15)
+  last_name String @db.VarChar(15) 
+  email String @db.VarChar(50) 
+  username String @db.VarChar(15) 
   
   project_list ProjectList?
   activity_reminders ActivityReminder[]
   task_reminders TaskReminder[]
   
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt @default(now())
 }
  
 model ProjectList {
@@ -34,7 +34,7 @@ model ProjectList {
   projects Project[]
   
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt @default(now())
 }
 
 model Project {
@@ -50,7 +50,7 @@ model Project {
   activity_list ActivityList?
   
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt @default(now())
 
   @@index([project_list_id], name: "project_list_id")
 }
@@ -63,7 +63,7 @@ model ActivityList {
   activities Activity[]
   
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt @default(now())
 }
 
 model Activity {
@@ -81,7 +81,7 @@ model Activity {
   reminder ActivityReminder?
   
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt @default(now())
 
   @@index([activity_list_id], name: "activity_list_id")
 }
@@ -94,7 +94,7 @@ model TaskList {
   tasks Task[]
   
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt @default(now())
 }
 
 model Task {
@@ -111,7 +111,7 @@ model Task {
   reminder TaskReminder?
   
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt @default(now())
 
   @@index([task_list_id], name: "task_list_id")
 }
@@ -124,7 +124,7 @@ model ActivityTagList {
   tags Tag[]
   
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt @default(now())
 }
 
 model TaskTagList {
@@ -135,7 +135,7 @@ model TaskTagList {
   tags Tag[]
   
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt @default(now())
 }
 
 model Tag {
@@ -148,7 +148,7 @@ model Tag {
   task_tag_list_id Int
   
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt @default(now())
 
   @@index([activity_tag_list_id], name: "activity_tag_list_id")
   @@index([task_tag_list_id], name: "task_tag_list_id")
@@ -164,7 +164,7 @@ model ActivityReminder {
   user_id Int @unique
   
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt @default(now())
 }
 
 model TaskReminder {
@@ -177,5 +177,5 @@ model TaskReminder {
   user_id Int @unique
   
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt @default(now())
 }
