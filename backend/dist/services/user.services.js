@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteUser = exports.updateUser = exports.createUser = exports.getUserByID = exports.getUsers = void 0;
+exports.getUserProjects = exports.deleteUser = exports.updateUser = exports.createUser = exports.getUserByID = exports.getUsers = void 0;
 const db_server_1 = require("../utils/db.server");
 const getUsers = () => __awaiter(void 0, void 0, void 0, function* () {
     return db_server_1.db.user.findMany({
@@ -38,7 +38,6 @@ const getUserByID = (user_id) => __awaiter(void 0, void 0, void 0, function* () 
 exports.getUserByID = getUserByID;
 const createUser = (user) => __awaiter(void 0, void 0, void 0, function* () {
     const { first_name, last_name, email, username } = user;
-    console.log(user);
     return db_server_1.db.user.create({
         data: {
             first_name,
@@ -84,3 +83,33 @@ const deleteUser = (user_id) => __awaiter(void 0, void 0, void 0, function* () {
     });
 });
 exports.deleteUser = deleteUser;
+const getUserProjectList = (user_id) => __awaiter(void 0, void 0, void 0, function* () {
+    return db_server_1.db.projectList.findUnique({
+        where: {
+            user_id: user_id,
+        },
+        select: {
+            project_list_id: true,
+            user_id: true,
+        }
+    });
+});
+const getUserProjects = (user_id) => __awaiter(void 0, void 0, void 0, function* () {
+    let id = yield getUserProjectList(user_id);
+    if ((id === null || id === void 0 ? void 0 : id.project_list_id) === undefined) {
+        return null;
+    }
+    return db_server_1.db.project.findMany({
+        where: {
+            project_list_id: id === null || id === void 0 ? void 0 : id.project_list_id,
+        },
+        select: {
+            project_name: true,
+            project_start_date: true,
+            duration: true,
+            days_till_renew: true,
+            completed: true
+        }
+    });
+});
+exports.getUserProjects = getUserProjects;

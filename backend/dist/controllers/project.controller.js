@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteProject = exports.updateProject = exports.getProjectByID = exports.getProjects = void 0;
+exports.deleteProject = exports.updateProject = exports.createProject = exports.getProjectByID = exports.getProjects = void 0;
 const ProjectService = __importStar(require("../services/project.services"));
 const getProjects = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -55,18 +55,18 @@ const getProjectByID = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.getProjectByID = getProjectByID;
-/*
-export const createProject = async (req: Request, res: Response) => {
+const createProject = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { first_name, last_name, email, projectname } = req.body;
+        const { project_name, project_start_date, duration, days_till_renew, completed } = req.body;
         console.log(req.body);
-        const newProject = await ProjectService.createProject({first_name, last_name, email, projectname });
+        const newProject = yield ProjectService.createProject({ project_name, project_start_date, duration, days_till_renew, completed });
         res.send(newProject);
-    } catch (error: any) {
-        res.send({ error: error.message});
     }
-}
-*/
+    catch (error) {
+        res.send({ error: error.message });
+    }
+});
+exports.createProject = createProject;
 const updateProject = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { project_name, project_start_date, duration, days_till_renew, completed } = req.body;

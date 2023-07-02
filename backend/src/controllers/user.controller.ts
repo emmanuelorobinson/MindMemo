@@ -51,3 +51,13 @@ export const deleteUser = async (req: Request, res: Response) => {
         res.send({ error: error.message});
     }
 }
+
+export const getUserProjects = async (req: Request, res: Response) => {
+    try {
+        const { user_id } = req.params;
+        const userProjects = await UserService.getUserProjects(parseInt(user_id));
+        res.send(userProjects);
+    } catch (error: any) {
+        res.send({ error: error.message});
+    }
+}

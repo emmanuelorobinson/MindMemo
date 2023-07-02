@@ -15,3 +15,7 @@ userRouter
     .get(userController.getUserByID)
     .put(userController.updateUser)
     .delete(userController.deleteUser);
+
+userRouter
+    .route("/:user_id/projects")
+    .get(userController.getUserProjects);

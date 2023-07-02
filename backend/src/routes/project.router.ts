@@ -8,10 +8,14 @@ export const projectRouter = express.Router();
 projectRouter
     .route("/")
     .get(projectController.getProjects)
-    // .post(projectController.createProject);
+    .post(projectController.createProject);
 
 projectRouter
     .route("/:project_id")
     .get(projectController.getProjectByID)
     .put(projectController.updateProject)
     .delete(projectController.deleteProject);
+
+projectRouter
+    .route("/:project_id/activities")
+    .get(projectController.getProjectActivities)

@@ -46,7 +46,7 @@ model Project {
   completed Boolean
   
   project_list ProjectList @relation(fields: [project_list_id], references: [project_list_id])
-  project_list_id Int
+  project_list_id Int @default(0)
   activity_list ActivityList?
   
   createdAt DateTime @default(now())
@@ -59,7 +59,7 @@ model ActivityList {
   activity_list_id Int @id @default(autoincrement())
   
   project Project @relation(fields: [project_id], references: [project_id])
-  project_id Int @unique
+  project_id Int @unique @default(0)
   activities Activity[]
   
   createdAt DateTime @default(now())
@@ -72,10 +72,10 @@ model Activity {
   activity_name String @db.VarChar(100)
   duration Int
   completed Boolean
-  note String @db.VarChar(512)
+  note String @db.VarChar(512) @default("")
   
   activity_list ActivityList @relation(fields: [activity_list_id], references: [activity_list_id])
-  activity_list_id Int
+  activity_list_id Int @default(0)
   task_list TaskList?
   tag_list ActivityTagList?
   reminder ActivityReminder?
@@ -90,7 +90,7 @@ model TaskList {
   task_list_id Int @id @default(autoincrement())
   
   activity Activity @relation(fields: [activity_id], references: [activity_id])
-  activity_id Int @unique
+  activity_id Int @unique @default(0)
   tasks Task[]
   
   createdAt DateTime @default(now())
@@ -106,7 +106,7 @@ model Task {
   note String @db.VarChar(512)
   
   task_list TaskList @relation(fields: [task_list_id], references: [task_list_id])
-  task_list_id Int
+  task_list_id Int @default(0)
   tag_list TaskTagList?
   reminder TaskReminder?
   
@@ -120,7 +120,7 @@ model ActivityTagList {
   activity_tag_list_id Int @id @default(autoincrement())
   
   activity Activity @relation(fields: [activity_id], references: [activity_id])
-  activity_id Int @unique
+  activity_id Int @unique @default(0)
   tags Tag[]
   
   createdAt DateTime @default(now())
@@ -131,7 +131,7 @@ model TaskTagList {
   task_tag_list_id Int @id @default(autoincrement())
   
   task Task @relation(fields: [task_id], references: [task_id])
-  task_id Int @unique
+  task_id Int @unique @default(0)
   tags Tag[]
   
   createdAt DateTime @default(now())
@@ -143,9 +143,9 @@ model Tag {
   tag_name String @db.VarChar(100)
   
   activity_tag_list ActivityTagList @relation(fields: [activity_tag_list_id], references: [activity_tag_list_id])
-  activity_tag_list_id Int
+  activity_tag_list_id Int @default(0)
   task_tag_list TaskTagList @relation(fields: [task_tag_list_id], references: [task_tag_list_id])
-  task_tag_list_id Int
+  task_tag_list_id Int @default(0)
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt @default(now())
@@ -159,9 +159,9 @@ model ActivityReminder {
   reminder_date DateTime
   
   activity Activity @relation(fields: [activity_id], references: [activity_id])
-  activity_id Int @unique
+  activity_id Int @unique @default(0)
   user User @relation(fields: [user_id], references: [user_id])
-  user_id Int @unique
+  user_id Int @unique @default(0)
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt @default(now())
@@ -172,9 +172,9 @@ model TaskReminder {
   reminder_date DateTime
   
   task Task @relation(fields: [task_id], references: [task_id])
-  task_id Int @unique
+  task_id Int @unique @default(0)
   user User @relation(fields: [user_id], references: [user_id])
-  user_id Int @unique
+  user_id Int @unique @default(0)
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt @default(now())

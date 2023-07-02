@@ -33,8 +33,8 @@ exports.projectRouter = express_1.default.Router();
 //Get: Get all projects
 exports.projectRouter
     .route("/")
-    .get(projectController.getProjects);
-// .post(projectController.createProject);
+    .get(projectController.getProjects)
+    .post(projectController.createProject);
 exports.projectRouter
     .route("/:project_id")
     .get(projectController.getProjectByID)

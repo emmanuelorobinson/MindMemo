@@ -20,18 +20,18 @@ export const getProjectByID = async (req: Request, res: Response) => {
     }
 }
 
-/*
+
 export const createProject = async (req: Request, res: Response) => {
     try {
-        const { first_name, last_name, email, projectname } = req.body;
+        const { user_id, project_name, project_start_date, duration, days_till_renew, completed } = req.body;
         console.log(req.body);
-        const newProject = await ProjectService.createProject({first_name, last_name, email, projectname });
+        const newProject = await ProjectService.createProject({ project_name, project_start_date, duration, days_till_renew, completed }, parseInt(user_id));
         res.send(newProject);
     } catch (error: any) {
         res.send({ error: error.message});
     }
 }
-*/
+
 
 export const updateProject = async (req: Request, res: Response) => {
     try {
@@ -53,3 +53,14 @@ export const deleteProject = async (req: Request, res: Response) => {
         res.send({ error: error.message});
     }
 }
+
+export const getProjectActivities = async (req: Request, res: Response) => {
+    try {
+        const { project_id } = req.params;
+        const activities = await ProjectService.getProjectActivities(parseInt(project_id));
+        res.send(activities);
+    } catch (error: any) {
+        res.send({ error: error.message});
+    }
+}
+

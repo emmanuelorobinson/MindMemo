@@ -7,6 +7,7 @@ const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const db_server_1 = require("./utils/db.server");
 const user_router_1 = require("./routes/user.router");
+const project_router_1 = require("./routes/project.router");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const port = process.env.PORT;
@@ -20,6 +21,7 @@ app.get('/', (req, res) => {
     res.send('Express + TypeScript Server');
 });
 app.use("/users", user_router_1.userRouter);
+app.use("/projects", project_router_1.projectRouter);
 app.listen(port, () => {
     console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
 });

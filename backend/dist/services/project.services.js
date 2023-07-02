@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteProject = exports.updateProject = exports.getProjectByID = exports.getProjects = void 0;
+exports.deleteProject = exports.updateProject = exports.createProject = exports.getProjectByID = exports.getProjects = void 0;
 const db_server_1 = require("../utils/db.server");
 const getProjects = () => __awaiter(void 0, void 0, void 0, function* () {
     return db_server_1.db.project.findMany({
@@ -18,7 +18,8 @@ const getProjects = () => __awaiter(void 0, void 0, void 0, function* () {
             project_start_date: true,
             duration: true,
             days_till_renew: true,
-            completed: true
+            completed: true,
+            project_list_id: true,
         }
     });
 });
@@ -38,9 +39,8 @@ const getProjectByID = (project_id) => __awaiter(void 0, void 0, void 0, functio
     });
 });
 exports.getProjectByID = getProjectByID;
-/* ERROR
-export const createProject = async (project: Project): Promise<Project> => {
-    return db.project.create({
+const createProject = (project) => __awaiter(void 0, void 0, void 0, function* () {
+    return db_server_1.db.project.create({
         data: project,
         select: {
             project_name: true,
@@ -50,8 +50,8 @@ export const createProject = async (project: Project): Promise<Project> => {
             completed: true
         }
     });
-}
-*/
+});
+exports.createProject = createProject;
 const updateProject = (project_id, project) => __awaiter(void 0, void 0, void 0, function* () {
     return db_server_1.db.project.update({
         where: {
