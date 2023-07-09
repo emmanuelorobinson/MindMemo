@@ -1,17 +1,59 @@
-import React from "react";
+import React, {useState} from "react";
 import { Form, Formik, ErrorMessage } from "formik";
+import SelectMenu from "../SelectMenu";
+
+
+const options = [
+  { id: 1, name: "Wade Cooper" },
+  { id: 2, name: "Arlene Mccoy" },
+  { id: 3, name: "Devon Webb" },
+  { id: 4, name: "Tom Cook" },
+  { id: 5, name: "Tanya Fox" },
+  { id: 6, name: "Hellen Schmidt" },
+  { id: 7, name: "Caroline Schultz" },
+  { id: 8, name: "Mason Heaney" },
+  { id: 9, name: "Claudie Smitham" },
+  { id: 10, name: "Emil Schaefer" },
+];
+
+
 
 const CreateProjectComponent = () => {
+  const [projects, setProjects] = useState({
+    previous_cycle: "",
+    name: "",
+    date: "",
+    duration: "",
+    renew: "",
+  });
+
+  const [selectedValue, setSelectedValue] = useState("None");
+
+  const handleSelectedValueChange = (value) => {
+    setSelectedValue(value);
+  };
+
   return (
     <Formik
+      initialValues={projects}
       onSubmit={(values, { setSubmitting }) => {
+        values.previous_cycle = selectedValue;
+
+        console.log(values);
+
         setTimeout(() => {
           alert(JSON.stringify(values, null, 2));
           setSubmitting(false);
         }, 400);
       }}
     >
-      {({ values, handleChange, handleSubmit, isSubmitting }) => (
+      {({
+        values,
+        handleChange,
+        handleSubmit,
+        isSubmitting,
+        setFieldValue,
+      }) => (
         <div className=" flex w-[100%] text-left bg-white p-6 pl-10 mt-5 border border-[#E7E7E9] rounded-lg">
           <form
             className="space-y-8 divide-y divide-gray-200 w-[90%]"
@@ -29,10 +71,19 @@ const CreateProjectComponent = () => {
               </div>
 
               <div className="space-y-6 sm:space-y-5">
+                {/*Previous Cycle*/}
+                <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+                  <SelectMenu
+                    label={"Previous Cycle"}
+                    options={options}
+                    onSelectedValueChange={handleSelectedValueChange}
+                  />
+                </div>
+
                 {/* Name */}
                 <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
                   <label
-                    htmlFor="title"
+                    htmlFor="name"
                     className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
                   >
                     Project Name
@@ -43,6 +94,8 @@ const CreateProjectComponent = () => {
                       type="text"
                       name="name"
                       id="name"
+                      value={values.name}
+                      onChange={handleChange}
                     />
                   </div>
                 </div>
@@ -50,7 +103,7 @@ const CreateProjectComponent = () => {
                 {/* Start Date */}
                 <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
                   <label
-                    htmlFor="color"
+                    htmlFor="date"
                     className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
                   >
                     Start Date
@@ -61,6 +114,8 @@ const CreateProjectComponent = () => {
                       type="date"
                       name="date"
                       id="date"
+                      value={values.date}
+                      onChange={handleChange}
                     />
                   </div>
                 </div>
@@ -68,7 +123,7 @@ const CreateProjectComponent = () => {
                 {/* Duration */}
                 <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
                   <label
-                    htmlFor="color"
+                    htmlFor="duration"
                     className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
                   >
                     Duration
@@ -79,6 +134,8 @@ const CreateProjectComponent = () => {
                       type="number"
                       name="duration"
                       id="duration"
+                      value={values.duration}
+                      onChange={handleChange}
                     />
                   </div>
                 </div>
@@ -86,7 +143,7 @@ const CreateProjectComponent = () => {
                 {/* Renew */}
                 <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
                   <label
-                    htmlFor="category"
+                    htmlFor="renew"
                     className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
                   >
                     Renew after days
@@ -97,6 +154,8 @@ const CreateProjectComponent = () => {
                       type="number"
                       name="renew"
                       id="renew"
+                      value={values.renew}
+                      onChange={handleChange}
                     />
                   </div>
                 </div>

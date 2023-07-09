@@ -33,12 +33,8 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-
-
 export default function Sidebar(props) {
-
   const { isLoaded, isSignedIn, user } = useUser();
-
 
   // const router = useRouter();
 
@@ -121,11 +117,11 @@ export default function Sidebar(props) {
                   </div>
                 </Transition.Child>
                 <div className="flex flex-shrink-0 items-center px-4">
-                  {/* <Image
+                  <img
                     className="h-8 w-auto"
-                    src="/logo.jpeg"
-                    alt="Your Company"
-                  /> */}
+                    src="/logo.jpg"
+                    alt="Company Logo2"
+                  />
                 </div>
                 <div className="mt-5 h-0 flex-1 overflow-y-auto">
                   <nav className="space-y-1 px-2">
@@ -169,7 +165,11 @@ export default function Sidebar(props) {
         {/* Sidebar component, swap this element with another sidebar if you like */}
         <div className="flex flex-grow flex-col overflow-y-auto border-r border-gray-200 bg-white pt-5">
           <div className="flex flex-shrink-0 items-center px-4">
-            <img className="h-8 w-auto" src="./logo.jpeg" alt="Company Logo" />
+            <img
+              className="h-[100px] w-auto"
+              src="/logo.jpg"
+              alt="Company Logo"
+            />
           </div>
           <div className="mt-5 flex flex-grow flex-col">
             <nav className="flex-1 space-y-1 px-2 pb-4">
@@ -202,9 +202,7 @@ export default function Sidebar(props) {
 
             <div className="flex align-middle text-center gap-x-2 p-5">
               <UserButton />
-              {user && (
-              <p className="mt-0.5">{user.username}</p>
-              )}
+              {user && <p className="mt-0.5">{user.username}</p>}
             </div>
           </div>
         </div>
