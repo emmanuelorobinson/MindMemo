@@ -9,8 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteProject = exports.updateProject = exports.createProject = exports.getProjectByID = exports.getProjects = void 0;
+exports.getProjectActivities = exports.getActivityList = exports.deleteProject = exports.updateProject = exports.createProject = exports.getProjectByID = exports.getProjects = void 0;
 const db_server_1 = require("../utils/db.server");
+const user_services_1 = require("./user.services");
 const getProjects = () => __awaiter(void 0, void 0, void 0, function* () {
     return db_server_1.db.project.findMany({
         select: {
@@ -34,20 +35,42 @@ const getProjectByID = (project_id) => __awaiter(void 0, void 0, void 0, functio
             project_start_date: true,
             duration: true,
             days_till_renew: true,
-            completed: true
+            completed: true,
         }
     });
 });
 exports.getProjectByID = getProjectByID;
-const createProject = (project) => __awaiter(void 0, void 0, void 0, function* () {
+const createProject = (project, user_id) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("USER ID: " + user_id);
+    let id = yield (0, user_services_1.getUserProjectList)(user_id);
+    let projectListID = id === null || id === void 0 ? void 0 : id.project_list_id;
+    if ((id === null || id === void 0 ? void 0 : id.project_list_id) === undefined) {
+        let projectList = db_server_1.db.projectList.create({
+            data: {
+                user_id: user_id,
+            },
+            select: {
+                project_list_id: true,
+            }
+        });
+        projectListID = (yield projectList).project_list_id;
+    }
     return db_server_1.db.project.create({
-        data: project,
+        data: {
+            project_name: project.project_name,
+            project_start_date: project.project_start_date,
+            duration: project.duration,
+            days_till_renew: project.days_till_renew,
+            completed: project.completed,
+            project_list_id: projectListID,
+        },
         select: {
             project_name: true,
             project_start_date: true,
             duration: true,
             days_till_renew: true,
-            completed: true
+            completed: true,
+            project_list_id: true,
         }
     });
 });
@@ -78,8 +101,39 @@ const deleteProject = (project_id) => __awaiter(void 0, void 0, void 0, function
             project_start_date: true,
             duration: true,
             days_till_renew: true,
-            completed: true
+            completed: true,
         }
     });
 });
 exports.deleteProject = deleteProject;
+const getActivityList = (project_id) => __awaiter(void 0, void 0, void 0, function* () {
+    return db_server_1.db.activityList.findUnique({
+        where: {
+            project_id,
+        },
+        select: {
+            activity_list_id: true,
+            project_id: true,
+        }
+    });
+});
+exports.getActivityList = getActivityList;
+const getProjectActivities = (project_id) => __awaiter(void 0, void 0, void 0, function* () {
+    let id = yield (0, exports.getActivityList)(project_id);
+    if ((id === null || id === void 0 ? void 0 : id.activity_list_id) === undefined) {
+        return null;
+    }
+    return db_server_1.db.activity.findMany({
+        where: {
+            activity_list_id: id === null || id === void 0 ? void 0 : id.activity_list_id,
+        },
+        select: {
+            activity_name: true,
+            activity_number: true,
+            duration: true,
+            completed: true,
+            note: true,
+        }
+    });
+});
+exports.getProjectActivities = getProjectActivities;

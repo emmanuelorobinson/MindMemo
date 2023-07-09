@@ -15,3 +15,12 @@ activityRouter
     .get(activityController.getActivityByID)
     .put(activityController.updateActivity)
     .delete(activityController.deleteActivity);
+
+activityRouter
+    .route("/today")
+    .get(activityController.getTodaysActivities);
+
+activityRouter
+    .route("/upcoming")
+    .get(activityController.getUpcomingActivities);
+

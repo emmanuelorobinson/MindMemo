@@ -21,9 +21,6 @@ model User {
   project_list ProjectList?
   activity_reminders ActivityReminder[]
   task_reminders TaskReminder[]
-  
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt @default(now())
 }
  
 model ProjectList {
@@ -32,9 +29,6 @@ model ProjectList {
   user User @relation(fields: [user_id], references: [user_id])
   user_id Int @unique
   projects Project[]
-  
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt @default(now())
 }
 
 model Project {
@@ -48,9 +42,6 @@ model Project {
   project_list ProjectList @relation(fields: [project_list_id], references: [project_list_id])
   project_list_id Int @default(0)
   activity_list ActivityList?
-  
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt @default(now())
 
   @@index([project_list_id], name: "project_list_id")
 }
@@ -61,9 +52,6 @@ model ActivityList {
   project Project @relation(fields: [project_id], references: [project_id])
   project_id Int @unique @default(0)
   activities Activity[]
-  
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt @default(now())
 }
 
 model Activity {
@@ -79,9 +67,6 @@ model Activity {
   task_list TaskList?
   tag_list ActivityTagList?
   reminder ActivityReminder?
-  
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt @default(now())
 
   @@index([activity_list_id], name: "activity_list_id")
 }
@@ -92,16 +77,13 @@ model TaskList {
   activity Activity @relation(fields: [activity_id], references: [activity_id])
   activity_id Int @unique @default(0)
   tasks Task[]
-  
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt @default(now())
 }
 
 model Task {
   task_id Int @id @default(autoincrement())
   task_number Int
   task_name String @db.VarChar(100)
-  duration Int
+  days_till_due Int
   completed Boolean
   note String @db.VarChar(512)
   
@@ -109,9 +91,6 @@ model Task {
   task_list_id Int @default(0)
   tag_list TaskTagList?
   reminder TaskReminder?
-  
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt @default(now())
 
   @@index([task_list_id], name: "task_list_id")
 }
@@ -122,9 +101,6 @@ model ActivityTagList {
   activity Activity @relation(fields: [activity_id], references: [activity_id])
   activity_id Int @unique @default(0)
   tags Tag[]
-  
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt @default(now())
 }
 
 model TaskTagList {
@@ -133,22 +109,16 @@ model TaskTagList {
   task Task @relation(fields: [task_id], references: [task_id])
   task_id Int @unique @default(0)
   tags Tag[]
-  
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt @default(now())
 }
 
 model Tag {
   tag_id Int @id @default(autoincrement())
-  tag_name String @db.VarChar(100)
+  tag_name String @db.VarChar(100) @unique
   
   activity_tag_list ActivityTagList @relation(fields: [activity_tag_list_id], references: [activity_tag_list_id])
   activity_tag_list_id Int @default(0)
   task_tag_list TaskTagList @relation(fields: [task_tag_list_id], references: [task_tag_list_id])
   task_tag_list_id Int @default(0)
-  
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt @default(now())
 
   @@index([activity_tag_list_id], name: "activity_tag_list_id")
   @@index([task_tag_list_id], name: "task_tag_list_id")
@@ -162,9 +132,6 @@ model ActivityReminder {
   activity_id Int @unique @default(0)
   user User @relation(fields: [user_id], references: [user_id])
   user_id Int @unique @default(0)
-  
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt @default(now())
 }
 
 model TaskReminder {
@@ -175,7 +142,4 @@ model TaskReminder {
   task_id Int @unique @default(0)
   user User @relation(fields: [user_id], references: [user_id])
   user_id Int @unique @default(0)
-  
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt @default(now())
 }

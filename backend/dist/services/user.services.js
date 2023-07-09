@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserProjects = exports.deleteUser = exports.updateUser = exports.createUser = exports.getUserByID = exports.getUsers = void 0;
+exports.getUserProjects = exports.getUserProjectList = exports.deleteUser = exports.updateUser = exports.createUser = exports.getUserByID = exports.getUsers = void 0;
 const db_server_1 = require("../utils/db.server");
 const getUsers = () => __awaiter(void 0, void 0, void 0, function* () {
     return db_server_1.db.user.findMany({
@@ -94,8 +94,9 @@ const getUserProjectList = (user_id) => __awaiter(void 0, void 0, void 0, functi
         }
     });
 });
+exports.getUserProjectList = getUserProjectList;
 const getUserProjects = (user_id) => __awaiter(void 0, void 0, void 0, function* () {
-    let id = yield getUserProjectList(user_id);
+    let id = yield (0, exports.getUserProjectList)(user_id);
     if ((id === null || id === void 0 ? void 0 : id.project_list_id) === undefined) {
         return null;
     }
@@ -108,7 +109,8 @@ const getUserProjects = (user_id) => __awaiter(void 0, void 0, void 0, function*
             project_start_date: true,
             duration: true,
             days_till_renew: true,
-            completed: true
+            completed: true,
+            project_list_id: true,
         }
     });
 });

@@ -32,10 +32,42 @@ type ActivityList = {
     project_id: number;
 }
 
+type Task = {
+    task_name: string;
+    task_number: number;
+    days_till_due: number;
+    completed: boolean;
+    note: string;
+}
+
+type TaskList = {
+    task_list_id: number;
+    activity_id: number;
+}
+
+type Tag = {
+    tag_name: string;
+}
+
+type ActivityTagList = {
+    activity_tag_list_id: number;
+    activity_id: number;
+}
+
+type TaskTagList = {
+    task_tag_list_id: number;
+    task_id: number;
+}
+
 export type { 
     User, 
     Project,
     ProjectList,
     Activity,
     ActivityList,
+    Task,
+    TaskList,
+    Tag,
+    ActivityTagList,
+    TaskTagList,
 };

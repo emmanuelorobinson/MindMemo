@@ -26,20 +26,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.projectRouter = void 0;
+exports.activityRouter = void 0;
 const express_1 = __importDefault(require("express"));
-const projectController = __importStar(require("../controllers/project.controller"));
-exports.projectRouter = express_1.default.Router();
-//Get: Get all projects
-exports.projectRouter
+const activityController = __importStar(require("../controllers/activity.controller"));
+exports.activityRouter = express_1.default.Router();
+//Get: Get all activitys
+exports.activityRouter
     .route("/")
-    .get(projectController.getProjects)
-    .post(projectController.createProject);
-exports.projectRouter
-    .route("/:project_id")
-    .get(projectController.getProjectByID)
-    .put(projectController.updateProject)
-    .delete(projectController.deleteProject);
-exports.projectRouter
-    .route("/:project_id/activities")
-    .get(projectController.getProjectActivities);
+    .get(activityController.getActivities)
+    .post(activityController.createActivity);
+exports.activityRouter
+    .route("/:activity_id")
+    .get(activityController.getActivityByID)
+    .put(activityController.updateActivity)
+    .delete(activityController.deleteActivity);

@@ -33,9 +33,12 @@ export const createUser = async (req: Request, res: Response) => {
 
 export const updateUser = async (req: Request, res: Response) => {
     try {
-        const { first_name, last_name, email, username } = req.body;
-        const { user_id } = req.params;
-        const updatedUser = await UserService.updateUser(parseInt(user_id), { first_name, last_name, email, username });
+        const first_name = req.body.first_name;
+        const last_name = req.body.last_name;
+        const email = req.body.email;
+        const username = req.body.username;
+        const user_id = parseInt(req.params.user_id);
+        const updatedUser = await UserService.updateUser({first_name, last_name, email, username, user_id});
         res.send(updatedUser);
     } catch (error: any) {
         res.send({ error: error.message});
