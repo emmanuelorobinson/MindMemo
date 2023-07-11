@@ -16,25 +16,19 @@ const options = [
   { id: 10, name: "Emil Schaefer" },
 ];
 
-const CreateProjectComponent = () => {
+const CreateActivityComponent = ({ project_id }) => {
   const [projects, setProjects] = useState({
-    previous_cycle: "",
+    project_id: project_id,
     name: "",
-    date: "",
+    dependency: "",
     duration: "",
-    renew: "",
-    save_as_cycle: "",
+    note: "",
   });
 
   const [selectedValue, setSelectedValue] = useState("None");
-  const [selectedCycle, setSelectedCycle] = useState(false);
 
   const handleSelectedValueChange = (value) => {
     setSelectedValue(value);
-  };
-
-  const handleSelectedCycleChange = (value) => {
-    setSelectedCycle(value);
   };
 
   return (
@@ -42,7 +36,6 @@ const CreateProjectComponent = () => {
       initialValues={projects}
       onSubmit={(values, { setSubmitting }) => {
         values.previous_cycle = selectedValue;
-        values.save_as_cycle = selectedCycle;
 
         console.log(values);
 
@@ -67,31 +60,22 @@ const CreateProjectComponent = () => {
             <div className="space-y-6 pt-8 sm:space-y-5 sm:pt-10 py-6 px-6">
               <div>
                 <h3 className="text-lg font-medium leading-6 text-gray-900">
-                  Create New Project
+                  Create New Activity
                 </h3>
                 <p className="mt-1 max-w-2xl text-sm text-gray-500">
-                  Create a project from scratch or from an existing cycle if
-                  available.
+                  Create an activity from scratch and selected a predecessor
+                  (optional).
                 </p>
               </div>
 
               <div className="space-y-6 sm:space-y-5">
-                {/*Previous Cycle*/}
-                <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
-                  <SelectMenu
-                    label={"Previous Cycle"}
-                    options={options}
-                    onSelectedValueChange={handleSelectedValueChange}
-                  />
-                </div>
-
                 {/* Name */}
                 <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
                   <label
                     htmlFor="name"
                     className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
                   >
-                    Project Name
+                    Activity Name
                   </label>
                   <div className="mt-1 sm:col-span-2 sm:mt-0">
                     <input
@@ -105,24 +89,13 @@ const CreateProjectComponent = () => {
                   </div>
                 </div>
 
-                {/* Start Date */}
+                {/*Dependency*/}
                 <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
-                  <label
-                    htmlFor="date"
-                    className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
-                  >
-                    Start Date
-                  </label>
-                  <div className="mt-1 sm:col-span-2 sm:mt-0">
-                    <input
-                      className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
-                      type="date"
-                      name="date"
-                      id="date"
-                      value={values.date}
-                      onChange={handleChange}
-                    />
-                  </div>
+                  <SelectMenu
+                    label={"Dependency"}
+                    options={options}
+                    onSelectedValueChange={handleSelectedValueChange}
+                  />
                 </div>
 
                 {/* Duration */}
@@ -145,36 +118,26 @@ const CreateProjectComponent = () => {
                   </div>
                 </div>
 
-                {/* Renew */}
+                {/* Note */}
                 <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
                   <label
-                    htmlFor="renew"
+                    htmlFor="note"
                     className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
                   >
-                    Renew after days
+                    Note
                   </label>
                   <div className="mt-1 sm:col-span-2 sm:mt-0">
-                    <input
-                      className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
-                      type="number"
-                      name="renew"
-                      id="renew"
-                      value={values.renew}
+                    <textarea
+                      className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                      id="note"
+                      name="note"
+                      rows={3}
+                      value={values.note}
                       onChange={handleChange}
                     />
-                  </div>
-                </div>
-
-                {/* Cycle */}
-                <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
-                  <label
-                    htmlFor="renew"
-                    className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
-                  >
-                    Save as cycle
-                  </label>
-                  <div className="mt-1 sm:col-span-2 sm:mt-0">
-                    <Toggle onToggle={handleSelectedCycleChange} />
+                    <p className="mt-2 text-sm text-gray-500">
+                      Write a few sentences about the activity.
+                    </p>
                   </div>
                 </div>
               </div>
@@ -208,4 +171,4 @@ const CreateProjectComponent = () => {
   );
 };
 
-export default CreateProjectComponent;
+export default CreateActivityComponent;

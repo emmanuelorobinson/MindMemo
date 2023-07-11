@@ -1,0 +1,36 @@
+/* This example requires Tailwind CSS v2.0+ */
+import { useState } from 'react'
+import { Switch } from '@headlessui/react'
+
+function classNames(...classes) {
+  return classes.filter(Boolean).join(' ')
+}
+
+export default function Toggle({onToggle}) {
+  const [enabled, setEnabled] = useState(false)
+
+  const handleToggle = () => {
+    setEnabled(!enabled);
+    onToggle(!enabled);
+  }
+
+  return (
+    <Switch
+      checked={enabled}
+      onChange={handleToggle}
+      className={classNames(
+        enabled ? 'bg-indigo-600' : 'bg-gray-200',
+        'max-w-sm z-10 mt-1 max-h-60 relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'
+      )}
+    >
+      <span className="sr-only">Use setting</span>
+      <span
+        aria-hidden="true"
+        className={classNames(
+          enabled ? 'translate-x-5' : 'translate-x-0',
+          'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out'
+        )}
+      />
+    </Switch>
+  )
+}
