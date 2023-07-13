@@ -27,6 +27,7 @@ import Task from "./views/Task";
 
 import CreateProject from "./views/CreateProject";
 import CreateActivity from "./views/CreateActivity";
+import NotFound from "./views/NotFound";
 
 if (!process.env.REACT_APP_CLERK_PUBLISHABLE_KEY) {
   throw new Error("Missing Publishable Key");
@@ -64,6 +65,7 @@ function ClerkProviderWithRoutes() {
             </div>
           }
         />
+        <Route path="/404" element={<NotFound />} />
       </Routes>
       <SignedIn>
         <Routes>
@@ -85,6 +87,7 @@ function ClerkProviderWithRoutes() {
               element={<CreateActivity />}
             />
           </Route>
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </SignedIn>
       <SignedOut>

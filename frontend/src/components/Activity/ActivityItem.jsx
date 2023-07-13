@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import MenuDropdown from "../MenuDropdown";
 
 const colorScheme = (status) => {
   switch (status) {
@@ -24,6 +25,14 @@ const colorScheme = (status) => {
 
 const ProjectItem = ({ data }) => {
   console.log(data);
+
+  const onEditClick = () => {
+    console.log("edit");
+  };
+
+  const onDeleteClick = () => {
+    console.log("delete");
+  };
 
   return (
     <>
@@ -86,10 +95,11 @@ const ProjectItem = ({ data }) => {
           </div>
         </div>
       </div>
-      <div className="hidden sm:flex sm:flex-row gap-x-4 sm:items-end">
+      <div className="hidden sm:flex sm:flex-row gap-x-4 sm:items-end align-middle">
         {/* view project button and 3 dots to pop up a menu */}
 
-        <div>
+        <div className="flex align-middle justify-center">
+          <MenuDropdown onDelete={onDeleteClick} onEdit={onEditClick} />
           <Link
             to={`/project/activity/task?projectId=${data.projectId}&activityId=${data.id}`}
           >
@@ -99,7 +109,7 @@ const ProjectItem = ({ data }) => {
               viewBox="0 0 24 24"
               strokeWidth={1.5}
               stroke="currentColor"
-              className="w-6 h-6"
+              className="w-6 h-6 mt-1"
             >
               <path
                 strokeLinecap="round"
@@ -109,29 +119,6 @@ const ProjectItem = ({ data }) => {
             </svg>
           </Link>
         </div>
-        {/* <div className="mt-2">
-          <button
-            type="button"
-            className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md shadow-sm text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-          >
-            <svg
-              className="-ml-1 mr-2 h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                vectorEffect="non-scaling-stroke"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-            More
-          </button>
-        </div> */}
       </div>
     </>
   );
