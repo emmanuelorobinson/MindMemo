@@ -47,16 +47,18 @@ function ClerkProviderWithRoutes() {
 
   return (
     <ClerkProvider publishableKey={clerkPubKey}>
+      <Routes>
+        <Route
+          path="/sign-in"
+          element={
+            <div className=" h-[100vh] w-[100vw] flex justify-center items-center ">
+              <SignIn />
+            </div>
+          }
+        />
+      </Routes>
       <SignedIn>
         <Routes>
-          <Route
-            path="/sign-in"
-            element={
-              <div className=" h-[100vh] w-[100vw] flex justify-center items-center ">
-                <SignIn />
-              </div>
-            }
-          />
           <Route path="/sign-up" element={<SignUp />} />
 
           <Route
@@ -83,10 +85,10 @@ function ClerkProviderWithRoutes() {
             <Route path="/users/create" element={<CreateUser />} /> */}
           </Route>
         </Routes>
+        <SignedOut>
+          <RedirectToSignIn />
+        </SignedOut>
       </SignedIn>
-      <SignedOut>
-        <RedirectToSignIn />
-      </SignedOut>
     </ClerkProvider>
   );
 }
