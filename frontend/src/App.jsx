@@ -46,7 +46,7 @@ function ClerkProviderWithRoutes() {
   const navigate = useNavigate();
 
   return (
-    <ClerkProvider publishableKey={clerkPubKey}>
+    <ClerkProvider publishableKey={clerkPubKey} navigate={(to) => navigate(to)}>
       <Routes>
         <Route
           path="/sign-in"
@@ -56,11 +56,17 @@ function ClerkProviderWithRoutes() {
             </div>
           }
         />
+        <Route
+          path="/sign-up"
+          element={
+            <div className=" h-[100vh] w-[100vw] flex justify-center items-center ">
+              <SignUp />
+            </div>
+          }
+        />
       </Routes>
       <SignedIn>
         <Routes>
-          <Route path="/sign-up" element={<SignUp />} />
-
           <Route
             path="/"
             element={
@@ -78,17 +84,12 @@ function ClerkProviderWithRoutes() {
               path="/project/activity/create"
               element={<CreateActivity />}
             />
-
-            {/* <Route path="/" element={<Users />} />
-            <Route path="/users" element={<Users />} />
-            <Route path="/users/:id" element={<UserDetails />} />
-            <Route path="/users/create" element={<CreateUser />} /> */}
           </Route>
         </Routes>
-        <SignedOut>
-          <RedirectToSignIn />
-        </SignedOut>
       </SignedIn>
+      <SignedOut>
+        <RedirectToSignIn />
+      </SignedOut>
     </ClerkProvider>
   );
 }
