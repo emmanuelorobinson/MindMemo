@@ -38,12 +38,18 @@ model Project {
   duration Int
   days_till_renew Int
   completed Boolean
-  
+  save_as_cycle Boolean @default(false)
+
   project_list ProjectList @relation(fields: [project_list_id], references: [project_list_id])
   project_list_id Int @default(0)
   activity_list ActivityList?
 
   @@index([project_list_id], name: "project_list_id")
+}
+
+model Cycle {
+  cycle_id Int @id @default(autoincrement())
+  project_id Int @unique
 }
 
 model ActivityList {
@@ -65,8 +71,8 @@ model Activity {
   activity_list ActivityList @relation(fields: [activity_list_id], references: [activity_list_id])
   activity_list_id Int @default(0)
   task_list TaskList?
-  tag_list ActivityTagList?
-  reminder ActivityReminder?
+  tag_list ActivityTagList[]
+  reminder ActivityReminder[]
 
   @@index([activity_list_id], name: "activity_list_id")
 }
@@ -89,8 +95,8 @@ model Task {
   
   task_list TaskList @relation(fields: [task_list_id], references: [task_list_id])
   task_list_id Int @default(0)
-  tag_list TaskTagList?
-  reminder TaskReminder?
+  tag_list TaskTagList[]
+  reminder TaskReminder[]
 
   @@index([task_list_id], name: "task_list_id")
 }
@@ -100,7 +106,8 @@ model ActivityTagList {
   
   activity Activity @relation(fields: [activity_id], references: [activity_id])
   activity_id Int @unique @default(0)
-  tags Tag[]
+  tag Tag @relation(fields: [tag_id], references: [tag_id])
+  tag_id Int @unique @default(0)
 }
 
 model TaskTagList {
@@ -108,20 +115,16 @@ model TaskTagList {
   
   task Task @relation(fields: [task_id], references: [task_id])
   task_id Int @unique @default(0)
-  tags Tag[]
+  tag Tag @relation(fields: [tag_id], references: [tag_id])
+  tag_id Int @unique @default(0)
 }
 
 model Tag {
   tag_id Int @id @default(autoincrement())
   tag_name String @db.VarChar(100) @unique
   
-  activity_tag_list ActivityTagList @relation(fields: [activity_tag_list_id], references: [activity_tag_list_id])
-  activity_tag_list_id Int @default(0)
-  task_tag_list TaskTagList @relation(fields: [task_tag_list_id], references: [task_tag_list_id])
-  task_tag_list_id Int @default(0)
-
-  @@index([activity_tag_list_id], name: "activity_tag_list_id")
-  @@index([task_tag_list_id], name: "task_tag_list_id")
+  activity_tag_list ActivityTagList[]
+  task_tag_list TaskTagList[]
 }
 
 model ActivityReminder {

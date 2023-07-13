@@ -1,4 +1,5 @@
 import * as TaskService from '../services/task.services';
+import { getTaskTagListByID } from '../services/tag.services';
 
 export const getTasks = async (req: any, res: any) => {
     try {
@@ -106,4 +107,59 @@ export const getTaskTagList = async (req: any, res: any) => {
         res.send({ message: error.message });
     }
 }
+
+export const getTasksByTag = async (req: any, res: any) => {
+    try {
+        const tag_id = req.params;
+        const tasks = await TaskService.getTasksByTag(parseInt(tag_id));
+        res.send(tasks);
+    } catch (error: any) {
+        res.send({ message: error.message });
+    }
+}
+
+export const updateTaskTagList = async (req: any, res: any) => {
+    try {
+        const task_id = req.params;
+        const tag_list = req.body.tag_list;
+        const taskTagList = await TaskService.updateTaskTagList(parseInt(task_id), tag_list);
+        res.send(taskTagList);
+    } catch (error: any) {
+        res.send({ message: error.message });
+    }
+}
+
+export const updateTaskNote = async (req: any, res: any) => {
+    try {
+        const task_id = req.params;
+        const note = req.body.note;
+        const taskNote = await TaskService.updateTaskNote(parseInt(task_id), note);
+        res.send(taskNote);
+    } catch (error: any) {
+        res.send({ message: error.message });
+    }
+}
+
+export const getTaskNote = async (req: any, res: any) => {
+    try {
+        const task_id = req.params;
+        const taskNote = await TaskService.getTaskNote(parseInt(task_id));
+        res.send(taskNote);
+    } catch (error: any) {
+        res.send({ message: error.message });
+    }
+}
+
+export const updateTaskCompleted = async (req: any, res: any) => {
+    try {
+        const task_id = req.params;
+        const taskCompleted = await TaskService.completeTask(parseInt(task_id));
+        res.send(taskCompleted);
+    } catch (error: any) {
+        res.send({ message: error.message });
+    }
+}
+
+
+
 

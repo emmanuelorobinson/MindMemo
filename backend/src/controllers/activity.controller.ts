@@ -1,5 +1,4 @@
 import * as ActivityService from '../services/activity.services';
-import { Activity } from '../utils/db.types';
 
 export const getActivities = async (req: any, res: any) => {
     try {
@@ -102,4 +101,59 @@ export const getActivityTagList = async (req: any, res: any) => {
         res.send({ message: error.message });
     }
 }
+
+
+export const getActivitiesByTag = async (req: any, res: any) => {
+    try {
+        const tag_id = req.params;
+        const tasks = await ActivityService.getActivitiesByTag(parseInt(tag_id));
+        res.send(tasks);
+    } catch (error: any) {
+        res.send({ message: error.message });
+    }
+}
+
+export const updateActivitiesTagList = async (req: any, res: any) => {
+    try {
+        const activity_id = req.params;
+        const tag_list = req.body.tag_list;
+        const activityTagList = await ActivityService.updateActivityTagList(parseInt(activity_id), tag_list);
+        res.send(activityTagList);
+    } catch (error: any) {
+        res.send({ message: error.message });
+    }
+}
+
+export const updateActivityNote = async (req: any, res: any) => {
+    try {
+        const activity_id = req.params;
+        const note = req.body.note;
+        const activityNote = await ActivityService.updateActivityNote (parseInt(activity_id), note);
+        res.send(activityNote);
+    } catch (error: any) {
+        res.send({ message: error.message });
+    }
+}
+
+export const updateActivityCompleted = async (req: any, res: any) => {
+    try {
+        const activity_id = req.params;
+        const activityCompleted = await ActivityService.completeActivity(parseInt(activity_id));
+        res.send(activityCompleted);
+    } catch (error: any) {
+        res.send({ message: error.message });
+    }
+}
+
+export const getActivityNote = async (req: any, res: any) => {
+    try {
+        const activity_id = req.params;
+        const activityNote = await ActivityService.getActivityNote (parseInt(activity_id));
+        res.send(activityNote);
+    } catch (error: any) {
+        res.send({ message: error.message });
+    }
+}
+
+
 

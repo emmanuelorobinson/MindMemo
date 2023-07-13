@@ -4,7 +4,6 @@ import { body, validationResult } from "express-validator";
 import * as tagController from "../controllers/tag.controller";
 export const tagRouter = express.Router();
 
-//Get: Get all projects
 tagRouter
     .route("/")
     .get(tagController.getTags)
@@ -25,5 +24,4 @@ tagRouter
 
 tagRouter
     .route("/:tag_id/activities")
-    // .get(tagController.getTagActivities)
     .post(tagController.addTagToActivity)

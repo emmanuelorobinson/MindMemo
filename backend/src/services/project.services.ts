@@ -1,7 +1,6 @@
 import { db } from "../utils/db.server";
 import { Activity, ActivityList, Project } from "@prisma/client";
 import { getUserProjectList } from "./user.services";
-import { connect } from "http2";
 
 export const getProjects = async (): Promise<Project[]> => {
     return db.project.findMany({
@@ -13,6 +12,7 @@ export const getProjects = async (): Promise<Project[]> => {
             days_till_renew: true,
             completed: true,
             project_list_id: true,
+            save_as_cycle: true,
         }
     });
 };
@@ -30,6 +30,7 @@ export const getProjectByID = async (project_id: number): Promise<Project | null
             days_till_renew: true,
             completed: true,
             project_list_id: true,
+            save_as_cycle: true,
         }
     });
 }
@@ -73,6 +74,7 @@ export const createProject = async (project: Omit<Project, 'project_id' | 'proje
             days_till_renew: true,
             completed: true,
             project_list_id: true,
+            save_as_cycle: true,
         }
     });
 
@@ -108,6 +110,7 @@ export const updateProject = async (project: Omit<Project, 'project_list_id'>): 
             days_till_renew: true,
             completed: true,
             project_list_id: true,
+            save_as_cycle: true,
         }
     });
 }
@@ -125,6 +128,7 @@ export const deleteProject = async (project_id: number): Promise<Project | null>
             days_till_renew: true,
             completed: true,
             project_list_id: true,
+            save_as_cycle: true,
         }
     });
 }

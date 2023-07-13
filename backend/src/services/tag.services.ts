@@ -1,8 +1,8 @@
 import { db } from "../utils/db.server";
 import { ActivityTagList, Tag } from "@prisma/client";
-import { getTaskTagList } from "./task.services";
+import { getTaskTagList, updateTaskTagList } from "./task.services";
 import { TaskTagList } from "../utils/db.types";
-import { getActivityTagList } from "./activity.services";
+import { getActivityTagList, updateActivityTagList } from "./activity.services";
 
 //TODO:
 // 1. update tag
@@ -13,8 +13,6 @@ export const getTags = async (): Promise<Tag[]> => {
         select: {
             tag_id: true,
             tag_name: true,
-            activity_tag_list_id: true,
-            task_tag_list_id: true,
         }
     });
 }
@@ -27,8 +25,6 @@ export const getTagByID = async (tag_id: number): Promise<Tag | null> => {
         select: {
             tag_id: true,
             tag_name: true,
-            activity_tag_list_id: true,
-            task_tag_list_id: true,
         }
     });
 }
@@ -42,8 +38,6 @@ export const getTagByName =  async (tag_name: string): Promise<Tag[] | null> => 
         select: {
             tag_id: true,
             tag_name: true,
-            activity_tag_list_id: true,
-            task_tag_list_id: true,
         }
     });
 }
@@ -56,111 +50,126 @@ export const createTag = async (tag_name: string): Promise<Tag> => {
         select: {
             tag_id: true,
             tag_name: true,
-            activity_tag_list_id: true,
+        }
+    });
+}
+
+export const getTaskTagLists = async (tag_id: number): Promise<TaskTagList[] | null> => {
+    return db.taskTagList.findMany({
+        where: {
+            tag_id
+        },
+        select: {
             task_tag_list_id: true,
+            task_id: true,
+            tag_id: true,
+        }
+    });
+}
+
+export const getActivityTagLists = async (tag_id: number): Promise<ActivityTagList[] | null> => {
+    return db.activityTagList.findMany({
+        where: {
+            tag_id
+        },
+        select: {
+            activity_tag_list_id: true,
+            activity_id: true,
+            tag_id: true,
         }
     });
 }
 
 export const addTagToTask = async (tag: Tag, task_id: number): Promise<TaskTagList> => {
-    let id = await getTaskTagList(task_id);
-    let taskTagListID = id?.task_tag_list_id;
-    
-    let taskTagList;
-    if (taskTagListID === undefined) {
-        taskTagList = db.taskTagList.create({
-            data: {
-                task_id: task_id,
-                tags: {
-                    connect: tag,
-                }
-            },
-            select: {
-                task_id: true,
-                task_tag_list_id: true,
-            }
-        })
-    }
-    else {
-        let tagsList = db.taskTagList.findUnique({
-            where: {
-                task_tag_list_id: taskTagListID,
-            },
-            select: {
-                tags: true,
-            }
-        })
-        let tags = (await tagsList)?.tags;
-        tags = [...tags!, tag]
+    let tagList = db.taskTagList.create({
+        data: {
+            task_id: task_id,
+            tag_id: tag.tag_id,
+        },
+        select: {
+            task_id: true,
+            task_tag_list_id: true,
+            tag_id: true,
+        }
+    });
+    let task_tag_lists = await getTaskTagList(tag.tag_id);
 
+    updateTaskTagList(task_id, (await tagList).task_tag_list_id);
+    task_tag_lists = [...task_tag_lists!, (await tagList)];
 
-        taskTagList = db.taskTagList.update({
-            where: {
-                task_tag_list_id: taskTagListID,
-            },
-            data: {
-                tags: {
-                    connect: tags
-                }
-            }, 
-            select: {
-                task_id: true,
-                task_tag_list_id: true,
+    db.tag.update({
+        where: {
+            tag_id: tag.tag_id,
+        },
+        data: {
+            task_tag_list: {
+                connect: task_tag_lists,
             }
-        })
-    }
+        }
+    })
     
-    return taskTagList;
+    return tagList;
 }
 
 export const addTagToActivity = async (tag: Tag, activity_id: number): Promise<ActivityTagList> => {
-    let id = await getActivityTagList(activity_id);
-    let activityTagListID = id?.activity_tag_list_id;
-    
-    let activityTagList;
-    if (activityTagListID === undefined) {
-        activityTagList = db.activityTagList.create({
-            data: {
-                activity_id: activity_id,
-                tags: {
-                    connect: tag,
-                }
-            },
-            select: {
-                activity_id: true,
-                activity_tag_list_id: true,
-            }
-        })
-    }
-    else {
-        let tagsList = db.activityTagList.findUnique({
-            where: {
-                activity_tag_list_id: activityTagListID,
-            },
-            select: {
-                tags: true,
-            }
-        })
-        let tags = (await tagsList)?.tags;
-        tags = [...tags!, tag]
+    let tagList = db.activityTagList.create({
+        data: {
+            activity_id: activity_id,
+            tag_id: tag.tag_id,
+        },
+        select: {
+            activity_id: true,
+            activity_tag_list_id: true,
+            tag_id: true,
+        }
+    });
+    let activity_tag_lists = await getActivityTagList(tag.tag_id);
 
+    updateActivityTagList(activity_id, (await tagList));
+    activity_tag_lists = [...activity_tag_lists!, (await tagList)];
 
-        activityTagList = db.activityTagList.update({
-            where: {
-                activity_tag_list_id: activityTagListID,
-            },
-            data: {
-                tags: {
-                    connect: tags
-                }
-            }, 
-            select: {
-                activity_id: true,
-                activity_tag_list_id: true,
+    db.tag.update({
+        where: {
+            tag_id: tag.tag_id,
+        },
+        data: {
+            activity_tag_list: {
+                connect: activity_tag_lists,
             }
-        })
-    }
+        }
+    })
     
-    return activityTagList;
+    return tagList;
 }
 
+export const getTaskTagListByID = async (task_tag_list_id: number): Promise<TaskTagList | null> => {
+    let list = db.taskTagList.findUnique({
+        where: {
+            task_tag_list_id,
+        },
+        select: {
+            task_tag_list_id: true,
+            task_id: true,
+            tag_id: true,
+        }
+    });
+
+    if (list === null) {
+        return null;
+    } else {
+        return list;
+    }
+}
+
+export const getActivityTagListByID = async (activity_tag_list_id: number): Promise<ActivityTagList | null> => {
+    return db.activityTagList.findUnique({
+        where: {
+            activity_tag_list_id,
+        },
+        select: {
+            activity_tag_list_id: true,
+            activity_id: true,
+            tag_id: true,
+        }
+    });
+}

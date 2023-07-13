@@ -6,6 +6,7 @@ import {
     TaskList 
 } from "@prisma/client";
 import { getActivityList } from "./project.services";
+import { getActivityTagLists } from "./tag.services";
 
 //TODO: 
 // 1. today's activities
@@ -200,14 +201,122 @@ export const getUpcomingActivities = async (): Promise<Activity[]> => {
     })
 }
 
-export const getActivityTagList = async (activity_id: number): Promise<ActivityTagList | null> => {
-    return db.activityTagList.findUnique({
+export const getActivityTagList = async (activity_id: number): Promise<ActivityTagList[] | null> => {
+    return db.activityTagList.findMany({
         where: {
             activity_id,
         },
         select: {
             activity_tag_list_id: true,
             activity_id: true,
+            tag_id: true,
         }
     })
 }
+
+export const updateActivityTagList = async (activity_id: number, tag_list: ActivityTagList): Promise<Activity> => {
+    let activity = await getActivityByID(activity_id);
+    let tagLists = await getActivityTagList(activity_id);
+
+    tagLists = [...tagLists!, tag_list];
+
+    return db.activity.update({
+        where: {
+            activity_id,
+        },
+        data: {
+            tag_list: {
+                connect: tagLists,
+            }
+        },
+        select: {
+            activity_id: true,
+            activity_name: true,
+            activity_number: true,
+            duration: true,
+            completed: true,
+            note: true,
+            activity_list_id: true,
+        }
+    });
+}
+
+export const getActivitiesByTag = async (tag_id: number): Promise<Activity[]> => {
+    let activityTagList = await getActivityTagLists(tag_id);
+    
+    let activityIDs = await db.activityTagList.findMany({
+        where: {
+            tag_id,
+        },
+        select: {
+            activity_id: true,
+        }
+    })
+
+    let activities;
+    activityIDs.forEach((activityID) => {
+        let activity = db.activity.findUnique({
+            where: {
+                activity_id: activityID.activity_id,
+            },
+        });
+        activities = [...activities!, activity];
+    })
+
+    if (activities === undefined) {
+        return [];
+    }
+
+    return activities!;
+}
+
+export const updateActivityNote = async (activity_id: number, note: string): Promise<Activity> => {
+    return db.activity.update({
+        where: {
+            activity_id,
+        },
+        data: {
+            note,
+        },
+        select: {
+            activity_id: true,
+            activity_name: true,
+            activity_number: true,
+            duration: true,
+            completed: true,
+            note: true,
+            activity_list_id: true,
+        }
+    });
+}
+
+export const getActivityNote = async (activity_id: number): Promise<string> => {
+    let activity = await getActivityByID(activity_id);
+    
+    if (activity === null) 
+        return '';
+
+    return activity!.note;
+}
+
+export const completeActivity = async (activity_id: number): Promise<Activity> => {
+    return db.activity.update({
+        where: {
+            activity_id,
+        },
+        data: {
+            completed: true,
+        },
+        select: {
+            activity_id: true,
+            activity_name: true,
+            activity_number: true,
+            duration: true,
+            completed: true,
+            note: true,
+            activity_list_id: true,
+        }
+    });
+}
+
+
