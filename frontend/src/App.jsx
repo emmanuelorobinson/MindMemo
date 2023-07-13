@@ -47,48 +47,46 @@ function ClerkProviderWithRoutes() {
 
   return (
     <ClerkProvider publishableKey={clerkPubKey}>
-      <Routes>
-        <Route path="/sign-in" element={
-        <div className=" h-[100vh] w-[100vw] flex justify-center items-center "><SignIn /></div>} />
-        <Route path="/sign-up" element={<SignUp />} />
+      <SignedIn>
+        <Routes>
+          <Route
+            path="/sign-in"
+            element={
+              <div className=" h-[100vh] w-[100vw] flex justify-center items-center ">
+                <SignIn />
+              </div>
+            }
+          />
+          <Route path="/sign-up" element={<SignUp />} />
 
-        <Route
-          path="/"
-          element={
-            <Layout>
-              <Outlet />
-            </Layout>
-          }
-        >
-          <Route path="/" element={<Home/>} />
-          <Route path="/project" element={<Project />} />
-          <Route path="/project/:id" element={<Activity />} />
-          <Route path="/project/:id/:id" element={<Task />} />
-          <Route path="/project/create" element={<CreateProject />} />
-          <Route path="/project/:id/create" element={<CreateActivity />} />
-          
+          <Route
+            path="/"
+            element={
+              <Layout>
+                <Outlet />
+              </Layout>
+            }
+          >
+            <Route path="/" element={<Home />} />
+            <Route path="/project" element={<Project />} />
+            <Route path="/project/activity" element={<Activity />} />
+            <Route path="/project/activity/task" element={<Task />} />
+            <Route path="/project/create" element={<CreateProject />} />
+            <Route
+              path="/project/activity/create"
+              element={<CreateActivity />}
+            />
 
-
-
-          {/* <Route path="/" element={<Users />} />
+            {/* <Route path="/" element={<Users />} />
             <Route path="/users" element={<Users />} />
             <Route path="/users/:id" element={<UserDetails />} />
             <Route path="/users/create" element={<CreateUser />} /> */}
-        </Route>
-        <Route
-          path="/protected"
-          element={
-            <>
-              <SignedIn>
-                <ProtectedPage />
-              </SignedIn>
-              <SignedOut>
-                <RedirectToSignIn />
-              </SignedOut>
-            </>
-          }
-        />
-      </Routes>
+          </Route>
+        </Routes>
+      </SignedIn>
+      <SignedOut>
+        <RedirectToSignIn />
+      </SignedOut>
     </ClerkProvider>
   );
 }

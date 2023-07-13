@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Form, Formik, ErrorMessage } from "formik";
 import SelectMenu from "../SelectMenu";
 import Toggle from "../Toggle";
+import { useClerk } from "@clerk/clerk-react";
 
 const options = [
   { id: 1, name: "Wade Cooper" },
@@ -17,13 +18,16 @@ const options = [
 ];
 
 const CreateProjectComponent = () => {
+  const { user } = useClerk();
+
   const [projects, setProjects] = useState({
-    previous_cycle: "",
+    cycle: "",
     name: "",
     date: "",
     duration: "",
     renew: "",
     save_as_cycle: "",
+    user_id: user.id,
   });
 
   const [selectedValue, setSelectedValue] = useState("None");
@@ -41,7 +45,7 @@ const CreateProjectComponent = () => {
     <Formik
       initialValues={projects}
       onSubmit={(values, { setSubmitting }) => {
-        values.previous_cycle = selectedValue;
+        values.cycle = selectedValue;
         values.save_as_cycle = selectedCycle;
 
         console.log(values);

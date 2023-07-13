@@ -91,9 +91,7 @@ const ProjectItem = ({ data }) => {
 
         <div>
           <Link
-            to={{
-              pathname: `/project/${data.projectId}/${data.id}`,
-            }}
+            to={`/project/activity/task?projectId=${data.projectId}&activityId=${data.id}`}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

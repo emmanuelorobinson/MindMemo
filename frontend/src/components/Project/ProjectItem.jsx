@@ -43,9 +43,7 @@ const ProjectItem = ({ data }) => {
         {/* view project button and 3 dots to pop up a menu */}
         <div>
           <Link
-            to={{
-              pathname: `/project/${data.id}`,
-            }}
+            to={`/project/activity?id=${data.id}`}
           >
             <button
               type="button"

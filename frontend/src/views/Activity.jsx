@@ -28,8 +28,8 @@ const activity = [
 
 const Activity = () => {
 
-  const { id } = useParams();
-  console.log(id);
+  const search = useLocation().search;
+  const id = new URLSearchParams(search).get('id');
 
   const data = activity.filter((item) => item.projectId == id);
 

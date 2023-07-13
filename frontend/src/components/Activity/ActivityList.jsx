@@ -1,14 +1,17 @@
 import React from "react";
 import ActivityItem from "./ActivityItem";
 import AddButton from "../AddButton";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 
 const ActivityList = ({ data }) => {
   const navigate = useNavigate();
-  const { id } = useParams();
+  // const { id } = useParams();
+  const { search } = useLocation();
+  const id = new URLSearchParams(search).get("id");
+
 
   const onAddClick = () => {
-    navigate(`/project/${id}/create`);
+    navigate(`/project/activity/create?id=${id}`);
   };
 
   return (
