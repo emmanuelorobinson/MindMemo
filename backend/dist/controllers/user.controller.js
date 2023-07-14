@@ -37,10 +37,10 @@ const UserService = __importStar(require("../services/user.services"));
 const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const users = yield UserService.getUsers();
-        res.send(users);
+        res.json(users);
     }
     catch (error) {
-        res.send({ error: error.message });
+        res.json({ error: error.message });
     }
 });
 exports.getUsers = getUsers;
@@ -48,10 +48,10 @@ const getUserByID = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     try {
         const { user_id } = req.params;
         const user = yield UserService.getUserByID(parseInt(user_id));
-        res.send(user);
+        res.json(user);
     }
     catch (error) {
-        res.send({ error: error.message });
+        res.json({ error: error.message });
     }
 });
 exports.getUserByID = getUserByID;
@@ -60,10 +60,10 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const { first_name, last_name, email, username } = req.body;
         console.log(req.body);
         const newUser = yield UserService.createUser({ first_name, last_name, email, username });
-        res.send(newUser);
+        res.json(newUser);
     }
     catch (error) {
-        res.send({ error: error.message });
+        res.json({ error: error.message });
     }
 });
 exports.createUser = createUser;
@@ -75,10 +75,10 @@ const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const username = req.body.username;
         const user_id = parseInt(req.params.user_id);
         const updatedUser = yield UserService.updateUser({ first_name, last_name, email, username, user_id });
-        res.send(updatedUser);
+        res.json(updatedUser);
     }
     catch (error) {
-        res.send({ error: error.message });
+        res.json({ error: error.message });
     }
 });
 exports.updateUser = updateUser;
@@ -86,10 +86,10 @@ const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     try {
         const { user_id } = req.params;
         const deletedUser = yield UserService.deleteUser(parseInt(user_id));
-        res.send(deletedUser);
+        res.json(deletedUser);
     }
     catch (error) {
-        res.send({ error: error.message });
+        res.json({ error: error.message });
     }
 });
 exports.deleteUser = deleteUser;
@@ -97,10 +97,10 @@ const getUserProjects = (req, res) => __awaiter(void 0, void 0, void 0, function
     try {
         const { user_id } = req.params;
         const userProjects = yield UserService.getUserProjects(parseInt(user_id));
-        res.send(userProjects);
+        res.json(userProjects);
     }
     catch (error) {
-        res.send({ error: error.message });
+        res.json({ error: error.message });
     }
 });
 exports.getUserProjects = getUserProjects;

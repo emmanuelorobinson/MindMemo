@@ -37,10 +37,10 @@ const ProjectService = __importStar(require("../services/project.services"));
 const getProjects = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const projects = yield ProjectService.getProjects();
-        res.send(projects);
+        res.json(projects);
     }
     catch (error) {
-        res.send({ error: error.message });
+        res.json({ error: error.message });
     }
 });
 exports.getProjects = getProjects;
@@ -49,10 +49,10 @@ const getProjectByID = (req, res) => __awaiter(void 0, void 0, void 0, function*
         const { project_id } = req.params;
         console.log("ID IN CONTROLLER: " + project_id);
         const project = yield ProjectService.getProjectByID(parseInt(project_id));
-        res.send(project);
+        res.json(project);
     }
     catch (error) {
-        res.send({ error: error.message });
+        res.json({ error: error.message });
     }
 });
 exports.getProjectByID = getProjectByID;
@@ -74,10 +74,10 @@ const createProject = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             save_as_cycle: cycle,
         };
         const newProject = yield ProjectService.createProject(project, user_id);
-        res.send(newProject);
+        res.json(newProject);
     }
     catch (error) {
-        res.send({ error: error.message });
+        res.json({ error: error.message });
     }
 });
 exports.createProject = createProject;
@@ -100,10 +100,10 @@ const updateProject = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             save_as_cycle: cycle,
         };
         const updatedProject = yield ProjectService.updateProject(project);
-        res.send(updatedProject);
+        res.json(updatedProject);
     }
     catch (error) {
-        res.send({ error: error.message });
+        res.json({ error: error.message });
     }
 });
 exports.updateProject = updateProject;
@@ -111,10 +111,10 @@ const deleteProject = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     try {
         const { project_id } = req.params;
         const deletedProject = yield ProjectService.deleteProject(parseInt(project_id));
-        res.send(deletedProject);
+        res.json(deletedProject);
     }
     catch (error) {
-        res.send({ error: error.message });
+        res.json({ error: error.message });
     }
 });
 exports.deleteProject = deleteProject;
@@ -122,10 +122,10 @@ const getProjectActivities = (req, res) => __awaiter(void 0, void 0, void 0, fun
     try {
         const { project_id } = req.params;
         const activities = yield ProjectService.getProjectActivities(parseInt(project_id));
-        res.send(activities);
+        res.json(activities);
     }
     catch (error) {
-        res.send({ error: error.message });
+        res.json({ error: error.message });
     }
 });
 exports.getProjectActivities = getProjectActivities;

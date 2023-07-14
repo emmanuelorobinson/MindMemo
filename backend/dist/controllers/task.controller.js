@@ -37,10 +37,10 @@ const TaskService = __importStar(require("../services/task.services"));
 const getTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const activities = yield TaskService.getTasks();
-        res.send(activities);
+        res.json(activities);
     }
     catch (error) {
-        res.send({ message: error.message });
+        res.json({ message: error.message });
     }
 });
 exports.getTasks = getTasks;
@@ -48,10 +48,10 @@ const getTaskByID = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     try {
         const { task_id } = req.params;
         const task = yield TaskService.getTaskByID(parseInt(task_id));
-        res.send(task);
+        res.json(task);
     }
     catch (error) {
-        res.send({ message: error.message });
+        res.json({ message: error.message });
     }
 });
 exports.getTaskByID = getTaskByID;
@@ -74,10 +74,10 @@ const createTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         };
         console.log(req.body);
         const newTask = yield TaskService.createTask(task, activityId);
-        res.send(newTask);
+        res.json(newTask);
     }
     catch (error) {
-        res.send({ message: error.message });
+        res.json({ message: error.message });
     }
 });
 exports.createTask = createTask;
@@ -100,10 +100,10 @@ const updateTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             note: taskNote,
         };
         const updatedTask = yield TaskService.updateTask(task);
-        res.send(updatedTask);
+        res.json(updatedTask);
     }
     catch (error) {
-        res.send({ message: error.message });
+        res.json({ message: error.message });
     }
 });
 exports.updateTask = updateTask;
@@ -111,30 +111,30 @@ const deleteTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     try {
         const { task_id } = req.params;
         const deletedTask = yield TaskService.deleteTask(parseInt(task_id));
-        res.send(deletedTask);
+        res.json(deletedTask);
     }
     catch (error) {
-        res.send({ message: error.message });
+        res.json({ message: error.message });
     }
 });
 exports.deleteTask = deleteTask;
 const getTodayTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const tasks = yield TaskService.getTodaysTasks();
-        res.send(tasks);
+        res.json(tasks);
     }
     catch (error) {
-        res.send({ message: error.message });
+        res.json({ message: error.message });
     }
 });
 exports.getTodayTasks = getTodayTasks;
 const getUpcomingTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const tasks = yield TaskService.getUpcomingTasks();
-        res.send(tasks);
+        res.json(tasks);
     }
     catch (error) {
-        res.send({ message: error.message });
+        res.json({ message: error.message });
     }
 });
 exports.getUpcomingTasks = getUpcomingTasks;
@@ -142,10 +142,10 @@ const getTaskTagList = (req, res) => __awaiter(void 0, void 0, void 0, function*
     try {
         const task_id = req.params;
         const taskTagList = yield TaskService.getTaskTagList(parseInt(task_id));
-        res.send(taskTagList);
+        res.json(taskTagList);
     }
     catch (error) {
-        res.send({ message: error.message });
+        res.json({ message: error.message });
     }
 });
 exports.getTaskTagList = getTaskTagList;
@@ -153,10 +153,10 @@ const getTasksByTag = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     try {
         const tag_id = req.params;
         const tasks = yield TaskService.getTasksByTag(parseInt(tag_id));
-        res.send(tasks);
+        res.json(tasks);
     }
     catch (error) {
-        res.send({ message: error.message });
+        res.json({ message: error.message });
     }
 });
 exports.getTasksByTag = getTasksByTag;
@@ -165,10 +165,10 @@ const updateTaskTagList = (req, res) => __awaiter(void 0, void 0, void 0, functi
         const task_id = req.params;
         const tag_list = req.body.tag_list;
         const taskTagList = yield TaskService.updateTaskTagList(parseInt(task_id), tag_list);
-        res.send(taskTagList);
+        res.json(taskTagList);
     }
     catch (error) {
-        res.send({ message: error.message });
+        res.json({ message: error.message });
     }
 });
 exports.updateTaskTagList = updateTaskTagList;
@@ -177,10 +177,10 @@ const updateTaskNote = (req, res) => __awaiter(void 0, void 0, void 0, function*
         const task_id = req.params;
         const note = req.body.note;
         const taskNote = yield TaskService.updateTaskNote(parseInt(task_id), note);
-        res.send(taskNote);
+        res.json(taskNote);
     }
     catch (error) {
-        res.send({ message: error.message });
+        res.json({ message: error.message });
     }
 });
 exports.updateTaskNote = updateTaskNote;
@@ -188,10 +188,10 @@ const getTaskNote = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     try {
         const task_id = req.params;
         const taskNote = yield TaskService.getTaskNote(parseInt(task_id));
-        res.send(taskNote);
+        res.json(taskNote);
     }
     catch (error) {
-        res.send({ message: error.message });
+        res.json({ message: error.message });
     }
 });
 exports.getTaskNote = getTaskNote;
@@ -199,10 +199,10 @@ const updateTaskCompleted = (req, res) => __awaiter(void 0, void 0, void 0, func
     try {
         const task_id = req.params;
         const taskCompleted = yield TaskService.completeTask(parseInt(task_id));
-        res.send(taskCompleted);
+        res.json(taskCompleted);
     }
     catch (error) {
-        res.send({ message: error.message });
+        res.json({ message: error.message });
     }
 });
 exports.updateTaskCompleted = updateTaskCompleted;

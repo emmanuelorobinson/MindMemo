@@ -37,10 +37,10 @@ const TagService = __importStar(require("../services/tag.services"));
 const getTags = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const tags = yield TagService.getTags();
-        res.send(tags);
+        res.json(tags);
     }
     catch (error) {
-        res.send({ error: error.message });
+        res.json({ error: error.message });
     }
 });
 exports.getTags = getTags;
@@ -48,10 +48,10 @@ const getTagByID = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     try {
         const { tag_id } = req.params;
         const tag = yield TagService.getTagByID(parseInt(tag_id));
-        res.send(tag);
+        res.json(tag);
     }
     catch (error) {
-        res.send({ error: error.message });
+        res.json({ error: error.message });
     }
 });
 exports.getTagByID = getTagByID;
@@ -59,10 +59,10 @@ const getTagByName = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     try {
         const { tag_name } = req.params;
         const tag = yield TagService.getTagByName(tag_name);
-        res.send(tag);
+        res.json(tag);
     }
     catch (error) {
-        res.send({ error: error.message });
+        res.json({ error: error.message });
     }
 });
 exports.getTagByName = getTagByName;
@@ -70,10 +70,10 @@ const createTag = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { tag_name } = req.body;
         const newTag = yield TagService.createTag(tag_name);
-        res.send(newTag);
+        res.json(newTag);
     }
     catch (error) {
-        res.send({ error: error.message });
+        res.json({ error: error.message });
     }
 });
 exports.createTag = createTag;
@@ -81,10 +81,10 @@ const addTagToTask = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     try {
         const { task_id, tag_id } = req.body;
         const newTag = yield TagService.addTagToTask(task_id, tag_id);
-        res.send(newTag);
+        res.json(newTag);
     }
     catch (error) {
-        res.send({ error: error.message });
+        res.json({ error: error.message });
     }
 });
 exports.addTagToTask = addTagToTask;
@@ -92,10 +92,10 @@ const addTagToActivity = (req, res) => __awaiter(void 0, void 0, void 0, functio
     try {
         const { activity_id, tag_id } = req.body;
         const newTag = yield TagService.addTagToActivity(activity_id, tag_id);
-        res.send(newTag);
+        res.json(newTag);
     }
     catch (error) {
-        res.send({ error: error.message });
+        res.json({ error: error.message });
     }
 });
 exports.addTagToActivity = addTagToActivity;
@@ -103,10 +103,10 @@ const getTaskTagListByID = (req, res) => __awaiter(void 0, void 0, void 0, funct
     try {
         const { task_id } = req.params;
         const tagList = yield TagService.getTaskTagListByID(parseInt(task_id));
-        res.send(tagList);
+        res.json(tagList);
     }
     catch (error) {
-        res.send({ error: error.message });
+        res.json({ error: error.message });
     }
 });
 exports.getTaskTagListByID = getTaskTagListByID;
@@ -114,10 +114,10 @@ const getActivityTagListByID = (req, res) => __awaiter(void 0, void 0, void 0, f
     try {
         const { activity_id } = req.params;
         const tagList = yield TagService.getActivityTagListByID(parseInt(activity_id));
-        res.send(tagList);
+        res.json(tagList);
     }
     catch (error) {
-        res.send({ error: error.message });
+        res.json({ error: error.message });
     }
 });
 exports.getActivityTagListByID = getActivityTagListByID;

@@ -40,7 +40,7 @@ const createCycle = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         const cycle = yield CycleService.createCycle(parseInt(project_id));
     }
     catch (error) {
-        res.send({ message: error.message });
+        res.json({ message: error.message });
     }
 });
 exports.createCycle = createCycle;
@@ -48,20 +48,20 @@ const getCycleByID = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     try {
         const { cycle_id } = req.params;
         const cycle = yield CycleService.getCycleByID(parseInt(cycle_id));
-        res.send(cycle);
+        res.json(cycle);
     }
     catch (error) {
-        res.send({ message: error.message });
+        res.json({ message: error.message });
     }
 });
 exports.getCycleByID = getCycleByID;
 const getCycles = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const cycles = yield CycleService.getCycles();
-        res.send(cycles);
+        res.json(cycles);
     }
     catch (error) {
-        res.send({ message: error.message });
+        res.json({ message: error.message });
     }
 });
 exports.getCycles = getCycles;
@@ -69,10 +69,10 @@ const deleteCycle = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     try {
         const { cycle_id } = req.params;
         const deletedCycle = yield CycleService.deleteCycle(parseInt(cycle_id));
-        res.send(deletedCycle);
+        res.json(deletedCycle);
     }
     catch (error) {
-        res.send({ message: error.message });
+        res.json({ message: error.message });
     }
 });
 exports.deleteCycle = deleteCycle;
