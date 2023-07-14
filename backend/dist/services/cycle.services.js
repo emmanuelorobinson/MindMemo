@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteCycle = exports.getCycles = exports.getCycleByID = exports.createCycle = void 0;
+exports.getCycleNames = exports.deleteCycle = exports.getCycles = exports.getCycleByID = exports.createCycle = void 0;
 const db_server_1 = require("../utils/db.server");
 const createCycle = (project_id) => __awaiter(void 0, void 0, void 0, function* () {
     return db_server_1.db.cycle.create({
@@ -56,3 +56,22 @@ const deleteCycle = (cycle_id) => __awaiter(void 0, void 0, void 0, function* ()
     });
 });
 exports.deleteCycle = deleteCycle;
+const getCycleNames = (user_id) => __awaiter(void 0, void 0, void 0, function* () {
+    let cycles = yield (0, exports.getCycles)();
+    let cycleNames = [];
+    cycles.forEach((cycle) => __awaiter(void 0, void 0, void 0, function* () {
+        let name = yield db_server_1.db.project.findUnique({
+            where: {
+                project_id: cycle.project_id,
+                user_id,
+            },
+            select: {
+                project_name: true,
+            }
+        });
+        if ((name === null || name === void 0 ? void 0 : name.project_name) != undefined)
+            cycleNames.push(name === null || name === void 0 ? void 0 : name.project_name);
+    }));
+    return cycleNames;
+});
+exports.getCycleNames = getCycleNames;

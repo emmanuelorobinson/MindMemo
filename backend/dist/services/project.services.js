@@ -9,11 +9,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProjectActivities = exports.getActivityList = exports.deleteProject = exports.updateProject = exports.createProject = exports.getProjectByID = exports.getProjects = void 0;
+exports.deleteProject = exports.updateProject = exports.createProject = exports.getProjectByID = exports.getProjects = void 0;
 const db_server_1 = require("../utils/db.server");
-const user_services_1 = require("./user.services");
-const getProjects = () => __awaiter(void 0, void 0, void 0, function* () {
+const cycle_services_1 = require("./cycle.services");
+//get all projects by user
+const getProjects = (user_id) => __awaiter(void 0, void 0, void 0, function* () {
     return db_server_1.db.project.findMany({
+        where: {
+            user_id: user_id,
+        },
         select: {
             project_id: true,
             project_name: true,
@@ -21,12 +25,13 @@ const getProjects = () => __awaiter(void 0, void 0, void 0, function* () {
             duration: true,
             days_till_renew: true,
             completed: true,
-            project_list_id: true,
             save_as_cycle: true,
+            user_id: true,
         }
     });
 });
 exports.getProjects = getProjects;
+//get project by id
 const getProjectByID = (project_id) => __awaiter(void 0, void 0, void 0, function* () {
     return db_server_1.db.project.findUnique({
         where: {
@@ -39,40 +44,15 @@ const getProjectByID = (project_id) => __awaiter(void 0, void 0, void 0, functio
             duration: true,
             days_till_renew: true,
             completed: true,
-            project_list_id: true,
             save_as_cycle: true,
+            user_id: true,
         }
     });
 });
 exports.getProjectByID = getProjectByID;
-const createProject = (project, user_id) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
-    let id = yield (0, user_services_1.getUserProjectList)(user_id);
-    let projectListID = id === null || id === void 0 ? void 0 : id.project_list_id;
-    let projectList;
-    if ((id === null || id === void 0 ? void 0 : id.project_list_id) === undefined) {
-        projectList = db_server_1.db.projectList.create({
-            data: {
-                user_id: user_id,
-            },
-            select: {
-                project_list_id: true,
-                projects: true,
-            }
-        });
-        projectListID = (yield projectList).project_list_id;
-    }
-    else {
-        projectList = db_server_1.db.projectList.findUnique({
-            where: {
-                project_list_id: projectListID,
-            },
-            select: {
-                project_list_id: true,
-                projects: true,
-            }
-        });
-    }
+//create project and add it to user list
+const createProject = (project) => __awaiter(void 0, void 0, void 0, function* () {
+    //create new project
     let newProject = db_server_1.db.project.create({
         data: project,
         select: {
@@ -82,22 +62,13 @@ const createProject = (project, user_id) => __awaiter(void 0, void 0, void 0, fu
             duration: true,
             days_till_renew: true,
             completed: true,
-            project_list_id: true,
             save_as_cycle: true,
+            user_id: true,
         }
     });
-    let projects = (_a = (yield projectList)) === null || _a === void 0 ? void 0 : _a.projects;
-    projects = [...projects, (yield newProject)];
-    db_server_1.db.projectList.update({
-        where: {
-            project_list_id: projectListID,
-        },
-        data: {
-            projects: {
-                connect: projects,
-            }
-        }
-    });
+    if ((yield newProject).save_as_cycle) {
+        (0, cycle_services_1.createCycle)((yield newProject).project_id);
+    }
     return newProject;
 });
 exports.createProject = createProject;
@@ -114,7 +85,7 @@ const updateProject = (project) => __awaiter(void 0, void 0, void 0, function* (
             duration: true,
             days_till_renew: true,
             completed: true,
-            project_list_id: true,
+            user_id: true,
             save_as_cycle: true,
         }
     });
@@ -132,35 +103,9 @@ const deleteProject = (project_id) => __awaiter(void 0, void 0, void 0, function
             duration: true,
             days_till_renew: true,
             completed: true,
-            project_list_id: true,
+            user_id: true,
             save_as_cycle: true,
         }
     });
 });
 exports.deleteProject = deleteProject;
-const getActivityList = (project_id) => __awaiter(void 0, void 0, void 0, function* () {
-    return db_server_1.db.activityList.findUnique({
-        where: {
-            project_id,
-        },
-        select: {
-            activity_list_id: true,
-            project_id: true,
-        }
-    });
-});
-exports.getActivityList = getActivityList;
-const getProjectActivities = (project_id) => __awaiter(void 0, void 0, void 0, function* () {
-    let id = yield (0, exports.getActivityList)(project_id);
-    let list = yield db_server_1.db.activityList.findUnique({
-        where: {
-            activity_list_id: id === null || id === void 0 ? void 0 : id.activity_list_id,
-        },
-        select: {
-            activities: true,
-        }
-    });
-    let activities = list === undefined ? [] : list === null || list === void 0 ? void 0 : list.activities;
-    return activities;
-});
-exports.getProjectActivities = getProjectActivities;

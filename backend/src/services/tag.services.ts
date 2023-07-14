@@ -1,7 +1,6 @@
 import { db } from "../utils/db.server";
-import { ActivityTagList, Tag } from "@prisma/client";
+import { ActivityTagList, Tag, TaskTagList } from "@prisma/client";
 import { getTaskTagList, updateTaskTagList } from "./task.services";
-import { TaskTagList } from "../utils/db.types";
 import { getActivityTagList, updateActivityTagList } from "./activity.services";
 
 //TODO:

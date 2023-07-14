@@ -55,12 +55,3 @@ export const deleteUser = async (req: Request, res: Response) => {
     }
 }
 
-export const getUserProjects = async (req: Request, res: Response) => {
-    try {
-        const { user_id } = req.params;
-        const userProjects = await UserService.getUserProjects(parseInt(user_id));
-        res.json(userProjects);
-    } catch (error: any) {
-        res.status(500).json({ error: error.message});
-    }
-}

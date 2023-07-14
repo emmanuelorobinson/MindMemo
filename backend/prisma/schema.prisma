@@ -17,18 +17,10 @@ model User {
   last_name String @db.VarChar(15) 
   email String @db.VarChar(50) 
   username String @db.VarChar(15) 
-  
-  project_list ProjectList?
+
+  projects Project[]
   activity_reminders ActivityReminder[]
   task_reminders TaskReminder[]
-}
- 
-model ProjectList {
-  project_list_id Int @id @default(autoincrement())
-  
-  user User @relation(fields: [user_id], references: [user_id])
-  user_id Int @unique
-  projects Project[]
 }
 
 model Project {
@@ -39,26 +31,20 @@ model Project {
   days_till_renew Int
   completed Boolean
   save_as_cycle Boolean @default(false)
-
-  project_list ProjectList @relation(fields: [project_list_id], references: [project_list_id])
-  project_list_id Int @default(0)
-  activity_list ActivityList?
-
-  @@index([project_list_id], name: "project_list_id")
+  
+  user User @relation(fields: [user_id], references: [user_id])
+  user_id Int @unique
+  cycle Cycle?
+  activity Activity[]
 }
 
 model Cycle {
   cycle_id Int @id @default(autoincrement())
+  
   project_id Int @unique
+  Project Project @relation(fields: [project_id], references: [project_id])
 }
 
-model ActivityList {
-  activity_list_id Int @id @default(autoincrement())
-  
-  project Project @relation(fields: [project_id], references: [project_id])
-  project_id Int @unique @default(0)
-  activities Activity[]
-}
 
 model Activity {
   activity_id Int @id @default(autoincrement())
@@ -68,21 +54,11 @@ model Activity {
   completed Boolean
   note String @db.VarChar(512) @default("")
   
-  activity_list ActivityList @relation(fields: [activity_list_id], references: [activity_list_id])
-  activity_list_id Int @default(0)
-  task_list TaskList?
-  tag_list ActivityTagList[]
-  reminder ActivityReminder[]
-
-  @@index([activity_list_id], name: "activity_list_id")
-}
-
-model TaskList {
-  task_list_id Int @id @default(autoincrement())
-  
-  activity Activity @relation(fields: [activity_id], references: [activity_id])
-  activity_id Int @unique @default(0)
+  project_id Int @unique 
+  project Project @relation(fields: [project_id], references: [project_id])
   tasks Task[]
+  tag_list ActivityTagList[]
+  reminder ActivityReminder?
 }
 
 model Task {
@@ -93,12 +69,10 @@ model Task {
   completed Boolean
   note String @db.VarChar(512)
   
-  task_list TaskList @relation(fields: [task_list_id], references: [task_list_id])
-  task_list_id Int @default(0)
+  activity_id Int @unique 
+  activity Activity @relation(fields: [activity_id], references: [activity_id])
   tag_list TaskTagList[]
-  reminder TaskReminder[]
-
-  @@index([task_list_id], name: "task_list_id")
+  reminder TaskReminder?
 }
 
 model ActivityTagList {

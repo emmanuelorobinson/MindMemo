@@ -32,36 +32,36 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProjectActivities = exports.deleteProject = exports.updateProject = exports.createProject = exports.getProjectByID = exports.getProjects = void 0;
+exports.deleteProject = exports.updateProject = exports.createProject = exports.getProjectByID = exports.getProjects = void 0;
 const ProjectService = __importStar(require("../services/project.services"));
 const getProjects = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const projects = yield ProjectService.getProjects();
+        const { user_id } = req.body;
+        const projects = yield ProjectService.getProjects(parseInt(user_id));
         res.json(projects);
     }
     catch (error) {
-        res.json({ error: error.message });
+        res.status(500).json({ error: error.message });
     }
 });
 exports.getProjects = getProjects;
 const getProjectByID = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { project_id } = req.params;
-        console.log("ID IN CONTROLLER: " + project_id);
         const project = yield ProjectService.getProjectByID(parseInt(project_id));
         res.json(project);
     }
     catch (error) {
-        res.json({ error: error.message });
+        res.status(500).json({ error: error.message });
     }
 });
 exports.getProjectByID = getProjectByID;
 const createProject = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        let userId = parseInt(req.body.user_id);
         let intduration = parseInt(req.body.duration);
         let intdays = parseInt(req.body.days_till_renew);
         let date = (new Date(req.body.project_start_date));
-        let user_id = parseInt(req.body.user_id);
         let name = req.body.project_name;
         let cycle = req.body.save_as_cycle === "true" ? true : false;
         let complete = req.body.completed === "true" ? true : false;
@@ -72,17 +72,19 @@ const createProject = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             days_till_renew: intdays,
             completed: complete,
             save_as_cycle: cycle,
+            user_id: userId,
         };
-        const newProject = yield ProjectService.createProject(project, user_id);
+        const newProject = yield ProjectService.createProject(project);
         res.json(newProject);
     }
     catch (error) {
-        res.json({ error: error.message });
+        res.status(500).json({ error: error.message });
     }
 });
 exports.createProject = createProject;
 const updateProject = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        let userId = parseInt(req.body.user_id);
         let intduration = parseInt(req.body.duration);
         let intdays = parseInt(req.body.days_till_renew);
         let date = (new Date(req.body.project_start_date));
@@ -98,12 +100,13 @@ const updateProject = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             days_till_renew: intdays,
             completed: complete,
             save_as_cycle: cycle,
+            user_id: userId,
         };
         const updatedProject = yield ProjectService.updateProject(project);
         res.json(updatedProject);
     }
     catch (error) {
-        res.json({ error: error.message });
+        res.status(500).json({ error: error.message });
     }
 });
 exports.updateProject = updateProject;
@@ -114,18 +117,7 @@ const deleteProject = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         res.json(deletedProject);
     }
     catch (error) {
-        res.json({ error: error.message });
+        res.status(500).json({ error: error.message });
     }
 });
 exports.deleteProject = deleteProject;
-const getProjectActivities = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { project_id } = req.params;
-        const activities = yield ProjectService.getProjectActivities(parseInt(project_id));
-        res.json(activities);
-    }
-    catch (error) {
-        res.json({ error: error.message });
-    }
-});
-exports.getProjectActivities = getProjectActivities;

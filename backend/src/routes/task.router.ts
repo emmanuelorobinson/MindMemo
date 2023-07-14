@@ -32,8 +32,3 @@ taskRouter
     .route("/tags/:tag_id")
     .get(taskController.getTasksByTag)
     .put(taskController.updateTaskTagList)
-
-taskRouter
-    .route("/:task_id/notes")
-    .get(taskController.getTaskNote)
-    .put(taskController.updateTaskNote);

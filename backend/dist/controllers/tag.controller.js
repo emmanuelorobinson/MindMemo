@@ -40,7 +40,7 @@ const getTags = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.json(tags);
     }
     catch (error) {
-        res.json({ error: error.message });
+        res.status(500).json({ error: error.message });
     }
 });
 exports.getTags = getTags;
@@ -51,7 +51,7 @@ const getTagByID = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         res.json(tag);
     }
     catch (error) {
-        res.json({ error: error.message });
+        res.status(500).json({ error: error.message });
     }
 });
 exports.getTagByID = getTagByID;
@@ -62,7 +62,7 @@ const getTagByName = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         res.json(tag);
     }
     catch (error) {
-        res.json({ error: error.message });
+        res.status(500).json({ error: error.message });
     }
 });
 exports.getTagByName = getTagByName;
@@ -73,7 +73,7 @@ const createTag = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.json(newTag);
     }
     catch (error) {
-        res.json({ error: error.message });
+        res.status(500).json({ error: error.message });
     }
 });
 exports.createTag = createTag;
@@ -84,7 +84,7 @@ const addTagToTask = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         res.json(newTag);
     }
     catch (error) {
-        res.json({ error: error.message });
+        res.status(500).json({ error: error.message });
     }
 });
 exports.addTagToTask = addTagToTask;
@@ -95,7 +95,7 @@ const addTagToActivity = (req, res) => __awaiter(void 0, void 0, void 0, functio
         res.json(newTag);
     }
     catch (error) {
-        res.json({ error: error.message });
+        res.status(500).json({ error: error.message });
     }
 });
 exports.addTagToActivity = addTagToActivity;
@@ -106,7 +106,7 @@ const getTaskTagListByID = (req, res) => __awaiter(void 0, void 0, void 0, funct
         res.json(tagList);
     }
     catch (error) {
-        res.json({ error: error.message });
+        res.status(500).json({ error: error.message });
     }
 });
 exports.getTaskTagListByID = getTaskTagListByID;
@@ -117,7 +117,7 @@ const getActivityTagListByID = (req, res) => __awaiter(void 0, void 0, void 0, f
         res.json(tagList);
     }
     catch (error) {
-        res.json({ error: error.message });
+        res.status(500).json({ error: error.message });
     }
 });
 exports.getActivityTagListByID = getActivityTagListByID;

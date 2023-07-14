@@ -40,6 +40,3 @@ exports.projectRouter
     .get(projectController.getProjectByID)
     .put(projectController.updateProject)
     .delete(projectController.deleteProject);
-exports.projectRouter
-    .route("/:project_id/activities")
-    .get(projectController.getProjectActivities);

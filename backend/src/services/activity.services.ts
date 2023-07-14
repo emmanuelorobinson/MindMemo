@@ -1,19 +1,16 @@
 import { db } from "../utils/db.server";
-import { 
-    Activity, 
-    ActivityTagList, 
-    Task, 
-    TaskList 
-} from "@prisma/client";
-import { getActivityList } from "./project.services";
+import { Activity, ActivityTagList, Task, } from "@prisma/client";
 import { getActivityTagLists } from "./tag.services";
 
 //TODO: 
 // 1. today's activities
 // 2. upcoming activities
 
-export const getActivities = async (): Promise<Activity[]> => {
+export const getActivities = async (project_id: number): Promise<Activity[]> => {
     return db.activity.findMany({
+        where: {
+            project_id,
+        },
         select: {
             activity_id: true,
             activity_name: true,
@@ -21,7 +18,7 @@ export const getActivities = async (): Promise<Activity[]> => {
             duration: true,
             completed: true,
             note: true,
-            activity_list_id: true,
+            project_id: true,
         }
     });
 };
@@ -38,42 +35,12 @@ export const getActivityByID = async (activity_id: number): Promise<Activity | n
             duration: true,
             completed: true,
             note: true,
-            activity_list_id: true,
+            project_id: true,
         }
     });
 }
 
-export const createActivity = async (
-    activity: Omit<Activity, 'activity_id' | 'activity_list_id'>, 
-    project_id: number
-): Promise<Activity> => {
-    let id = await getActivityList(project_id);
-    let activityListID = id?.activity_list_id;
-    
-    let activityList; 
-    if (activityListID === undefined) {
-        activityList = db.activityList.create({
-            data: {
-                activity_list_id: activityListID,
-            },
-            select: {
-                activity_list_id: true,
-                activities: true,
-            }
-        });
-        activityListID = (await activityList).activity_list_id;
-    } else {
-        activityList = db.activityList.findUnique({
-            where: {
-                activity_list_id: activityListID,
-            },
-            select: {
-                activity_list_id: true,
-                activities: true,
-            }
-        });
-    }
-
+export const createActivity = async (activity: Omit<Activity, 'activity_id'>): Promise<Activity> => {
     let newActivity = db.activity.create({
         data: activity,
         select: {
@@ -83,28 +50,14 @@ export const createActivity = async (
             duration: true,
             completed: true,
             note: true,
-            activity_list_id: true,
-        }
-    });
-
-    let activities = (await activityList)?.activities;
-    activities = [...activities!, (await newActivity)];
-
-    db.activityList.update({
-        where: {
-            activity_list_id: activityListID,
-        },
-        data: {
-            activities: {
-                connect: activities,
-            },
+            project_id: true,
         }
     });
 
     return newActivity;
 }
 
-export const updateActivity = async (activity: Omit<Activity, 'activity_list_id'>): Promise<Activity | null> => {
+export const updateActivity = async (activity: Activity): Promise<Activity | null> => {
     return db.activity.update({
         where: {
             activity_id: activity.activity_id,
@@ -117,7 +70,7 @@ export const updateActivity = async (activity: Omit<Activity, 'activity_list_id'
             duration: true,
             completed: true,
             note: true,
-            activity_list_id: true,
+            project_id: true,
         }
     });
 }
@@ -134,37 +87,9 @@ export const deleteActivity = async (activity_id: number): Promise<Activity | nu
             duration: true,
             completed: true,
             note: true,
-            activity_list_id: true,
+            project_id: true,
         }
     });
-}
-
-export const getTaskList = async (activity_id: number): Promise<TaskList | null> => {
-    return db.taskList.findUnique({
-        where: {
-            activity_id,
-        },
-        select: {
-            task_list_id: true,
-            activity_id: true,
-        }
-    });
-}
-
-export const getActivityTasks = async (activity_id: number): Promise<Task[] | null> => {
-    let id = await getTaskList(activity_id);
-
-    let list = await db.taskList.findUnique({
-        where: {
-            task_list_id: id?.task_list_id,
-        },
-        select: {
-            tasks: true,
-        }
-    })
-
-    let tasks = list === undefined ? [] : list?.tasks;
-    return tasks!;
 }
 
 export const getTodaysActivities = async (): Promise<Activity[]> => {
@@ -179,7 +104,7 @@ export const getTodaysActivities = async (): Promise<Activity[]> => {
             duration: true,
             completed: true,
             note: true,
-            activity_list_id: true,
+            project_id: true,
         }
     })
 }
@@ -196,7 +121,7 @@ export const getUpcomingActivities = async (): Promise<Activity[]> => {
             duration: true,
             completed: true,
             note: true,
-            activity_list_id: true,
+            project_id: true,
         }
     })
 }
@@ -236,7 +161,7 @@ export const updateActivityTagList = async (activity_id: number, tag_list: Activ
             duration: true,
             completed: true,
             note: true,
-            activity_list_id: true,
+            project_id: true,
         }
     });
 }
@@ -269,54 +194,3 @@ export const getActivitiesByTag = async (tag_id: number): Promise<Activity[]> =>
 
     return activities!;
 }
-
-export const updateActivityNote = async (activity_id: number, note: string): Promise<Activity> => {
-    return db.activity.update({
-        where: {
-            activity_id,
-        },
-        data: {
-            note,
-        },
-        select: {
-            activity_id: true,
-            activity_name: true,
-            activity_number: true,
-            duration: true,
-            completed: true,
-            note: true,
-            activity_list_id: true,
-        }
-    });
-}
-
-export const getActivityNote = async (activity_id: number): Promise<string> => {
-    let activity = await getActivityByID(activity_id);
-    
-    if (activity === null) 
-        return '';
-
-    return activity!.note;
-}
-
-export const completeActivity = async (activity_id: number): Promise<Activity> => {
-    return db.activity.update({
-        where: {
-            activity_id,
-        },
-        data: {
-            completed: true,
-        },
-        select: {
-            activity_id: true,
-            activity_name: true,
-            activity_number: true,
-            duration: true,
-            completed: true,
-            note: true,
-            activity_list_id: true,
-        }
-    });
-}
-
-

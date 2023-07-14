@@ -15,7 +15,3 @@ projectRouter
     .get(projectController.getProjectByID)
     .put(projectController.updateProject)
     .delete(projectController.deleteProject);
-
-projectRouter
-    .route("/:project_id/activities")
-    .get(projectController.getProjectActivities)

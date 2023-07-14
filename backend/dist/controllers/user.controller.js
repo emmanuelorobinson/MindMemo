@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserProjects = exports.deleteUser = exports.updateUser = exports.createUser = exports.getUserByID = exports.getUsers = void 0;
+exports.deleteUser = exports.updateUser = exports.createUser = exports.getUserByID = exports.getUsers = void 0;
 const UserService = __importStar(require("../services/user.services"));
 const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -40,7 +40,7 @@ const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.json(users);
     }
     catch (error) {
-        res.json({ error: error.message });
+        res.status(500).json({ error: error.message });
     }
 });
 exports.getUsers = getUsers;
@@ -51,7 +51,7 @@ const getUserByID = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         res.json(user);
     }
     catch (error) {
-        res.json({ error: error.message });
+        res.status(500).json({ error: error.message });
     }
 });
 exports.getUserByID = getUserByID;
@@ -63,7 +63,7 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         res.json(newUser);
     }
     catch (error) {
-        res.json({ error: error.message });
+        res.status(500).json({ error: error.message });
     }
 });
 exports.createUser = createUser;
@@ -78,7 +78,7 @@ const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         res.json(updatedUser);
     }
     catch (error) {
-        res.json({ error: error.message });
+        res.status(500).json({ error: error.message });
     }
 });
 exports.updateUser = updateUser;
@@ -89,18 +89,7 @@ const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         res.json(deletedUser);
     }
     catch (error) {
-        res.json({ error: error.message });
+        res.status(500).json({ error: error.message });
     }
 });
 exports.deleteUser = deleteUser;
-const getUserProjects = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { user_id } = req.params;
-        const userProjects = yield UserService.getUserProjects(parseInt(user_id));
-        res.json(userProjects);
-    }
-    catch (error) {
-        res.json({ error: error.message });
-    }
-});
-exports.getUserProjects = getUserProjects;

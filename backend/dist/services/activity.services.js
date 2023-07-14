@@ -9,15 +9,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.completeActivity = exports.getActivityNote = exports.updateActivityNote = exports.getActivitiesByTag = exports.updateActivityTagList = exports.getActivityTagList = exports.getUpcomingActivities = exports.getTodaysActivities = exports.getActivityTasks = exports.getTaskList = exports.deleteActivity = exports.updateActivity = exports.createActivity = exports.getActivityByID = exports.getActivities = void 0;
+exports.getActivitiesByTag = exports.updateActivityTagList = exports.getActivityTagList = exports.getUpcomingActivities = exports.getTodaysActivities = exports.deleteActivity = exports.updateActivity = exports.createActivity = exports.getActivityByID = exports.getActivities = void 0;
 const db_server_1 = require("../utils/db.server");
-const project_services_1 = require("./project.services");
 const tag_services_1 = require("./tag.services");
 //TODO: 
 // 1. today's activities
 // 2. upcoming activities
-const getActivities = () => __awaiter(void 0, void 0, void 0, function* () {
+const getActivities = (project_id) => __awaiter(void 0, void 0, void 0, function* () {
     return db_server_1.db.activity.findMany({
+        where: {
+            project_id,
+        },
         select: {
             activity_id: true,
             activity_name: true,
@@ -25,7 +27,7 @@ const getActivities = () => __awaiter(void 0, void 0, void 0, function* () {
             duration: true,
             completed: true,
             note: true,
-            activity_list_id: true,
+            project_id: true,
         }
     });
 });
@@ -42,39 +44,12 @@ const getActivityByID = (activity_id) => __awaiter(void 0, void 0, void 0, funct
             duration: true,
             completed: true,
             note: true,
-            activity_list_id: true,
+            project_id: true,
         }
     });
 });
 exports.getActivityByID = getActivityByID;
-const createActivity = (activity, project_id) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
-    let id = yield (0, project_services_1.getActivityList)(project_id);
-    let activityListID = id === null || id === void 0 ? void 0 : id.activity_list_id;
-    let activityList;
-    if (activityListID === undefined) {
-        activityList = db_server_1.db.activityList.create({
-            data: {
-                activity_list_id: activityListID,
-            },
-            select: {
-                activity_list_id: true,
-                activities: true,
-            }
-        });
-        activityListID = (yield activityList).activity_list_id;
-    }
-    else {
-        activityList = db_server_1.db.activityList.findUnique({
-            where: {
-                activity_list_id: activityListID,
-            },
-            select: {
-                activity_list_id: true,
-                activities: true,
-            }
-        });
-    }
+const createActivity = (activity) => __awaiter(void 0, void 0, void 0, function* () {
     let newActivity = db_server_1.db.activity.create({
         data: activity,
         select: {
@@ -84,19 +59,7 @@ const createActivity = (activity, project_id) => __awaiter(void 0, void 0, void 
             duration: true,
             completed: true,
             note: true,
-            activity_list_id: true,
-        }
-    });
-    let activities = (_a = (yield activityList)) === null || _a === void 0 ? void 0 : _a.activities;
-    activities = [...activities, (yield newActivity)];
-    db_server_1.db.activityList.update({
-        where: {
-            activity_list_id: activityListID,
-        },
-        data: {
-            activities: {
-                connect: activities,
-            },
+            project_id: true,
         }
     });
     return newActivity;
@@ -115,7 +78,7 @@ const updateActivity = (activity) => __awaiter(void 0, void 0, void 0, function*
             duration: true,
             completed: true,
             note: true,
-            activity_list_id: true,
+            project_id: true,
         }
     });
 });
@@ -132,37 +95,11 @@ const deleteActivity = (activity_id) => __awaiter(void 0, void 0, void 0, functi
             duration: true,
             completed: true,
             note: true,
-            activity_list_id: true,
+            project_id: true,
         }
     });
 });
 exports.deleteActivity = deleteActivity;
-const getTaskList = (activity_id) => __awaiter(void 0, void 0, void 0, function* () {
-    return db_server_1.db.taskList.findUnique({
-        where: {
-            activity_id,
-        },
-        select: {
-            task_list_id: true,
-            activity_id: true,
-        }
-    });
-});
-exports.getTaskList = getTaskList;
-const getActivityTasks = (activity_id) => __awaiter(void 0, void 0, void 0, function* () {
-    let id = yield (0, exports.getTaskList)(activity_id);
-    let list = yield db_server_1.db.taskList.findUnique({
-        where: {
-            task_list_id: id === null || id === void 0 ? void 0 : id.task_list_id,
-        },
-        select: {
-            tasks: true,
-        }
-    });
-    let tasks = list === undefined ? [] : list === null || list === void 0 ? void 0 : list.tasks;
-    return tasks;
-});
-exports.getActivityTasks = getActivityTasks;
 const getTodaysActivities = () => __awaiter(void 0, void 0, void 0, function* () {
     return db_server_1.db.activity.findMany({
         where: {
@@ -175,7 +112,7 @@ const getTodaysActivities = () => __awaiter(void 0, void 0, void 0, function* ()
             duration: true,
             completed: true,
             note: true,
-            activity_list_id: true,
+            project_id: true,
         }
     });
 });
@@ -192,7 +129,7 @@ const getUpcomingActivities = () => __awaiter(void 0, void 0, void 0, function* 
             duration: true,
             completed: true,
             note: true,
-            activity_list_id: true,
+            project_id: true,
         }
     });
 });
@@ -230,7 +167,7 @@ const updateActivityTagList = (activity_id, tag_list) => __awaiter(void 0, void 
             duration: true,
             completed: true,
             note: true,
-            activity_list_id: true,
+            project_id: true,
         }
     });
 });
@@ -260,50 +197,3 @@ const getActivitiesByTag = (tag_id) => __awaiter(void 0, void 0, void 0, functio
     return activities;
 });
 exports.getActivitiesByTag = getActivitiesByTag;
-const updateActivityNote = (activity_id, note) => __awaiter(void 0, void 0, void 0, function* () {
-    return db_server_1.db.activity.update({
-        where: {
-            activity_id,
-        },
-        data: {
-            note,
-        },
-        select: {
-            activity_id: true,
-            activity_name: true,
-            activity_number: true,
-            duration: true,
-            completed: true,
-            note: true,
-            activity_list_id: true,
-        }
-    });
-});
-exports.updateActivityNote = updateActivityNote;
-const getActivityNote = (activity_id) => __awaiter(void 0, void 0, void 0, function* () {
-    let activity = yield (0, exports.getActivityByID)(activity_id);
-    if (activity === null)
-        return '';
-    return activity.note;
-});
-exports.getActivityNote = getActivityNote;
-const completeActivity = (activity_id) => __awaiter(void 0, void 0, void 0, function* () {
-    return db_server_1.db.activity.update({
-        where: {
-            activity_id,
-        },
-        data: {
-            completed: true,
-        },
-        select: {
-            activity_id: true,
-            activity_name: true,
-            activity_number: true,
-            duration: true,
-            completed: true,
-            note: true,
-            activity_list_id: true,
-        }
-    });
-});
-exports.completeActivity = completeActivity;

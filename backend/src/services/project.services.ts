@@ -1,9 +1,13 @@
 import { db } from "../utils/db.server";
-import { Activity, ActivityList, Project } from "@prisma/client";
-import { getUserProjectList } from "./user.services";
+import { Activity, Project} from "@prisma/client";
+import { createCycle } from "./cycle.services";
 
-export const getProjects = async (): Promise<Project[]> => {
+//get all projects by user
+export const getProjects = async (user_id: number): Promise<Project[]> => {
     return db.project.findMany({
+        where: {
+            user_id: user_id,
+        },
         select: {
             project_id: true,
             project_name: true,
@@ -11,12 +15,13 @@ export const getProjects = async (): Promise<Project[]> => {
             duration: true,
             days_till_renew: true,
             completed: true,
-            project_list_id: true,
             save_as_cycle: true,
+            user_id: true,
         }
-    });
+    })
 };
 
+//get project by id
 export const getProjectByID = async (project_id: number): Promise<Project | null> => {
     return db.project.findUnique({
         where: {
@@ -29,41 +34,15 @@ export const getProjectByID = async (project_id: number): Promise<Project | null
             duration: true,
             days_till_renew: true,
             completed: true,
-            project_list_id: true,
             save_as_cycle: true,
+            user_id: true,
         }
     });
 }
 
-
-export const createProject = async (project: Omit<Project, 'project_id' | 'project_list_id'>, user_id: number): Promise<Project> => {
-    let id = await getUserProjectList(user_id);
-    let projectListID = id?.project_list_id;
- 
-    let projectList;
-    if (id?.project_list_id === undefined) {
-        projectList = db.projectList.create({
-            data: {
-                user_id: user_id,
-            },
-            select: {
-                project_list_id: true,
-                projects: true,
-            }
-        })
-        projectListID = (await projectList).project_list_id;
-    } else {
-        projectList = db.projectList.findUnique({
-            where: {
-                project_list_id: projectListID,
-            },
-            select: {
-                project_list_id: true,
-                projects: true,
-            }
-        })
-    }
-    
+//create project and add it to user list
+export const createProject = async (project: Omit<Project, 'project_id'>): Promise<Project> => {
+    //create new project
     let newProject = db.project.create({
         data: project,
         select: {
@@ -73,30 +52,19 @@ export const createProject = async (project: Omit<Project, 'project_id' | 'proje
             duration: true,
             days_till_renew: true,
             completed: true,
-            project_list_id: true,
             save_as_cycle: true,
+            user_id: true,
         }
     });
 
-    let projects = (await projectList)?.projects;
-    projects = [...projects!, (await newProject)];
-
-    db.projectList.update({
-        where: {
-            project_list_id: projectListID,
-        },
-        data: {
-            projects: {
-                connect: projects,
-            }
-        }
-    });
+    if ((await newProject).save_as_cycle) {
+        createCycle((await newProject).project_id);
+    }
 
     return newProject;
 }
 
-
-export const updateProject = async (project: Omit<Project, 'project_list_id'>): Promise<Project | null> => {
+export const updateProject = async (project: Project): Promise<Project | null> => {
     return db.project.update({
         where: {
             project_id: project.project_id,
@@ -109,7 +77,7 @@ export const updateProject = async (project: Omit<Project, 'project_list_id'>): 
             duration: true,
             days_till_renew: true,
             completed: true,
-            project_list_id: true,
+            user_id: true,
             save_as_cycle: true,
         }
     });
@@ -127,36 +95,10 @@ export const deleteProject = async (project_id: number): Promise<Project | null>
             duration: true,
             days_till_renew: true,
             completed: true,
-            project_list_id: true,
+            user_id: true,
             save_as_cycle: true,
         }
     });
 }
 
-export const getActivityList = async (project_id: number): Promise<ActivityList | null> => {
-    return db.activityList.findUnique({
-        where: {
-            project_id,
-        },
-        select: {
-            activity_list_id: true,
-            project_id: true,
-        }
-    });
-}
 
-export const getProjectActivities = async (project_id: number): Promise<Activity[] | null> => {
-    let id = await getActivityList(project_id);
-
-    let list = await db.activityList.findUnique({
-        where: {
-            activity_list_id: id?.activity_list_id,
-        },
-        select: {
-            activities: true,
-        }
-    })
-
-    let activities = list === undefined ? [] : list?.activities;
-    return activities!; 
-}

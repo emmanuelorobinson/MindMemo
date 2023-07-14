@@ -50,7 +50,3 @@ exports.activityRouter
     .route("/tags/:tag_id")
     .get(activityController.getActivitiesByTag)
     .put(activityController.updateActivitiesTagList);
-exports.activityRouter
-    .route("/:actiivity_id/notes")
-    .get(activityController.getActivityNote)
-    .put(activityController.updateActivityNote);

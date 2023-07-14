@@ -2,7 +2,8 @@ import * as ActivityService from '../services/activity.services';
 
 export const getActivities = async (req: any, res: any) => {
     try {
-        const activities = await ActivityService.getActivities();
+        const { project_id } = req.params;
+        const activities = await ActivityService.getActivities(parseInt(project_id));
         res.json(activities);
     } catch (error: any) {
         res.json({ message: error.message });
@@ -33,9 +34,10 @@ export const createActivity = async (req: any, res: any) => {
             duration: intduration,
             completed: complete,
             note: acitivtyNote,
+            project_id: projectId,
         }
         console.log(req.body);
-        const newActivity = await ActivityService.createActivity( activity, projectId);
+        const newActivity = await ActivityService.createActivity(activity);
         res.json(newActivity);
     } catch (error: any) {
         res.json({ message: error.message });
@@ -44,7 +46,8 @@ export const createActivity = async (req: any, res: any) => {
 
 export const updateActivity = async (req: any, res: any) => {
     try {
-        const activity_id = parseInt(req.params.activity_id);
+        let activity_id = parseInt(req.params.activity_id);
+        let projectId = parseInt(req.params.project_id);
         let activityName = req.body.activity_name;
         let activityNumber = parseInt(req.body.activity_number);
         let intduration = parseInt(req.body.duration);
@@ -57,6 +60,7 @@ export const updateActivity = async (req: any, res: any) => {
             duration: intduration,
             completed: complete,
             note: acitivtyNote,
+            project_id: projectId,
         }
         const updatedActivity = await ActivityService.updateActivity(activity);
         res.json(updatedActivity);
@@ -123,37 +127,4 @@ export const updateActivitiesTagList = async (req: any, res: any) => {
         res.json({ message: error.message });
     }
 }
-
-export const updateActivityNote = async (req: any, res: any) => {
-    try {
-        const activity_id = req.params;
-        const note = req.body.note;
-        const activityNote = await ActivityService.updateActivityNote (parseInt(activity_id), note);
-        res.json(activityNote);
-    } catch (error: any) {
-        res.json({ message: error.message });
-    }
-}
-
-export const updateActivityCompleted = async (req: any, res: any) => {
-    try {
-        const activity_id = req.params;
-        const activityCompleted = await ActivityService.completeActivity(parseInt(activity_id));
-        res.json(activityCompleted);
-    } catch (error: any) {
-        res.json({ message: error.message });
-    }
-}
-
-export const getActivityNote = async (req: any, res: any) => {
-    try {
-        const activity_id = req.params;
-        const activityNote = await ActivityService.getActivityNote (parseInt(activity_id));
-        res.json(activityNote);
-    } catch (error: any) {
-        res.json({ message: error.message });
-    }
-}
-
-
 

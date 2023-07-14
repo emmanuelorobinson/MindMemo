@@ -32,11 +32,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateTaskCompleted = exports.getTaskNote = exports.updateTaskNote = exports.updateTaskTagList = exports.getTasksByTag = exports.getTaskTagList = exports.getUpcomingTasks = exports.getTodayTasks = exports.deleteTask = exports.updateTask = exports.createTask = exports.getTaskByID = exports.getTasks = void 0;
+exports.updateTaskTagList = exports.getTasksByTag = exports.getTaskTagList = exports.getUpcomingTasks = exports.getTodayTasks = exports.deleteTask = exports.updateTask = exports.createTask = exports.getTaskByID = exports.getTasks = void 0;
 const TaskService = __importStar(require("../services/task.services"));
 const getTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const activities = yield TaskService.getTasks();
+        const { activity_id } = req.body.activity_id;
+        const activities = yield TaskService.getTasks(parseInt(activity_id));
         res.json(activities);
     }
     catch (error) {
@@ -71,9 +72,10 @@ const createTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             days_till_due: daysTillDue,
             completed: complete,
             note: taskNote,
+            activity_id: activityId,
         };
         console.log(req.body);
-        const newTask = yield TaskService.createTask(task, activityId);
+        const newTask = yield TaskService.createTask(task);
         res.json(newTask);
     }
     catch (error) {
@@ -84,6 +86,7 @@ exports.createTask = createTask;
 const updateTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const task_id = parseInt(req.params.task_id);
+        let activityId = parseInt(req.params.project_id);
         let taskName = req.body.task_name;
         let taskNumber = parseInt(req.body.task_number);
         let dueDate = req.body.due_date;
@@ -98,6 +101,7 @@ const updateTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             days_till_due: daysTillDue,
             completed: complete,
             note: taskNote,
+            activity_id: activityId,
         };
         const updatedTask = yield TaskService.updateTask(task);
         res.json(updatedTask);
@@ -172,37 +176,3 @@ const updateTaskTagList = (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.updateTaskTagList = updateTaskTagList;
-const updateTaskNote = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const task_id = req.params;
-        const note = req.body.note;
-        const taskNote = yield TaskService.updateTaskNote(parseInt(task_id), note);
-        res.json(taskNote);
-    }
-    catch (error) {
-        res.json({ message: error.message });
-    }
-});
-exports.updateTaskNote = updateTaskNote;
-const getTaskNote = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const task_id = req.params;
-        const taskNote = yield TaskService.getTaskNote(parseInt(task_id));
-        res.json(taskNote);
-    }
-    catch (error) {
-        res.json({ message: error.message });
-    }
-});
-exports.getTaskNote = getTaskNote;
-const updateTaskCompleted = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const task_id = req.params;
-        const taskCompleted = yield TaskService.completeTask(parseInt(task_id));
-        res.json(taskCompleted);
-    }
-    catch (error) {
-        res.json({ message: error.message });
-    }
-});
-exports.updateTaskCompleted = updateTaskCompleted;

@@ -32,11 +32,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getActivityNote = exports.updateActivityCompleted = exports.updateActivityNote = exports.updateActivitiesTagList = exports.getActivitiesByTag = exports.getActivityTagList = exports.getUpcomingActivities = exports.getTodaysActivities = exports.deleteActivity = exports.updateActivity = exports.createActivity = exports.getActivityByID = exports.getActivities = void 0;
+exports.updateActivitiesTagList = exports.getActivitiesByTag = exports.getActivityTagList = exports.getUpcomingActivities = exports.getTodaysActivities = exports.deleteActivity = exports.updateActivity = exports.createActivity = exports.getActivityByID = exports.getActivities = void 0;
 const ActivityService = __importStar(require("../services/activity.services"));
 const getActivities = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const activities = yield ActivityService.getActivities();
+        const { project_id } = req.params;
+        const activities = yield ActivityService.getActivities(parseInt(project_id));
         res.json(activities);
     }
     catch (error) {
@@ -69,9 +70,10 @@ const createActivity = (req, res) => __awaiter(void 0, void 0, void 0, function*
             duration: intduration,
             completed: complete,
             note: acitivtyNote,
+            project_id: projectId,
         };
         console.log(req.body);
-        const newActivity = yield ActivityService.createActivity(activity, projectId);
+        const newActivity = yield ActivityService.createActivity(activity);
         res.json(newActivity);
     }
     catch (error) {
@@ -81,7 +83,8 @@ const createActivity = (req, res) => __awaiter(void 0, void 0, void 0, function*
 exports.createActivity = createActivity;
 const updateActivity = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const activity_id = parseInt(req.params.activity_id);
+        let activity_id = parseInt(req.params.activity_id);
+        let projectId = parseInt(req.params.project_id);
         let activityName = req.body.activity_name;
         let activityNumber = parseInt(req.body.activity_number);
         let intduration = parseInt(req.body.duration);
@@ -94,6 +97,7 @@ const updateActivity = (req, res) => __awaiter(void 0, void 0, void 0, function*
             duration: intduration,
             completed: complete,
             note: acitivtyNote,
+            project_id: projectId,
         };
         const updatedActivity = yield ActivityService.updateActivity(activity);
         res.json(updatedActivity);
@@ -167,37 +171,3 @@ const updateActivitiesTagList = (req, res) => __awaiter(void 0, void 0, void 0, 
     }
 });
 exports.updateActivitiesTagList = updateActivitiesTagList;
-const updateActivityNote = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const activity_id = req.params;
-        const note = req.body.note;
-        const activityNote = yield ActivityService.updateActivityNote(parseInt(activity_id), note);
-        res.json(activityNote);
-    }
-    catch (error) {
-        res.json({ message: error.message });
-    }
-});
-exports.updateActivityNote = updateActivityNote;
-const updateActivityCompleted = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const activity_id = req.params;
-        const activityCompleted = yield ActivityService.completeActivity(parseInt(activity_id));
-        res.json(activityCompleted);
-    }
-    catch (error) {
-        res.json({ message: error.message });
-    }
-});
-exports.updateActivityCompleted = updateActivityCompleted;
-const getActivityNote = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const activity_id = req.params;
-        const activityNote = yield ActivityService.getActivityNote(parseInt(activity_id));
-        res.json(activityNote);
-    }
-    catch (error) {
-        res.json({ message: error.message });
-    }
-});
-exports.getActivityNote = getActivityNote;

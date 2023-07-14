@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserProjects = exports.getUserProjectList = exports.deleteUser = exports.updateUser = exports.createUser = exports.getUserByID = exports.getUsers = void 0;
+exports.deleteUser = exports.updateUser = exports.createUser = exports.getUserByID = exports.getUsers = void 0;
 const db_server_1 = require("../utils/db.server");
 const getUsers = () => __awaiter(void 0, void 0, void 0, function* () {
     return db_server_1.db.user.findMany({
@@ -82,29 +82,3 @@ const deleteUser = (user_id) => __awaiter(void 0, void 0, void 0, function* () {
     });
 });
 exports.deleteUser = deleteUser;
-const getUserProjectList = (user_id) => __awaiter(void 0, void 0, void 0, function* () {
-    return db_server_1.db.projectList.findUnique({
-        where: {
-            user_id: user_id,
-        },
-        select: {
-            project_list_id: true,
-            user_id: true,
-        }
-    });
-});
-exports.getUserProjectList = getUserProjectList;
-const getUserProjects = (user_id) => __awaiter(void 0, void 0, void 0, function* () {
-    let listID = yield (0, exports.getUserProjectList)(user_id);
-    let list = yield db_server_1.db.projectList.findUnique({
-        where: {
-            project_list_id: listID === null || listID === void 0 ? void 0 : listID.project_list_id,
-        },
-        select: {
-            projects: true,
-        }
-    });
-    let projects = list === undefined ? [] : list === null || list === void 0 ? void 0 : list.projects;
-    return projects;
-});
-exports.getUserProjects = getUserProjects;
