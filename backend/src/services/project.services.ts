@@ -3,10 +3,10 @@ import { Activity, Project} from "@prisma/client";
 import { createCycle } from "./cycle.services";
 
 //get all projects by user
-export const getProjects = async (user_id: number): Promise<Project[]> => {
+export const getProjects = async (user_id: string): Promise<Project[]> => {
     return db.project.findMany({
         where: {
-            user_id: user_id,
+            user_id,
         },
         select: {
             project_id: true,

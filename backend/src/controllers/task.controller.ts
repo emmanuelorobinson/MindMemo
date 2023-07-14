@@ -3,7 +3,7 @@ import { getTaskTagListByID } from '../services/tag.services';
 
 export const getTasks = async (req: any, res: any) => {
     try {
-        const { activity_id } = req.body.activity_id;
+        const { activity_id } = req.params;
         const activities = await TaskService.getTasks(parseInt(activity_id));
         res.json(activities);
     } catch (error: any) {

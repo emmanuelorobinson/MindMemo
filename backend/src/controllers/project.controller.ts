@@ -3,8 +3,8 @@ import { Request, Response } from "express";
 
 export const getProjects = async (req: Request, res: Response) => {
     try {
-        const { user_id } = req.body;
-        const projects = await ProjectService.getProjects(parseInt(user_id));
+        const { user_id } = req.params;
+        const projects = await ProjectService.getProjects(user_id);
         res.json(projects);
     } catch (error: any) {
         res.status(500).json({ error: error.message});
