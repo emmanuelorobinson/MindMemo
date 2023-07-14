@@ -3,11 +3,14 @@ import { Tag } from "./TagController";
 export interface Activity {
   id?: string;
   project_id: string;
-  name: string;
+  activity_number: number;
+  activity_name: string;
   dependency: string;
   start_date: Date;
   duration: number;
   note: string;
+  tags?: Tag[];
+  completed: boolean;
 }
 
 export const getActivities = async (): Promise<Activity[]> => {

@@ -3,6 +3,8 @@ import { Form, Formik, ErrorMessage } from "formik";
 import SelectMenu from "../SelectMenu";
 import Toggle from "../Toggle";
 import { useClerk } from "@clerk/clerk-react";
+import { createProject } from "../../utils/ProjectController";
+import { useNavigate } from "react-router-dom";
 
 const options = [
   { id: 1, name: "Wade Cooper" },
@@ -20,14 +22,17 @@ const options = [
 const CreateProjectComponent = () => {
   const { user } = useClerk();
 
+  const navigate = useNavigate();
+
   const [projects, setProjects] = useState({
     cycle: "",
-    name: "",
-    date: "",
+    project_name: "",
+    project_start_date: "",
     duration: "",
-    renew: "",
+    days_till_renew: "",
     save_as_cycle: "",
     user_id: user.id,
+    completed: false,
   });
 
   const [selectedValue, setSelectedValue] = useState("None");
@@ -44,16 +49,22 @@ const CreateProjectComponent = () => {
   return (
     <Formik
       initialValues={projects}
-      onSubmit={(values, { setSubmitting }) => {
+      onSubmit={ async (values, { setSubmitting }) => {
         values.cycle = selectedValue;
         values.save_as_cycle = selectedCycle;
 
-        console.log(values);
+        // try {
+        //   const response = await createProject(values);
+        //   console.log(response);
 
-        setTimeout(() => {
-          alert(JSON.stringify(values, null, 2));
-          setSubmitting(false);
-        }, 400);
+        //   setSubmitting(false);
+        // } catch (error) {
+        //   console.log(error);
+        // }
+
+        // useNavigate("/project");
+        // navigate("/project");
+        
       }}
     >
       {({
@@ -92,7 +103,7 @@ const CreateProjectComponent = () => {
                 {/* Name */}
                 <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
                   <label
-                    htmlFor="name"
+                    htmlFor="project_name"
                     className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
                   >
                     Project Name
@@ -101,9 +112,9 @@ const CreateProjectComponent = () => {
                     <input
                       className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
                       type="text"
-                      name="name"
-                      id="name"
-                      value={values.name}
+                      name="project_name"
+                      id="project_name"
+                      value={values.project_name}
                       onChange={handleChange}
                     />
                   </div>
@@ -112,7 +123,7 @@ const CreateProjectComponent = () => {
                 {/* Start Date */}
                 <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
                   <label
-                    htmlFor="date"
+                    htmlFor="project_start_date"
                     className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
                   >
                     Start Date
@@ -121,9 +132,9 @@ const CreateProjectComponent = () => {
                     <input
                       className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
                       type="date"
-                      name="date"
-                      id="date"
-                      value={values.date}
+                      name="project_start_date"
+                      id="project_start_date"
+                      value={values.project_start_date}
                       onChange={handleChange}
                     />
                   </div>
@@ -152,7 +163,7 @@ const CreateProjectComponent = () => {
                 {/* Renew */}
                 <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
                   <label
-                    htmlFor="renew"
+                    htmlFor="days_till_renew"
                     className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
                   >
                     Renew after days
@@ -161,9 +172,9 @@ const CreateProjectComponent = () => {
                     <input
                       className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
                       type="number"
-                      name="renew"
-                      id="renew"
-                      value={values.renew}
+                      name="days_till_renew"
+                      id="days_till_renew"
+                      value={values.days_till_renew}
                       onChange={handleChange}
                     />
                   </div>

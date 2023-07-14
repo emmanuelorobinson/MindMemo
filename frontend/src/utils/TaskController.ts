@@ -4,11 +4,13 @@ export interface Task {
   id?: string; // created by server
   project_id: string;
   activity_id: string;
-  name: string;
+  task_number: number;
+  task_name: string;
   start_date: Date;
   duration: number;
   note: string;
-  tags: Tag[];
+  tags?: Tag[];
+  completed: boolean;
 }
 
 export const getTasks = async (): Promise<Task[]> => {

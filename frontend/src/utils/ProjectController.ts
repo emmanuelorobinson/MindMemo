@@ -1,15 +1,18 @@
 export interface Project {
     cycle: string;
-    name: string;
-    date: Date;
+    project_name: string;
+    project_start_date: Date;
     duration: number;
-    renew: boolean;
+    days_till_renew: boolean;
     save_as_cycle: boolean;
-    userId: string;
+    user_id: string;
+    completed: boolean;
 }
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 export const getProjects = async (): Promise<Project[]> => {
-  const URL = '';
+  const URL = `${API_URL}`;
 
   const response = await fetch(URL, {
     method: 'GET',
@@ -20,6 +23,7 @@ export const getProjects = async (): Promise<Project[]> => {
 
   try {
     const data = await response.json();
+    console.log('data', data);
     return data;
   }
   catch (error: any) {
@@ -28,7 +32,7 @@ export const getProjects = async (): Promise<Project[]> => {
 };
 
 export const createProject = async (project: Project): Promise<Project> => {
-  const URL = '';
+  const URL = `${API_URL}`
 
   const response = await fetch(URL, {
     method: 'POST',
