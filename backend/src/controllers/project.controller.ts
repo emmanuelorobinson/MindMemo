@@ -23,7 +23,7 @@ export const getProjectByID = async (req: Request, res: Response) => {
 
 export const createProject = async (req: Request, res: Response) => {
     try {
-        let userId = parseInt(req.body.user_id);
+        let userId = req.body.user_id;
         let intduration = parseInt(req.body.duration);
         let intdays = parseInt(req.body.days_till_renew);
         let date = (new Date(req.body.project_start_date));
@@ -50,7 +50,7 @@ export const createProject = async (req: Request, res: Response) => {
 
 export const updateProject = async (req: Request, res: Response) => {
     try {
-        let userId = parseInt(req.body.user_id);
+        let userId = req.body.user_id;
         let intduration = parseInt(req.body.duration);
         let intdays = parseInt(req.body.days_till_renew);
         let date = (new Date(req.body.project_start_date));
