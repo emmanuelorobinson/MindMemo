@@ -4,6 +4,7 @@ import { Request, Response } from "express";
 export const getProjects = async (req: Request, res: Response) => {
     try {
         const { user_id } = req.params;
+        console.log(user_id);
         const projects = await ProjectService.getProjects(user_id);
         res.json(projects);
     } catch (error: any) {

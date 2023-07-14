@@ -32,11 +32,11 @@ const activityController = __importStar(require("../controllers/activity.control
 exports.activityRouter = express_1.default.Router();
 //Get: Get all activitys
 exports.activityRouter
-    .route("/")
+    .route("/:project_id")
     .get(activityController.getActivities)
     .post(activityController.createActivity);
 exports.activityRouter
-    .route("/:activity_id")
+    .route("/activity/:activity_id")
     .get(activityController.getActivityByID)
     .put(activityController.updateActivity)
     .delete(activityController.deleteActivity);

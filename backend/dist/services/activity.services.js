@@ -18,7 +18,7 @@ const tag_services_1 = require("./tag.services");
 const getActivities = (project_id) => __awaiter(void 0, void 0, void 0, function* () {
     return db_server_1.db.activity.findMany({
         where: {
-            project_id,
+            project_id: project_id,
         },
         select: {
             activity_id: true,

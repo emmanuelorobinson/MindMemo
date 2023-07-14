@@ -9,7 +9,7 @@ import { getActivityTagLists } from "./tag.services";
 export const getActivities = async (project_id: number): Promise<Activity[]> => {
     return db.activity.findMany({
         where: {
-            project_id,
+            project_id: project_id,
         },
         select: {
             activity_id: true,

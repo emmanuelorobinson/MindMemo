@@ -32,11 +32,11 @@ const taskController = __importStar(require("../controllers/task.controller"));
 exports.taskRouter = express_1.default.Router();
 //Get: Get all tasks
 exports.taskRouter
-    .route("/")
+    .route("/:activity_id")
     .get(taskController.getTasks)
     .post(taskController.createTask);
 exports.taskRouter
-    .route("/:task_id")
+    .route("/task/:task_id")
     .get(taskController.getTaskByID)
     .put(taskController.updateTask)
     .delete(taskController.deleteTask);

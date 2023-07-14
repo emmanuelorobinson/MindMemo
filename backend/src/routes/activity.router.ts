@@ -6,12 +6,12 @@ export const activityRouter = express.Router();
 
 //Get: Get all activitys
 activityRouter
-    .route("/")
+    .route("/:project_id")
     .get(activityController.getActivities)
     .post(activityController.createActivity);
 
 activityRouter
-    .route("/:activity_id")
+    .route("/activity/:activity_id")
     .get(activityController.getActivityByID)
     .put(activityController.updateActivity)
     .delete(activityController.deleteActivity);

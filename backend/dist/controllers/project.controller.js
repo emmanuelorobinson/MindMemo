@@ -37,6 +37,7 @@ const ProjectService = __importStar(require("../services/project.services"));
 const getProjects = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { user_id } = req.params;
+        console.log(user_id);
         const projects = yield ProjectService.getProjects(user_id);
         res.json(projects);
     }

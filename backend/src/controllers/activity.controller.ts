@@ -22,21 +22,21 @@ export const getActivityByID = async (req: any, res: any) => {
 
 export const createActivity = async (req: any, res: any) => {
     try {
-        let projectId = parseInt(req.params.project_id);
-        let activityName = req.body.activity_name;
-        let activityNumber = parseInt(req.body.activity_number);
+        let projectId = parseInt(req.body.project_id);
+        let activityName = req.body.activity_name;            
+        let activityNumber = (req.body.activity_number == '') ? 0 : parseInt(req.body.activity_number);
         let intduration = parseInt(req.body.duration);
         let complete = req.body.completed === 'true' ? true : false;
         let acitivtyNote = req.body.note;
         const activity = {
             activity_name: activityName,
-            activity_number: activityNumber,
+            activity_number: activityNumber == null ? 0 : activityNumber,
             duration: intduration,
             completed: complete,
-            note: acitivtyNote,
+            note: acitivtyNote == '' ? undefined : acitivtyNote,
             project_id: projectId,
         }
-        console.log(req.body);
+       
         const newActivity = await ActivityService.createActivity(activity);
         res.json(newActivity);
     } catch (error: any) {

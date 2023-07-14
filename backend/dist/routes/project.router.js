@@ -32,11 +32,11 @@ const projectController = __importStar(require("../controllers/project.controlle
 exports.projectRouter = express_1.default.Router();
 //Get: Get all projects
 exports.projectRouter
-    .route("/")
+    .route("/:user_id")
     .get(projectController.getProjects)
     .post(projectController.createProject);
 exports.projectRouter
-    .route("/:project_id")
+    .route("/project/:project_id")
     .get(projectController.getProjectByID)
     .put(projectController.updateProject)
     .delete(projectController.deleteProject);
