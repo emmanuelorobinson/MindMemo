@@ -40,13 +40,13 @@ exports.activityRouter
     .get(activityController.getActivityByID)
     .put(activityController.updateActivity)
     .delete(activityController.deleteActivity);
-exports.activityRouter
-    .route("/today")
-    .get(activityController.getTodaysActivities);
-exports.activityRouter
-    .route("/upcoming")
-    .get(activityController.getUpcomingActivities);
-exports.activityRouter
-    .route("/tags/:tag_id")
-    .get(activityController.getActivitiesByTag)
-    .put(activityController.updateActivitiesTagList);
+// activityRouter
+//     .route("/today")
+//     .get(activityController.getTodaysActivities);
+// activityRouter
+//     .route("/upcoming")
+//     .get(activityController.getUpcomingActivities);
+// activityRouter
+//     .route("/tags/:tag_id")
+//     .get(activityController.getActivitiesByTag)
+//     .put(activityController.updateActivitiesTagList)

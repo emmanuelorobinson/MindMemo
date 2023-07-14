@@ -40,16 +40,16 @@ exports.taskRouter
     .get(taskController.getTaskByID)
     .put(taskController.updateTask)
     .delete(taskController.deleteTask);
-exports.taskRouter
-    .route("/today")
-    .get(taskController.getTodayTasks);
-exports.taskRouter
-    .route("/upcoming")
-    .get(taskController.getUpcomingTasks);
-exports.taskRouter
-    .route("/tags")
-    .get(taskController.getTaskTagList);
-exports.taskRouter
-    .route("/tags/:tag_id")
-    .get(taskController.getTasksByTag)
-    .put(taskController.updateTaskTagList);
+// taskRouter
+//     .route("/today")
+//     .get(taskController.getTodayTasks);
+// taskRouter
+//     .route("/upcoming")
+//     .get(taskController.getUpcomingTasks);
+// taskRouter
+//     .route("/tags")
+//     .get(taskController.getTaskTagList);
+// taskRouter
+//     .route("/tags/:tag_id")
+//     .get(taskController.getTasksByTag)
+//     .put(taskController.updateTaskTagList)

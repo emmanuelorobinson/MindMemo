@@ -36,8 +36,8 @@ exports.deleteProject = exports.updateProject = exports.createProject = exports.
 const ProjectService = __importStar(require("../services/project.services"));
 const getProjects = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { user_id } = req.body;
-        const projects = yield ProjectService.getProjects(parseInt(user_id));
+        const { user_id } = req.params;
+        const projects = yield ProjectService.getProjects(user_id);
         res.json(projects);
     }
     catch (error) {
@@ -58,7 +58,7 @@ const getProjectByID = (req, res) => __awaiter(void 0, void 0, void 0, function*
 exports.getProjectByID = getProjectByID;
 const createProject = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        let userId = parseInt(req.body.user_id);
+        let userId = req.body.user_id;
         let intduration = parseInt(req.body.duration);
         let intdays = parseInt(req.body.days_till_renew);
         let date = (new Date(req.body.project_start_date));
@@ -84,7 +84,7 @@ const createProject = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 exports.createProject = createProject;
 const updateProject = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        let userId = parseInt(req.body.user_id);
+        let userId = req.body.user_id;
         let intduration = parseInt(req.body.duration);
         let intdays = parseInt(req.body.days_till_renew);
         let date = (new Date(req.body.project_start_date));

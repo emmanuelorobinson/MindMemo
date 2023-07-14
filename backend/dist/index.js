@@ -31,27 +31,6 @@ app.use("/activities", activity_router_1.activityRouter);
 app.use("/tasks", task_router_1.taskRouter);
 app.use("/tags", tag_router_1.tagRouter);
 app.use("/cycles", cycle_router_1.cycleRouter);
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: 'ghaghdabhakti@gmail.com',
-        pass: 'zanlymmhbxrqbslp',
-    },
-});
-const mailOptions = {
-    from: 'ghaghdabhakti@gmail.com',
-    to: 'bkghaghda@gmail.com',
-    subject: 'Hello from Nodemailer',
-    text: 'This is the email content.',
-};
-transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {
-        console.log('Error:', error);
-    }
-    else {
-        console.log('Email sent:', info.response);
-    }
-});
 app.listen(port, () => {
     console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
 });

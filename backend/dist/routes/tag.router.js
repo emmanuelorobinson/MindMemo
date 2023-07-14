@@ -40,10 +40,10 @@ exports.tagRouter
 exports.tagRouter
     .route("/:tag_name")
     .get(tagController.getTagByName);
-exports.tagRouter
-    .route("/:tag_id/tasks")
-    // .get(tagController.getTagTasks)
-    .post(tagController.addTagToTask);
-exports.tagRouter
-    .route("/:tag_id/activities")
-    .post(tagController.addTagToActivity);
+// tagRouter
+//     .route("/:tag_id/tasks")
+//     // .get(tagController.getTagTasks)
+//     .post(tagController.addTagToTask)
+// tagRouter
+//     .route("/:tag_id/activities")
+//     .post(tagController.addTagToActivity)

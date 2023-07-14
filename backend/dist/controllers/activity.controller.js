@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateActivitiesTagList = exports.getActivitiesByTag = exports.getActivityTagList = exports.getUpcomingActivities = exports.getTodaysActivities = exports.deleteActivity = exports.updateActivity = exports.createActivity = exports.getActivityByID = exports.getActivities = void 0;
+exports.deleteActivity = exports.updateActivity = exports.createActivity = exports.getActivityByID = exports.getActivities = void 0;
 const ActivityService = __importStar(require("../services/activity.services"));
 const getActivities = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -118,56 +118,46 @@ const deleteActivity = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.deleteActivity = deleteActivity;
-const getTodaysActivities = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const todaysActivities = yield ActivityService.getTodaysActivities();
-        res.json(todaysActivities);
-    }
-    catch (error) {
-        res.json({ message: error.message });
-    }
-});
-exports.getTodaysActivities = getTodaysActivities;
-const getUpcomingActivities = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const upcomingActivitys = yield ActivityService.getUpcomingActivities();
-        res.json(upcomingActivitys);
-    }
-    catch (error) {
-        res.json({ message: error.message });
-    }
-});
-exports.getUpcomingActivities = getUpcomingActivities;
-const getActivityTagList = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { activity_id } = req.params;
-        const activityTagList = yield ActivityService.getActivityTagList(parseInt(activity_id));
-    }
-    catch (error) {
-        res.json({ message: error.message });
-    }
-});
-exports.getActivityTagList = getActivityTagList;
-const getActivitiesByTag = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const tag_id = req.params;
-        const tasks = yield ActivityService.getActivitiesByTag(parseInt(tag_id));
-        res.json(tasks);
-    }
-    catch (error) {
-        res.json({ message: error.message });
-    }
-});
-exports.getActivitiesByTag = getActivitiesByTag;
-const updateActivitiesTagList = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const activity_id = req.params;
-        const tag_list = req.body.tag_list;
-        const activityTagList = yield ActivityService.updateActivityTagList(parseInt(activity_id), tag_list);
-        res.json(activityTagList);
-    }
-    catch (error) {
-        res.json({ message: error.message });
-    }
-});
-exports.updateActivitiesTagList = updateActivitiesTagList;
+// export const getTodaysActivities = async (req: any, res: any) => {
+//     try {
+//         const todaysActivities = await ActivityService.getTodaysActivities();
+//         res.json(todaysActivities);
+//     } catch (error: any) {
+//         res.json({ message: error.message });
+//     }
+// }
+// export const getUpcomingActivities = async (req: any, res: any) => {
+//     try {
+//             const upcomingActivitys = await ActivityService.getUpcomingActivities();
+//             res.json(upcomingActivitys);
+//     } catch (error: any) {
+//         res.json({ message: error.message });
+//     }
+// }
+// export const getActivityTagList = async (req: any, res: any) => {
+//     try {
+//         const { activity_id } = req.params;
+//         const activityTagList = await ActivityService.getActivityTagList(parseInt(activity_id));
+//     } catch (error: any){
+//         res.json({ message: error.message });
+//     }
+// }
+// export const getActivitiesByTag = async (req: any, res: any) => {
+//     try {
+//         const tag_id = req.params;
+//         const tasks = await ActivityService.getActivitiesByTag(parseInt(tag_id));
+//         res.json(tasks);
+//     } catch (error: any) {
+//         res.json({ message: error.message });
+//     }
+// }
+// export const updateActivitiesTagList = async (req: any, res: any) => {
+//     try {
+//         const activity_id = req.params;
+//         const tag_list = req.body.tag_list;
+//         const activityTagList = await ActivityService.updateActivityTagList(parseInt(activity_id), tag_list);
+//         res.json(activityTagList);
+//     } catch (error: any) {
+//         res.json({ message: error.message });
+//     }
+// }

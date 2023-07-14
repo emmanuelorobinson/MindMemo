@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getActivityTagListByID = exports.getTaskTagListByID = exports.addTagToActivity = exports.addTagToTask = exports.createTag = exports.getTagByName = exports.getTagByID = exports.getTags = void 0;
+exports.getActivityTagListByID = exports.getTaskTagListByID = exports.createTag = exports.getTagByName = exports.getTagByID = exports.getTags = void 0;
 const TagService = __importStar(require("../services/tag.services"));
 const getTags = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -77,28 +77,24 @@ const createTag = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.createTag = createTag;
-const addTagToTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { task_id, tag_id } = req.body;
-        const newTag = yield TagService.addTagToTask(task_id, tag_id);
-        res.json(newTag);
-    }
-    catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
-exports.addTagToTask = addTagToTask;
-const addTagToActivity = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { activity_id, tag_id } = req.body;
-        const newTag = yield TagService.addTagToActivity(activity_id, tag_id);
-        res.json(newTag);
-    }
-    catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
-exports.addTagToActivity = addTagToActivity;
+// export const addTagToTask = async (req: Request, res: Response)=> {
+//     try {
+//         const { task_id, tag_id } = req.body;
+//         const newTag = await TagService.addTagToTask(task_id, tag_id);
+//         res.json(newTag);
+//     } catch (error: any) {
+//         res.status(500).json({ error: error.message});
+//     }
+// }
+// export const addTagToActivity = async (req: Request, res: Response)=> {
+//     try {
+//         const { activity_id, tag_id } = req.body;
+//         const newTag = await TagService.addTagToActivity(activity_id, tag_id);
+//         res.json(newTag);
+//     } catch (error: any) {
+//         res.status(500).json({ error: error.message});
+//     }
+// }
 const getTaskTagListByID = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { task_id } = req.params;

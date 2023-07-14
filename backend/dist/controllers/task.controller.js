@@ -32,11 +32,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateTaskTagList = exports.getTasksByTag = exports.getTaskTagList = exports.getUpcomingTasks = exports.getTodayTasks = exports.deleteTask = exports.updateTask = exports.createTask = exports.getTaskByID = exports.getTasks = void 0;
+exports.deleteTask = exports.updateTask = exports.createTask = exports.getTaskByID = exports.getTasks = void 0;
 const TaskService = __importStar(require("../services/task.services"));
 const getTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { activity_id } = req.body.activity_id;
+        const { activity_id } = req.params;
         const activities = yield TaskService.getTasks(parseInt(activity_id));
         res.json(activities);
     }
@@ -122,57 +122,47 @@ const deleteTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.deleteTask = deleteTask;
-const getTodayTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const tasks = yield TaskService.getTodaysTasks();
-        res.json(tasks);
-    }
-    catch (error) {
-        res.json({ message: error.message });
-    }
-});
-exports.getTodayTasks = getTodayTasks;
-const getUpcomingTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const tasks = yield TaskService.getUpcomingTasks();
-        res.json(tasks);
-    }
-    catch (error) {
-        res.json({ message: error.message });
-    }
-});
-exports.getUpcomingTasks = getUpcomingTasks;
-const getTaskTagList = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const task_id = req.params;
-        const taskTagList = yield TaskService.getTaskTagList(parseInt(task_id));
-        res.json(taskTagList);
-    }
-    catch (error) {
-        res.json({ message: error.message });
-    }
-});
-exports.getTaskTagList = getTaskTagList;
-const getTasksByTag = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const tag_id = req.params;
-        const tasks = yield TaskService.getTasksByTag(parseInt(tag_id));
-        res.json(tasks);
-    }
-    catch (error) {
-        res.json({ message: error.message });
-    }
-});
-exports.getTasksByTag = getTasksByTag;
-const updateTaskTagList = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const task_id = req.params;
-        const tag_list = req.body.tag_list;
-        const taskTagList = yield TaskService.updateTaskTagList(parseInt(task_id), tag_list);
-        res.json(taskTagList);
-    }
-    catch (error) {
-        res.json({ message: error.message });
-    }
-});
-exports.updateTaskTagList = updateTaskTagList;
+// export const getTodayTasks = async (req: any, res: any) => {
+//     try {
+//         const tasks = await TaskService.getTodaysTasks();
+//         res.json(tasks);
+//     } catch (error: any) {
+//         res.json({ message: error.message });
+//     }
+// }
+// export const getUpcomingTasks = async (req: any, res: any) => {
+//     try {
+//         const tasks = await TaskService.getUpcomingTasks();
+//         res.json(tasks);
+//     } catch (error: any) {
+//         res.json({ message: error.message });
+//     }
+// }
+// export const getTaskTagList = async (req: any, res: any) => {
+//     try {
+//         const task_id = req.params;
+//         const taskTagList = await TaskService.getTaskTagList(parseInt(task_id));
+//         res.json(taskTagList);
+//     } catch (error: any) {
+//         res.json({ message: error.message });
+//     }
+// }
+// export const getTasksByTag = async (req: any, res: any) => {
+//     try {
+//         const tag_id = req.params;
+//         const tasks = await TaskService.getTasksByTag(parseInt(tag_id));
+//         res.json(tasks);
+//     } catch (error: any) {
+//         res.json({ message: error.message });
+//     }
+// }
+// export const updateTaskTagList = async (req: any, res: any) => {
+//     try {
+//         const task_id = req.params;
+//         const tag_list = req.body.tag_list;
+//         const taskTagList = await TaskService.updateTaskTagList(parseInt(task_id), tag_list);
+//         res.json(taskTagList);
+//     } catch (error: any) {
+//         res.json({ message: error.message });
+//     }
+// }

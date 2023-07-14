@@ -16,7 +16,7 @@ const cycle_services_1 = require("./cycle.services");
 const getProjects = (user_id) => __awaiter(void 0, void 0, void 0, function* () {
     return db_server_1.db.project.findMany({
         where: {
-            user_id: user_id,
+            user_id,
         },
         select: {
             project_id: true,
