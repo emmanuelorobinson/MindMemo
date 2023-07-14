@@ -69,9 +69,12 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 exports.createUser = createUser;
 const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { first_name, last_name, email, username } = req.body;
-        const { user_id } = req.params;
-        const updatedUser = yield UserService.updateUser(parseInt(user_id), { first_name, last_name, email, username });
+        const first_name = req.body.first_name;
+        const last_name = req.body.last_name;
+        const email = req.body.email;
+        const username = req.body.username;
+        const user_id = parseInt(req.params.user_id);
+        const updatedUser = yield UserService.updateUser({ first_name, last_name, email, username, user_id });
         res.send(updatedUser);
     }
     catch (error) {

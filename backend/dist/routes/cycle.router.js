@@ -26,31 +26,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.activityRouter = void 0;
+exports.cycleRouter = void 0;
 const express_1 = __importDefault(require("express"));
-const activityController = __importStar(require("../controllers/activity.controller"));
-exports.activityRouter = express_1.default.Router();
-//Get: Get all activitys
-exports.activityRouter
+const cycleController = __importStar(require("../controllers/cycle.controller"));
+exports.cycleRouter = express_1.default.Router();
+//Get: Get all cycles
+exports.cycleRouter
     .route("/")
-    .get(activityController.getActivities)
-    .post(activityController.createActivity);
-exports.activityRouter
-    .route("/:activity_id")
-    .get(activityController.getActivityByID)
-    .put(activityController.updateActivity)
-    .delete(activityController.deleteActivity);
-exports.activityRouter
-    .route("/today")
-    .get(activityController.getTodaysActivities);
-exports.activityRouter
-    .route("/upcoming")
-    .get(activityController.getUpcomingActivities);
-exports.activityRouter
-    .route("/tags/:tag_id")
-    .get(activityController.getActivitiesByTag)
-    .put(activityController.updateActivitiesTagList);
-exports.activityRouter
-    .route("/:actiivity_id/notes")
-    .get(activityController.getActivityNote)
-    .put(activityController.updateActivityNote);
+    .get(cycleController.getCycles)
+    .post(cycleController.createCycle);
+exports.cycleRouter
+    .route("/:cycle_id")
+    .get(cycleController.getCycleByID)
+    .delete(cycleController.deleteCycle);

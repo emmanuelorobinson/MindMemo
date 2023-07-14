@@ -26,31 +26,34 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.activityRouter = void 0;
+exports.taskRouter = void 0;
 const express_1 = __importDefault(require("express"));
-const activityController = __importStar(require("../controllers/activity.controller"));
-exports.activityRouter = express_1.default.Router();
-//Get: Get all activitys
-exports.activityRouter
+const taskController = __importStar(require("../controllers/task.controller"));
+exports.taskRouter = express_1.default.Router();
+//Get: Get all tasks
+exports.taskRouter
     .route("/")
-    .get(activityController.getActivities)
-    .post(activityController.createActivity);
-exports.activityRouter
-    .route("/:activity_id")
-    .get(activityController.getActivityByID)
-    .put(activityController.updateActivity)
-    .delete(activityController.deleteActivity);
-exports.activityRouter
+    .get(taskController.getTasks)
+    .post(taskController.createTask);
+exports.taskRouter
+    .route("/:task_id")
+    .get(taskController.getTaskByID)
+    .put(taskController.updateTask)
+    .delete(taskController.deleteTask);
+exports.taskRouter
     .route("/today")
-    .get(activityController.getTodaysActivities);
-exports.activityRouter
+    .get(taskController.getTodayTasks);
+exports.taskRouter
     .route("/upcoming")
-    .get(activityController.getUpcomingActivities);
-exports.activityRouter
+    .get(taskController.getUpcomingTasks);
+exports.taskRouter
+    .route("/tags")
+    .get(taskController.getTaskTagList);
+exports.taskRouter
     .route("/tags/:tag_id")
-    .get(activityController.getActivitiesByTag)
-    .put(activityController.updateActivitiesTagList);
-exports.activityRouter
-    .route("/:actiivity_id/notes")
-    .get(activityController.getActivityNote)
-    .put(activityController.updateActivityNote);
+    .get(taskController.getTasksByTag)
+    .put(taskController.updateTaskTagList);
+exports.taskRouter
+    .route("/:task_id/notes")
+    .get(taskController.getTaskNote)
+    .put(taskController.updateTaskNote);

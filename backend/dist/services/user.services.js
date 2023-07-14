@@ -14,10 +14,11 @@ const db_server_1 = require("../utils/db.server");
 const getUsers = () => __awaiter(void 0, void 0, void 0, function* () {
     return db_server_1.db.user.findMany({
         select: {
+            user_id: true,
             first_name: true,
             last_name: true,
             email: true,
-            username: true
+            username: true,
         }
     });
 });
@@ -28,39 +29,36 @@ const getUserByID = (user_id) => __awaiter(void 0, void 0, void 0, function* () 
             user_id,
         },
         select: {
+            user_id: true,
             first_name: true,
             last_name: true,
             email: true,
-            username: true
+            username: true,
         }
     });
 });
 exports.getUserByID = getUserByID;
 const createUser = (user) => __awaiter(void 0, void 0, void 0, function* () {
-    const { first_name, last_name, email, username } = user;
     return db_server_1.db.user.create({
-        data: {
-            first_name,
-            last_name,
-            email,
-            username
-        },
+        data: user,
         select: {
+            user_id: true,
             first_name: true,
             last_name: true,
             email: true,
-            username: true
+            username: true,
         }
     });
 });
 exports.createUser = createUser;
-const updateUser = (user_id, user) => __awaiter(void 0, void 0, void 0, function* () {
+const updateUser = (user) => __awaiter(void 0, void 0, void 0, function* () {
     return db_server_1.db.user.update({
         where: {
-            user_id,
+            user_id: user.user_id,
         },
         data: user,
         select: {
+            user_id: true,
             first_name: true,
             last_name: true,
             email: true,
@@ -75,6 +73,7 @@ const deleteUser = (user_id) => __awaiter(void 0, void 0, void 0, function* () {
             user_id,
         },
         select: {
+            user_id: true,
             first_name: true,
             last_name: true,
             email: true,
@@ -96,22 +95,16 @@ const getUserProjectList = (user_id) => __awaiter(void 0, void 0, void 0, functi
 });
 exports.getUserProjectList = getUserProjectList;
 const getUserProjects = (user_id) => __awaiter(void 0, void 0, void 0, function* () {
-    let id = yield (0, exports.getUserProjectList)(user_id);
-    if ((id === null || id === void 0 ? void 0 : id.project_list_id) === undefined) {
-        return null;
-    }
-    return db_server_1.db.project.findMany({
+    let listID = yield (0, exports.getUserProjectList)(user_id);
+    let list = yield db_server_1.db.projectList.findUnique({
         where: {
-            project_list_id: id === null || id === void 0 ? void 0 : id.project_list_id,
+            project_list_id: listID === null || listID === void 0 ? void 0 : listID.project_list_id,
         },
         select: {
-            project_name: true,
-            project_start_date: true,
-            duration: true,
-            days_till_renew: true,
-            completed: true,
-            project_list_id: true,
+            projects: true,
         }
     });
+    let projects = list === undefined ? [] : list === null || list === void 0 ? void 0 : list.projects;
+    return projects;
 });
 exports.getUserProjects = getUserProjects;

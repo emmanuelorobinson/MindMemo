@@ -26,31 +26,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.activityRouter = void 0;
+exports.tagRouter = void 0;
 const express_1 = __importDefault(require("express"));
-const activityController = __importStar(require("../controllers/activity.controller"));
-exports.activityRouter = express_1.default.Router();
-//Get: Get all activitys
-exports.activityRouter
+const tagController = __importStar(require("../controllers/tag.controller"));
+exports.tagRouter = express_1.default.Router();
+exports.tagRouter
     .route("/")
-    .get(activityController.getActivities)
-    .post(activityController.createActivity);
-exports.activityRouter
-    .route("/:activity_id")
-    .get(activityController.getActivityByID)
-    .put(activityController.updateActivity)
-    .delete(activityController.deleteActivity);
-exports.activityRouter
-    .route("/today")
-    .get(activityController.getTodaysActivities);
-exports.activityRouter
-    .route("/upcoming")
-    .get(activityController.getUpcomingActivities);
-exports.activityRouter
-    .route("/tags/:tag_id")
-    .get(activityController.getActivitiesByTag)
-    .put(activityController.updateActivitiesTagList);
-exports.activityRouter
-    .route("/:actiivity_id/notes")
-    .get(activityController.getActivityNote)
-    .put(activityController.updateActivityNote);
+    .get(tagController.getTags)
+    .post(tagController.createTag);
+exports.tagRouter
+    .route("/:tag_id")
+    .get(tagController.getTagByID);
+exports.tagRouter
+    .route("/:tag_name")
+    .get(tagController.getTagByName);
+exports.tagRouter
+    .route("/:tag_id/tasks")
+    // .get(tagController.getTagTasks)
+    .post(tagController.addTagToTask);
+exports.tagRouter
+    .route("/:tag_id/activities")
+    .post(tagController.addTagToActivity);

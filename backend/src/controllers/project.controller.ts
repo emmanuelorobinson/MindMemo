@@ -28,14 +28,17 @@ export const createProject = async (req: Request, res: Response) => {
         let date = (new Date(req.body.project_start_date));
         let user_id = parseInt(req.body.user_id);
         let name = req.body.project_name;
+        let cycle = req.body.save_as_cycle === "true" ? true : false;
         let complete = req.body.completed === "true" ? true : false;
         const project = { 
             project_name: name, 
             project_start_date: date, 
             duration: intduration, 
             days_till_renew: intdays, 
-            completed: complete
+            completed: complete,
+            save_as_cycle: cycle,
         }
+        
         const newProject = await ProjectService.createProject(project, user_id);
         res.send(newProject);
     } catch (error: any) {
@@ -51,6 +54,7 @@ export const updateProject = async (req: Request, res: Response) => {
         let date = (new Date(req.body.project_start_date));
         let name = req.body.project_name;
         let complete = req.body.completed === "true" ? true : false;
+        let cycle = req.body.save_as_cycle === "true" ? true : false;
         const project_id = parseInt(req.params.project_id);
         const project = { 
             project_id: project_id,
@@ -58,7 +62,8 @@ export const updateProject = async (req: Request, res: Response) => {
             project_start_date: date, 
             duration: intduration, 
             days_till_renew: intdays, 
-            completed: complete
+            completed: complete,
+            save_as_cycle: cycle,
         }
         const updatedProject = await ProjectService.updateProject(project);
         res.send(updatedProject);
