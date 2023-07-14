@@ -53,16 +53,15 @@ const CreateProjectComponent = () => {
         values.cycle = selectedValue;
         values.save_as_cycle = selectedCycle;
 
-        // try {
-        //   const response = await createProject(values);
-        //   console.log(response);
+        try {
+          const response = await createProject(values);
+          console.log(response);
 
-        //   setSubmitting(false);
-        // } catch (error) {
-        //   console.log(error);
-        // }
+          setSubmitting(false);
+        } catch (error) {
+          console.log(error);
+        }
 
-        // useNavigate("/project");
         // navigate("/project");
         
       }}

@@ -1,5 +1,9 @@
+// import env from 'react-dotenv';
+// import dotenv from 'dotenv';
+
 export interface Project {
     cycle: string;
+    project_id?: number;
     project_name: string;
     project_start_date: Date;
     duration: number;
@@ -9,10 +13,11 @@ export interface Project {
     completed: boolean;
 }
 
+
 const API_URL = process.env.REACT_APP_API_URL;
 
 export const getProjects = async (): Promise<Project[]> => {
-  const URL = `${API_URL}`;
+  const URL = API_URL + '/projects/'
 
   const response = await fetch(URL, {
     method: 'GET',
@@ -23,7 +28,6 @@ export const getProjects = async (): Promise<Project[]> => {
 
   try {
     const data = await response.json();
-    console.log('data', data);
     return data;
   }
   catch (error: any) {
@@ -32,14 +36,20 @@ export const getProjects = async (): Promise<Project[]> => {
 };
 
 export const createProject = async (project: Project): Promise<Project> => {
-  const URL = `${API_URL}`
+  const URL = API_URL + '/projects/'
+
+  const projectData = {
+    ...project,
+  };
+  delete projectData.project_id; // Remove project_id from projectData
+
 
   const response = await fetch(URL, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(project),
+    body: JSON.stringify(projectData),
   });
 
   try {
