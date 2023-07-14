@@ -4,9 +4,9 @@ import { Request, Response } from "express";
 export const getProjects = async (req: Request, res: Response) => {
     try {
         const projects = await ProjectService.getProjects();
-        res.send(projects);
+        res.json(projects);
     } catch (error: any) {
-        res.send({ error: error.message});
+        res.status(500).json({ error: error.message});
     }
 }
 
@@ -15,9 +15,9 @@ export const getProjectByID = async (req: Request, res: Response) => {
         const { project_id } = req.params;
         console.log("ID IN CONTROLLER: " + project_id);
         const project = await ProjectService.getProjectByID(parseInt(project_id));
-        res.send(project);
+        res.json(project);
     } catch (error: any) {
-        res.send({ error: error.message});
+        res.status(500).json({ error: error.message});
     }
 }
 
@@ -40,9 +40,9 @@ export const createProject = async (req: Request, res: Response) => {
         }
         
         const newProject = await ProjectService.createProject(project, user_id);
-        res.send(newProject);
+        res.json(newProject);
     } catch (error: any) {
-        res.send({ error: error.message});
+        res.status(500).json({ error: error.message});
     }
 }
 
@@ -66,9 +66,9 @@ export const updateProject = async (req: Request, res: Response) => {
             save_as_cycle: cycle,
         }
         const updatedProject = await ProjectService.updateProject(project);
-        res.send(updatedProject);
+        res.json(updatedProject);
     } catch (error: any) {
-        res.send({ error: error.message});
+        res.status(500).json({ error: error.message});
     }
 }
 
@@ -76,9 +76,9 @@ export const deleteProject = async (req: Request, res: Response) => {
     try {
         const { project_id } = req.params;
         const deletedProject = await ProjectService.deleteProject(parseInt(project_id));
-        res.send(deletedProject);
+        res.json(deletedProject);
     } catch (error: any) {
-        res.send({ error: error.message});
+        res.status(500).json({ error: error.message});
     }
 }
 
@@ -86,9 +86,9 @@ export const getProjectActivities = async (req: Request, res: Response) => {
     try {
         const { project_id } = req.params;
         const activities = await ProjectService.getProjectActivities(parseInt(project_id));
-        res.send(activities);
+        res.json(activities);
     } catch (error: any) {
-        res.send({ error: error.message});
+        res.status(500).json({ error: error.message});
     }
 }
 

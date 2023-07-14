@@ -5,7 +5,7 @@ export const createCycle = async (req: any, res: any) => {
         const { project_id } = req.body;
         const cycle = await CycleService.createCycle(parseInt(project_id));
     } catch (error: any) {
-        res.send({ message: error.message });
+        res.json({ message: error.message });
     }
 }
 
@@ -13,18 +13,18 @@ export const getCycleByID = async (req: any, res: any) => {
     try {
         const { cycle_id } = req.params;
         const cycle = await CycleService.getCycleByID(parseInt(cycle_id));
-        res.send(cycle);
+        res.json(cycle);
     } catch (error: any) {
-        res.send({ message: error.message });
+        res.json({ message: error.message });
     }
 }
 
 export const getCycles = async (req: any, res: any) => {
     try {
         const cycles = await CycleService.getCycles();
-        res.send(cycles);
+        res.json(cycles);
     } catch (error: any) {
-        res.send({ message: error.message });
+        res.json({ message: error.message });
     }
 }
 
@@ -32,8 +32,8 @@ export const deleteCycle = async (req: any, res: any) => {
     try {
         const { cycle_id } = req.params;
         const deletedCycle = await CycleService.deleteCycle(parseInt(cycle_id));
-        res.send(deletedCycle);
+        res.json(deletedCycle);
     } catch (error: any) {
-        res.send({ message: error.message });
+        res.json({ message: error.message });
     }
 }

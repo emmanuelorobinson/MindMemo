@@ -4,9 +4,9 @@ import { getTaskTagListByID } from '../services/tag.services';
 export const getTasks = async (req: any, res: any) => {
     try {
         const activities = await TaskService.getTasks();
-        res.send(activities);
+        res.json(activities);
     } catch (error: any) {
-        res.send({ message: error.message });
+        res.json({ message: error.message });
     }
 }
 
@@ -14,9 +14,9 @@ export const getTaskByID = async (req: any, res: any) => {
     try {
         const { task_id } = req.params;
         const task = await TaskService.getTaskByID(parseInt(task_id));
-        res.send(task);
+        res.json(task);
     } catch (error: any) {
-        res.send({ message: error.message });
+        res.json({ message: error.message });
     }
 }
 
@@ -39,9 +39,9 @@ export const createTask = async (req: any, res: any) => {
         }
         console.log(req.body);
         const newTask = await TaskService.createTask(task, activityId);
-        res.send(newTask);
+        res.json(newTask);
     } catch (error: any) {
-        res.send({ message: error.message });
+        res.json({ message: error.message });
     }
 }
 
@@ -64,9 +64,9 @@ export const updateTask = async (req: any, res: any) => {
             note: taskNote,
         }
         const updatedTask = await TaskService.updateTask(task);
-        res.send(updatedTask);
+        res.json(updatedTask);
     } catch (error: any) {
-        res.send({ message: error.message });
+        res.json({ message: error.message });
     }
 }
 
@@ -74,27 +74,27 @@ export const deleteTask = async (req: any, res: any) => {
     try {
         const { task_id } = req.params;
         const deletedTask = await TaskService.deleteTask(parseInt(task_id));
-        res.send(deletedTask);
+        res.json(deletedTask);
     } catch (error: any) {
-        res.send({ message: error.message });
+        res.json({ message: error.message });
     }
 }
 
 export const getTodayTasks = async (req: any, res: any) => {
     try {
         const tasks = await TaskService.getTodaysTasks();
-        res.send(tasks);
+        res.json(tasks);
     } catch (error: any) {
-        res.send({ message: error.message });
+        res.json({ message: error.message });
     }
 }
 
 export const getUpcomingTasks = async (req: any, res: any) => {
     try {
         const tasks = await TaskService.getUpcomingTasks();
-        res.send(tasks);
+        res.json(tasks);
     } catch (error: any) {
-        res.send({ message: error.message });
+        res.json({ message: error.message });
     }
 }
 
@@ -102,9 +102,9 @@ export const getTaskTagList = async (req: any, res: any) => {
     try {
         const task_id = req.params;
         const taskTagList = await TaskService.getTaskTagList(parseInt(task_id));
-        res.send(taskTagList);
+        res.json(taskTagList);
     } catch (error: any) {
-        res.send({ message: error.message });
+        res.json({ message: error.message });
     }
 }
 
@@ -112,9 +112,9 @@ export const getTasksByTag = async (req: any, res: any) => {
     try {
         const tag_id = req.params;
         const tasks = await TaskService.getTasksByTag(parseInt(tag_id));
-        res.send(tasks);
+        res.json(tasks);
     } catch (error: any) {
-        res.send({ message: error.message });
+        res.json({ message: error.message });
     }
 }
 
@@ -123,9 +123,9 @@ export const updateTaskTagList = async (req: any, res: any) => {
         const task_id = req.params;
         const tag_list = req.body.tag_list;
         const taskTagList = await TaskService.updateTaskTagList(parseInt(task_id), tag_list);
-        res.send(taskTagList);
+        res.json(taskTagList);
     } catch (error: any) {
-        res.send({ message: error.message });
+        res.json({ message: error.message });
     }
 }
 
@@ -134,9 +134,9 @@ export const updateTaskNote = async (req: any, res: any) => {
         const task_id = req.params;
         const note = req.body.note;
         const taskNote = await TaskService.updateTaskNote(parseInt(task_id), note);
-        res.send(taskNote);
+        res.json(taskNote);
     } catch (error: any) {
-        res.send({ message: error.message });
+        res.json({ message: error.message });
     }
 }
 
@@ -144,9 +144,9 @@ export const getTaskNote = async (req: any, res: any) => {
     try {
         const task_id = req.params;
         const taskNote = await TaskService.getTaskNote(parseInt(task_id));
-        res.send(taskNote);
+        res.json(taskNote);
     } catch (error: any) {
-        res.send({ message: error.message });
+        res.json({ message: error.message });
     }
 }
 
@@ -154,9 +154,9 @@ export const updateTaskCompleted = async (req: any, res: any) => {
     try {
         const task_id = req.params;
         const taskCompleted = await TaskService.completeTask(parseInt(task_id));
-        res.send(taskCompleted);
+        res.json(taskCompleted);
     } catch (error: any) {
-        res.send({ message: error.message });
+        res.json({ message: error.message });
     }
 }
 
