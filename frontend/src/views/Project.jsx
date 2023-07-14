@@ -5,19 +5,20 @@ import Breadcrumbs from '../components/Breadcrumbs'
 import { getProjects } from '../utils/ProjectController'
 
 
+const project = [1, 2]
 
 const Project = () => {
-  const [project, setProject] = useState([])
+  // const [project, setProject] = useState([])
 
 
-  useEffect(() => {
-    const fetchProjects = async () => {
-      const response = await getProjects()
-      console.log(response)
-      setProject(response)
-    }
-    fetchProjects()
-  }, [])
+  // useEffect(() => {
+  //   const fetchProjects = async () => {
+  //     const response = await getProjects()
+  //     console.log(response)
+  //     setProject(response)
+  //   }
+  //   fetchProjects()
+  // }, [])
 
 
 

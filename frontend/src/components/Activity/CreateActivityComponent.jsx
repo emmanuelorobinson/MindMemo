@@ -19,10 +19,13 @@ const options = [
 const CreateActivityComponent = ({ project_id }) => {
   const [projects, setProjects] = useState({
     project_id: project_id,
-    name: "",
+    activity_number: "",
+    activity_name: "",
     dependency: "",
+    start_date: "",
     duration: "",
     note: "",
+    completed: false,
   });
 
   const [selectedValue, setSelectedValue] = useState("None");
@@ -72,7 +75,7 @@ const CreateActivityComponent = ({ project_id }) => {
                 {/* Name */}
                 <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
                   <label
-                    htmlFor="name"
+                    htmlFor="activity_name"
                     className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
                   >
                     Activity Name
@@ -81,9 +84,49 @@ const CreateActivityComponent = ({ project_id }) => {
                     <input
                       className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
                       type="text"
-                      name="name"
-                      id="name"
-                      value={values.name}
+                      name="activity_name"
+                      id="activity_name"
+                      value={values.activity_name}
+                      onChange={handleChange}
+                    />
+                  </div>
+                </div>
+
+                {/* Activity Number */}
+                <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+                  <label
+                    htmlFor="activity_number"
+                    className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
+                  >
+                    Activity Number
+                  </label>
+                  <div className="mt-1 sm:col-span-2 sm:mt-0">
+                    <input
+                      className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
+                      type="number"
+                      name="activity_number"
+                      id="activity_number"
+                      value={values.activity_number}
+                      onChange={handleChange}
+                    />
+                  </div>
+                </div>
+
+                {/* Start Date */}
+                <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+                  <label
+                    htmlFor="start_date"
+                    className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
+                  >
+                    Start Date
+                  </label>
+                  <div className="mt-1 sm:col-span-2 sm:mt-0">
+                    <input
+                      className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
+                      type="date"
+                      name="start_date"
+                      id="start_date"
+                      value={values.start_date}
                       onChange={handleChange}
                     />
                   </div>

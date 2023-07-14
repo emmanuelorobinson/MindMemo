@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import MenuDropdown from "../MenuDropdown";
+import EditActivityComponent from "./EditActvityComponent";
 
 const colorScheme = (status) => {
   switch (status) {
@@ -23,11 +24,13 @@ const colorScheme = (status) => {
   }
 };
 
-const ProjectItem = ({ data }) => {
+const ActivityItem = ({ data }) => {
   console.log(data);
+  const [showEditModal, setShowEditModal] = React.useState(false);
 
   const onEditClick = () => {
     console.log("edit");
+    showEditModal ? setShowEditModal(false) : setShowEditModal(true);
   };
 
   const onDeleteClick = () => {
@@ -100,6 +103,7 @@ const ProjectItem = ({ data }) => {
 
         <div className="flex align-middle justify-center">
           <MenuDropdown onDelete={onDeleteClick} onEdit={onEditClick} />
+
           <Link
             to={`/project/activity/task?projectId=${data.projectId}&activityId=${data.id}`}
           >
@@ -120,8 +124,14 @@ const ProjectItem = ({ data }) => {
           </Link>
         </div>
       </div>
+      {showEditModal && (
+        <EditActivityComponent
+          show={showEditModal}
+          onClose={() => setShowEditModal(false)}
+        />
+      )}
     </>
   );
 };
 
-export default ProjectItem;
+export default ActivityItem;
