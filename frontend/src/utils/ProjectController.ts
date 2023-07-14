@@ -16,8 +16,8 @@ export interface Project {
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-export const getProjects = async (): Promise<Project[]> => {
-  const URL = API_URL + '/projects/'
+export const getProjects = async (user_id: string): Promise<Project[]> => {
+  const URL = API_URL + '/projects/' + user_id;
 
   const response = await fetch(URL, {
     method: 'GET',
@@ -36,7 +36,7 @@ export const getProjects = async (): Promise<Project[]> => {
 };
 
 export const createProject = async (project: Project): Promise<Project> => {
-  const URL = API_URL + '/projects/'
+  const URL = API_URL + '/projects/' 
 
   const projectData = {
     ...project,
