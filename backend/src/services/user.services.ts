@@ -14,7 +14,7 @@ export const getUsers = async (): Promise<User[]> => {
     });
 };
 
-export const getUserByID = async (user_id: number): Promise<User | null> => {
+export const getUserByID = async (user_id: string): Promise<User | null> => {
     return db.user.findUnique({
         where: {
             user_id,
@@ -29,7 +29,7 @@ export const getUserByID = async (user_id: number): Promise<User | null> => {
     });
 }
 
-export const createUser = async (user: Omit<User, 'user_id'>): Promise<User> => {
+export const createUser = async (user: User): Promise<User> => {
     return db.user.create({
         data: user, 
         select: {
@@ -58,7 +58,7 @@ export const updateUser = async (user: User): Promise<User | null> => {
     });
 }
 
-export const deleteUser = async (user_id: number): Promise<User | null> => {
+export const deleteUser = async (user_id: string): Promise<User | null> => {
     return db.user.delete({
         where: {
             user_id,

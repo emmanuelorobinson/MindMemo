@@ -12,7 +12,7 @@ datasource db {
 }
 
 model User {
-  user_id Int @id @default(autoincrement())
+  user_id String @id @default(uuid())
   first_name String @db.VarChar(15)
   last_name String @db.VarChar(15) 
   email String @db.VarChar(50) 
@@ -33,9 +33,11 @@ model Project {
   save_as_cycle Boolean @default(false)
   
   user User @relation(fields: [user_id], references: [user_id])
-  user_id Int @unique
+  user_id String
   cycle Cycle?
   activity Activity[]
+
+  @@index([user_id])
 }
 
 model Cycle {
@@ -48,31 +50,35 @@ model Cycle {
 
 model Activity {
   activity_id Int @id @default(autoincrement())
-  activity_number Int
+  activity_number Int @default(0)
   activity_name String @db.VarChar(100)
   duration Int
   completed Boolean
   note String @db.VarChar(512) @default("")
   
-  project_id Int @unique 
+  project_id Int
   project Project @relation(fields: [project_id], references: [project_id])
   tasks Task[]
   tag_list ActivityTagList[]
   reminder ActivityReminder?
+
+  @@index([project_id])
 }
 
 model Task {
   task_id Int @id @default(autoincrement())
-  task_number Int
+  task_number Int @default(0)
   task_name String @db.VarChar(100)
   days_till_due Int
   completed Boolean
   note String @db.VarChar(512)
   
-  activity_id Int @unique 
+  activity_id Int
   activity Activity @relation(fields: [activity_id], references: [activity_id])
   tag_list TaskTagList[]
   reminder TaskReminder?
+
+  @@index([activity_id])
 }
 
 model ActivityTagList {
@@ -108,7 +114,9 @@ model ActivityReminder {
   activity Activity @relation(fields: [activity_id], references: [activity_id])
   activity_id Int @unique @default(0)
   user User @relation(fields: [user_id], references: [user_id])
-  user_id Int @unique @default(0)
+  user_id String 
+
+  @@index([user_id])
 }
 
 model TaskReminder {
@@ -118,5 +126,7 @@ model TaskReminder {
   task Task @relation(fields: [task_id], references: [task_id])
   task_id Int @unique @default(0)
   user User @relation(fields: [user_id], references: [user_id])
-  user_id Int @unique @default(0)
+  user_id String
+
+  @@index([user_id])
 }
