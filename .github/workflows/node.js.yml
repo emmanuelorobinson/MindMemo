@@ -36,4 +36,5 @@ jobs:
     - run: |
         touch .env
         echo "${{ secrets.ENV }}" > .env
+    - run: pm2 restart MindMemoBackend
 
