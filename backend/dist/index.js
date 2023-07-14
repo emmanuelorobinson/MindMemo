@@ -8,90 +8,50 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const db_server_1 = require("./utils/db.server");
 const user_router_1 = require("./routes/user.router");
 const project_router_1 = require("./routes/project.router");
+const activity_router_1 = require("./routes/activity.router");
+const task_router_1 = require("./routes/task.router");
+const tag_router_1 = require("./routes/tag.router");
+const cycle_router_1 = require("./routes/cycle.router");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const port = process.env.PORT;
 const prisma = db_server_1.db;
 const http = require("http").Server(app);
 const cors = require("cors");
+const nodemailer = require('nodemailer');
 app.use(cors());
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 app.get('/', (req, res) => {
-    res.send('Express + TypeScript Server');
+    res.json('Express + TypeScript Server');
 });
 app.use("/users", user_router_1.userRouter);
 app.use("/projects", project_router_1.projectRouter);
+app.use("/activities", activity_router_1.activityRouter);
+app.use("/tasks", task_router_1.taskRouter);
+app.use("/tags", tag_router_1.tagRouter);
+app.use("/cycles", cycle_router_1.cycleRouter);
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'ghaghdabhakti@gmail.com',
+        pass: 'zanlymmhbxrqbslp',
+    },
+});
+const mailOptions = {
+    from: 'ghaghdabhakti@gmail.com',
+    to: 'bkghaghda@gmail.com',
+    subject: 'Hello from Nodemailer',
+    text: 'This is the email content.',
+};
+transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+        console.log('Error:', error);
+    }
+    else {
+        console.log('Email sent:', info.response);
+    }
+});
 app.listen(port, () => {
     console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
 });
-/*
-app.post("/users", async (req, res) => {
-  try {
-    const  { first_name, last_name, email, username } = req.body;
-    
-    const newUser = await prisma.user.create({
-      data: {
-        first_name,
-        last_name,
-        email,
-        username
-      }
-    })
-
-    res.json(newUser);
-  }
-  catch (error: any) {
-    console.log(error.message);
-  }
-})
-
-app.get("/users", async (req, res) => {
-  try {
-    const users = await prisma.user.findMany();
-    res.json(users);
-  } catch (error: any) {
-    console.log(error.message);
-  }
-})
-
-app.put("/users/:user_id", async (req, res) => {
-  try {
-    const { first_name, last_name, email, username } = req.body;
-    const { user_id } = req.params;
-
-    const updatedUser = await prisma.user.update({
-      where: {
-        user_id: parseInt(user_id),
-      },
-      data: {
-        first_name,
-        last_name,
-        email,
-        username
-      },
-    })
-
-    res.json(updatedUser);
-  } catch (error: any) {
-    console.log(error.message);
-  }
-})
-
-app.delete("/users/:user_id", async (req, res) => {
-  try {
-    const { user_id } = req.params;
-
-    const deletedUser = await prisma.user.delete({
-      where: {
-        user_id: parseInt(user_id),
-      },
-    })
-
-    res.json(deletedUser);
-  } catch (error: any) {
-    console.log(error.message);
-  }
-})
-
-*/ 
