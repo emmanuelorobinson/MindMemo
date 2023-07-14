@@ -92,79 +92,80 @@ export const deleteActivity = async (activity_id: number): Promise<Activity | nu
     });
 }
 
-export const getTodaysActivities = async (): Promise<Activity[]> => {
-    return db.activity.findMany({
-        where: {
-            duration: 0,
-        },
-        select: {
-            activity_id: true,
-            activity_name: true,
-            activity_number: true,
-            duration: true,
-            completed: true,
-            note: true,
-            project_id: true,
-        }
-    })
-}
 
-export const getUpcomingActivities = async (): Promise<Activity[]> => {
-    return db.activity.findMany({
-        where: {
-            duration: 0 || 1 || 2,
-        },
-        select: {
-            activity_id: true,
-            activity_name: true,
-            activity_number: true,
-            duration: true,
-            completed: true,
-            note: true,
-            project_id: true,
-        }
-    })
-}
+// export const getTodaysActivities = async (): Promise<Activity[]> => {
+//     return db.activity.findMany({
+//         where: {
+//             duration: 0,
+//         },
+//         select: {
+//             activity_id: true,
+//             activity_name: true,
+//             activity_number: true,
+//             duration: true,
+//             completed: true,
+//             note: true,
+//             project_id: true,
+//         }
+//     })
+// }
 
-export const getActivityTagList = async (activity_id: number): Promise<ActivityTagList[] | null> => {
-    return db.activityTagList.findMany({
-        where: {
-            activity_id,
-        },
-        select: {
-            activity_tag_list_id: true,
-            activity_id: true,
-            tag_id: true,
-        }
-    })
-}
+// export const getUpcomingActivities = async (): Promise<Activity[]> => {
+//     return db.activity.findMany({
+//         where: {
+//             duration: 0 || 1 || 2,
+//         },
+//         select: {
+//             activity_id: true,
+//             activity_name: true,
+//             activity_number: true,
+//             duration: true,
+//             completed: true,
+//             note: true,
+//             project_id: true,
+//         }
+//     })
+// }
 
-export const updateActivityTagList = async (activity_id: number, tag_list: ActivityTagList): Promise<Activity> => {
-    let activity = await getActivityByID(activity_id);
-    let tagLists = await getActivityTagList(activity_id);
+// export const getActivityTagList = async (activity_id: number): Promise<ActivityTagList[] | null> => {
+//     return db.activityTagList.findMany({
+//         where: {
+//             activity_id,
+//         },
+//         select: {
+//             activity_tag_list_id: true,
+//             activity_id: true,
+//             tag_id: true,
+//         }
+//     })
+// }
 
-    tagLists = [...tagLists!, tag_list];
+// export const updateActivityTagList = async (activity_id: number, tag_list: ActivityTagList): Promise<Activity> => {
+//     let activity = await getActivityByID(activity_id);
+//     let tagLists = await getActivityTagList(activity_id);
 
-    return db.activity.update({
-        where: {
-            activity_id,
-        },
-        data: {
-            tag_list: {
-                connect: tagLists,
-            }
-        },
-        select: {
-            activity_id: true,
-            activity_name: true,
-            activity_number: true,
-            duration: true,
-            completed: true,
-            note: true,
-            project_id: true,
-        }
-    });
-}
+//     tagLists = [...tagLists!, tag_list];
+
+//     return db.activity.update({
+//         where: {
+//             activity_id,
+//         },
+//         data: {
+//             tag_list: {
+//                 connect: tagLists,
+//             }
+//         },
+//         select: {
+//             activity_id: true,
+//             activity_name: true,
+//             activity_number: true,
+//             duration: true,
+//             completed: true,
+//             note: true,
+//             project_id: true,
+//         }
+//     });
+// }
 
 export const getActivitiesByTag = async (tag_id: number): Promise<Activity[]> => {
     let activityTagList = await getActivityTagLists(tag_id);

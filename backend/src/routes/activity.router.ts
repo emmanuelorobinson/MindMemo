@@ -16,15 +16,15 @@ activityRouter
     .put(activityController.updateActivity)
     .delete(activityController.deleteActivity);
 
-activityRouter
-    .route("/today")
-    .get(activityController.getTodaysActivities);
+// activityRouter
+//     .route("/today")
+//     .get(activityController.getTodaysActivities);
 
-activityRouter
-    .route("/upcoming")
-    .get(activityController.getUpcomingActivities);
+// activityRouter
+//     .route("/upcoming")
+//     .get(activityController.getUpcomingActivities);
 
-activityRouter
-    .route("/tags/:tag_id")
-    .get(activityController.getActivitiesByTag)
-    .put(activityController.updateActivitiesTagList)
+// activityRouter
+//     .route("/tags/:tag_id")
+//     .get(activityController.getActivitiesByTag)
+//     .put(activityController.updateActivitiesTagList)

@@ -16,19 +16,19 @@ taskRouter
     .put(taskController.updateTask)
     .delete(taskController.deleteTask);
 
-taskRouter
-    .route("/today")
-    .get(taskController.getTodayTasks);
+// taskRouter
+//     .route("/today")
+//     .get(taskController.getTodayTasks);
 
-taskRouter
-    .route("/upcoming")
-    .get(taskController.getUpcomingTasks);
+// taskRouter
+//     .route("/upcoming")
+//     .get(taskController.getUpcomingTasks);
 
-taskRouter
-    .route("/tags")
-    .get(taskController.getTaskTagList);
+// taskRouter
+//     .route("/tags")
+//     .get(taskController.getTaskTagList);
 
-taskRouter
-    .route("/tags/:tag_id")
-    .get(taskController.getTasksByTag)
-    .put(taskController.updateTaskTagList)
+// taskRouter
+//     .route("/tags/:tag_id")
+//     .get(taskController.getTasksByTag)
+//     .put(taskController.updateTaskTagList)
