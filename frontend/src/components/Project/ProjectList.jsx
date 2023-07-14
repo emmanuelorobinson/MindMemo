@@ -20,7 +20,7 @@ const entries = [
   },
 ];
 
-const ProjectList = () => {
+const ProjectList = ({projectList}) => {
 
   const navigate = useNavigate();
 
@@ -48,9 +48,9 @@ const ProjectList = () => {
       </div>
       <div className="mt-6 flow-root">
         <ul role="list" className="divide-y divide-gray-100">
-          {entries.map((entry) => (
-            <li key={entry.name} className="flex justify-between gap-x-6 py-5">
-              <ProjectItem data={entry} />
+          {projectList.map((project) => (
+            <li key={project.project_id} className="flex justify-between gap-x-6 py-5">
+              <ProjectItem data={project} />
             </li>
           ))}
         </ul>
