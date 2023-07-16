@@ -52,6 +52,7 @@ model Activity {
   activity_id Int @id @default(autoincrement())
   activity_number Int @default(0)
   activity_name String @db.VarChar(100)
+  start_date DateTime 
   duration Int
   completed Boolean
   note String @db.VarChar(512) @default("")
@@ -69,7 +70,8 @@ model Task {
   task_id Int @id @default(autoincrement())
   task_number Int @default(0)
   task_name String @db.VarChar(100)
-  days_till_due Int
+  start_date DateTime
+  duration Int
   completed Boolean
   note String @db.VarChar(512)
   

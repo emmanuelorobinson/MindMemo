@@ -6,9 +6,12 @@ export const projectRouter = express.Router();
 
 //Get: Get all projects
 projectRouter
+    .route("/")
+    .post(projectController.createProject);
+    
+projectRouter
     .route("/:user_id")
     .get(projectController.getProjects)
-    .post(projectController.createProject);
 
 projectRouter
     .route("/project/:project_id")

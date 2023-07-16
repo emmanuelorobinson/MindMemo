@@ -61,15 +61,17 @@ const createActivity = (req, res) => __awaiter(void 0, void 0, void 0, function*
         let projectId = parseInt(req.body.project_id);
         let activityName = req.body.activity_name;
         let activityNumber = (req.body.activity_number == '') ? 0 : parseInt(req.body.activity_number);
+        let startDate = (req.body.start_date == undefined) ? new Date() : new Date(req.body.start_date);
         let intduration = parseInt(req.body.duration);
         let complete = req.body.completed === 'true' ? true : false;
         let acitivtyNote = req.body.note;
         const activity = {
             activity_name: activityName,
-            activity_number: activityNumber == null ? 0 : activityNumber,
+            activity_number: activityNumber,
+            start_date: startDate,
             duration: intduration,
             completed: complete,
-            note: acitivtyNote == '' ? undefined : acitivtyNote,
+            note: acitivtyNote,
             project_id: projectId,
         };
         const newActivity = yield ActivityService.createActivity(activity);
@@ -86,6 +88,7 @@ const updateActivity = (req, res) => __awaiter(void 0, void 0, void 0, function*
         let projectId = parseInt(req.params.project_id);
         let activityName = req.body.activity_name;
         let activityNumber = parseInt(req.body.activity_number);
+        let startDate = (req.body.start_date == '') ? new Date() : new Date(req.body.start_date);
         let intduration = parseInt(req.body.duration);
         let complete = req.body.completed === 'true' ? true : false;
         let acitivtyNote = req.body.note;
@@ -93,6 +96,7 @@ const updateActivity = (req, res) => __awaiter(void 0, void 0, void 0, function*
             activity_id: activity_id,
             activity_name: activityName,
             activity_number: activityNumber,
+            start_date: startDate,
             duration: intduration,
             completed: complete,
             note: acitivtyNote,

@@ -6,9 +6,12 @@ export const taskRouter = express.Router();
 
 //Get: Get all tasks
 taskRouter
+    .route("/")
+    .post(taskController.createTask);
+    
+taskRouter
     .route("/:activity_id")
     .get(taskController.getTasks)
-    .post(taskController.createTask);
 
 taskRouter
     .route("/task/:task_id")

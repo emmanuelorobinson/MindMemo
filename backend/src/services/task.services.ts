@@ -14,7 +14,8 @@ export const getTasks = async (activity_id: number): Promise<Task[]> => {
             task_id: true,
             task_name: true,
             task_number: true,
-            days_till_due: true,
+            start_date: true,
+            duration: true,
             completed: true,
             note: true,
             activity_id: true,
@@ -31,7 +32,8 @@ export const getTaskByID = async (task_id: number): Promise<Task | null> => {
             task_id: true,
             task_name: true,
             task_number: true,
-            days_till_due: true,
+            start_date: true,
+            duration: true,
             completed: true,
             note: true,
             activity_id: true,
@@ -46,7 +48,8 @@ export const createTask = async (task: Omit<Task, 'task_id' | 'task_list_id'>): 
             task_id: true,
             task_name: true,
             task_number: true,
-            days_till_due: true,
+            start_date: true,
+            duration: true,
             completed: true,
             note: true,
             activity_id: true,
@@ -66,7 +69,8 @@ export const updateTask = async (task: Omit<Task, 'task_list_id'>): Promise<Task
             task_id: true,
             task_name: true,
             task_number: true,
-            days_till_due: true,
+            start_date: true,
+            duration: true,
             completed: true,
             note: true,
             activity_id: true,
@@ -83,7 +87,8 @@ export const deleteTask = async (task_id: number): Promise<Task | null> => {
             task_id: true,
             task_name: true,
             task_number: true,
-            days_till_due: true,
+            start_date: true,
+            duration: true,
             completed: true,
             note: true,
             activity_id: true,
@@ -92,6 +97,7 @@ export const deleteTask = async (task_id: number): Promise<Task | null> => {
 }
 
 // export const getTodaysTasks = async (): Promise<Task[]> => {
+    
 //     return db.task.findMany({
 //         where: {
 //             days_till_due: 0,

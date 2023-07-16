@@ -23,23 +23,23 @@ export const getTaskByID = async (req: any, res: any) => {
 
 export const createTask = async (req: any, res: any) => {
     try {
-        let activityId = parseInt(req.params.project_id);
+        let activityId = parseInt(req.body.activity_id);
         let taskName = req.body.task_name;
-        let taskNumber = parseInt(req.body.task_number);
-        let dueDate = req.body.due_date;
-        let currentDate = new Date();
-        let daysTillDue = ((Date.parse(dueDate)) - currentDate.getTime()) / (1000 * 3600 * 24);
+        let taskNumber = (req.body.task_number == '') ? 0 : parseInt(req.body.task_number);
+        let startDate = (req.body.start_date == '') ? new Date() : new Date(req.body.start_date);
+        let intduration = parseInt(req.body.duration);
         let complete = req.body.completed === 'true' ? true : false;
         let taskNote = req.body.note;
         let task = {
             task_name: taskName,
             task_number: taskNumber,
-            days_till_due: daysTillDue,
+            start_date: startDate,
+            duration: intduration,
             completed: complete,
             note: taskNote,
             activity_id: activityId,
         }
-        console.log(req.body);
+
         const newTask = await TaskService.createTask(task);
         res.json(newTask);
     } catch (error: any) {
@@ -53,16 +53,16 @@ export const updateTask = async (req: any, res: any) => {
         let activityId = parseInt(req.params.project_id);
         let taskName = req.body.task_name;
         let taskNumber = parseInt(req.body.task_number);
-        let dueDate = req.body.due_date;
-        let currentDate = new Date();
-        let daysTillDue = ((Date.parse(dueDate)) - currentDate.getTime()) / (1000 * 3600 * 24);
+        let startDate = (req.body.start_date == '') ? new Date() : new Date(req.body.start_date);
+        let intduration = parseInt(req.body.duration);
         let complete = req.body.completed === 'true' ? true : false;
         let taskNote = req.body.note;
         let task = {
             task_id: task_id,
             task_name: taskName,
             task_number: taskNumber,
-            days_till_due: daysTillDue,
+            start_date: startDate,
+            duration: intduration,
             completed: complete,
             note: taskNote,
             activity_id: activityId,
