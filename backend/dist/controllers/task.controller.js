@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteTask = exports.updateTask = exports.createTask = exports.getTaskByID = exports.getTasks = void 0;
+exports.getTaskTagList = exports.deleteTask = exports.updateTask = exports.createTask = exports.getTaskByID = exports.getTasks = void 0;
 const TaskService = __importStar(require("../services/task.services"));
 const getTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -129,31 +129,14 @@ exports.deleteTask = deleteTask;
 //         res.json({ message: error.message });
 //     }
 // }
-// export const getTaskTagList = async (req: any, res: any) => {
-//     try {
-//         const task_id = req.params;
-//         const taskTagList = await TaskService.getTaskTagList(parseInt(task_id));
-//         res.json(taskTagList);
-//     } catch (error: any) {
-//         res.json({ message: error.message });
-//     }
-// }
-// export const getTasksByTag = async (req: any, res: any) => {
-//     try {
-//         const tag_id = req.params;
-//         const tasks = await TaskService.getTasksByTag(parseInt(tag_id));
-//         res.json(tasks);
-//     } catch (error: any) {
-//         res.json({ message: error.message });
-//     }
-// }
-// export const updateTaskTagList = async (req: any, res: any) => {
-//     try {
-//         const task_id = req.params;
-//         const tag_list = req.body.tag_list;
-//         const taskTagList = await TaskService.updateTaskTagList(parseInt(task_id), tag_list);
-//         res.json(taskTagList);
-//     } catch (error: any) {
-//         res.json({ message: error.message });
-//     }
-// }
+const getTaskTagList = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const task_id = req.params.task_id;
+        const taskTagList = yield TaskService.getTagsByTask(parseInt(task_id));
+        res.json(taskTagList);
+    }
+    catch (error) {
+        res.json({ message: error.message });
+    }
+});
+exports.getTaskTagList = getTaskTagList;

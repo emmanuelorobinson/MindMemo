@@ -40,42 +40,56 @@ export const createTag = async (req: Request, res: Response)=> {
     }
 }
 
-// export const addTagToTask = async (req: Request, res: Response)=> {
-//     try {
-//         const { task_id, tag_id } = req.body;
-//         const newTag = await TagService.addTagToTask(task_id, tag_id);
-//         res.json(newTag);
-//     } catch (error: any) {
-//         res.status(500).json({ error: error.message});
-//     }
-// }
-
-// export const addTagToActivity = async (req: Request, res: Response)=> {
-//     try {
-//         const { activity_id, tag_id } = req.body;
-//         const newTag = await TagService.addTagToActivity(activity_id, tag_id);
-//         res.json(newTag);
-//     } catch (error: any) {
-//         res.status(500).json({ error: error.message});
-//     }
-// }
-
-export const getTaskTagListByID = async (req: Request, res: Response)=> {
+export const addTagToTask = async (req: Request, res: Response)=> {
     try {
-        const { task_id } = req.params;
-        const tagList = await TagService.getTaskTagListByID(parseInt(task_id));
-        res.json(tagList);
+        const task_id = parseInt(req.params.task_id);
+        const tag_name = req.params.tag_name;
+
+        let tag = await TagService.getTagByName(tag_name);
+        if (tag === null) {
+            tag = await TagService.createTag(tag_name);
+        }
+
+        const newTag = await TagService.addTagToTask(tag, task_id);
+        res.json(newTag);
     } catch (error: any) {
         res.status(500).json({ error: error.message});
     }
 }
 
-export const getActivityTagListByID = async (req: Request, res: Response)=> {
+export const addTagToActivity = async (req: Request, res: Response)=> {
     try {
-        const { activity_id } = req.params;
-        const tagList = await TagService.getActivityTagListByID(parseInt(activity_id));
-        res.json(tagList);
+        const activity_id = parseInt(req.params.activity_id);
+        const tag_name = req.params.tag_name;
+
+        let tag = await TagService.getTagByName(tag_name);
+        if (tag === null) {
+            tag = await TagService.createTag(tag_name);
+        }
+
+        const newTag = await TagService.addTagToActivity(tag, activity_id);
+        res.json(newTag);
     } catch (error: any) {
         res.status(500).json({ error: error.message});
+    }
+}
+
+export const getTagTasks = async (req: any, res: any) => {
+    try {
+        const tag_id = req.params;
+        const tasks = await TagService.getTasksByTag(parseInt(tag_id));
+        res.json(tasks);
+    } catch (error: any) {
+        res.json({ message: error.message });
+    }
+}
+
+export const getTagActivities = async (req: any, res: any) => {
+    try {
+        const tag_id = req.params;
+        const activities = await TagService.getActivitiesByTag(parseInt(tag_id));
+        res.json(activities);
+    } catch (error: any) {
+        res.json({ message: error.message });
     }
 }

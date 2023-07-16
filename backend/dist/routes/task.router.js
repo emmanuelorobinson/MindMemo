@@ -48,9 +48,9 @@ exports.taskRouter
 // taskRouter
 //     .route("/upcoming")
 //     .get(taskController.getUpcomingTasks);
-// taskRouter
-//     .route("/tags")
-//     .get(taskController.getTaskTagList);
+exports.taskRouter
+    .route("/task/:task_id/tags")
+    .get(taskController.getTaskTagList);
 // taskRouter
 //     .route("/tags/:tag_id")
 //     .get(taskController.getTasksByTag)

@@ -1,8 +1,7 @@
 import { db } from "../utils/db.server";
 // import { User, Project, ProjectList } from "../utils/db.types";
 import { Project, Task, User } from "@prisma/client";
-import { getActivities } from "./activity.services";
-import { getTodaysTasks } from "./task.services";
+
 
 export const getUsers = async (): Promise<User[]> => {
     return db.user.findMany({
@@ -75,21 +74,5 @@ export const deleteUser = async (user_id: string): Promise<User | null> => {
     });
 }
 
-export const getProjectTasks = async (projects: Project[]): Promise<Task[]> => {
-    let tasks: Task[] = [];
-    
-    for (const project of projects) {
-        const activities = await getActivities(project.project_id);
-        
-        for (const activity of activities) {
-            let list = await getTodaysTasks(activity.activity_id);
-            console.log(activity.activity_id + " " + list.length);
-            tasks = [...tasks, ...list];
-            console.log("tasks: " + tasks.length);
-        }
-    }
-
-    return tasks;
-}
 
 

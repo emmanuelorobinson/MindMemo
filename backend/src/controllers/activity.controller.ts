@@ -102,34 +102,14 @@ export const deleteActivity = async (req: any, res: any) => {
 //     }
 // }
 
-// export const getActivityTagList = async (req: any, res: any) => {
-//     try {
-//         const { activity_id } = req.params;
-//         const activityTagList = await ActivityService.getActivityTagList(parseInt(activity_id));
-//     } catch (error: any){
-//         res.json({ message: error.message });
-//     }
-// }
+export const getActivityTagList = async (req: any, res: any) => {
+    try {
+        const { activity_id } = req.params;
+        const activityTagList = await ActivityService.getActivityTagList(parseInt(activity_id));
+        res.json(activityTagList);
+    } catch (error: any){
+        res.json({ message: error.message });
+    }
+}
 
-
-// export const getActivitiesByTag = async (req: any, res: any) => {
-//     try {
-//         const tag_id = req.params;
-//         const tasks = await ActivityService.getActivitiesByTag(parseInt(tag_id));
-//         res.json(tasks);
-//     } catch (error: any) {
-//         res.json({ message: error.message });
-//     }
-// }
-
-// export const updateActivitiesTagList = async (req: any, res: any) => {
-//     try {
-//         const activity_id = req.params;
-//         const tag_list = req.body.tag_list;
-//         const activityTagList = await ActivityService.updateActivityTagList(parseInt(activity_id), tag_list);
-//         res.json(activityTagList);
-//     } catch (error: any) {
-//         res.json({ message: error.message });
-//     }
-// }
 

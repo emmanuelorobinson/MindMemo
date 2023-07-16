@@ -17,11 +17,14 @@ tagRouter
     .route("/:tag_name")
     .get(tagController.getTagByName)
 
-// tagRouter
-//     .route("/:tag_id/tasks")
-//     // .get(tagController.getTagTasks)
-//     .post(tagController.addTagToTask)
+tagRouter
+    .route("/:tag_name/:task_id")
+    .get(tagController.getTagTasks)
+    .post(tagController.addTagToTask)
+    .put(tagController.addTagToTask);
 
-// tagRouter
-//     .route("/:tag_id/activities")
-//     .post(tagController.addTagToActivity)
+tagRouter
+    .route("/:tag_name/:activity_id")
+    .get(tagController.getTagActivities)
+    .post(tagController.addTagToActivity)
+    .put(tagController.addTagToActivity);

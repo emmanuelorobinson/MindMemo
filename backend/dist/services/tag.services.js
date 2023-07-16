@@ -9,8 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getActivityTagListByID = exports.getTaskTagListByID = exports.getActivityTagLists = exports.getTaskTagLists = exports.createTag = exports.getTagByName = exports.getTagByID = exports.getTags = void 0;
+exports.getActivitiesByTag = exports.getTasksByTag = exports.getActivityTagListByID = exports.getTaskTagListByID = exports.addTagToActivity = exports.addTagToTask = exports.getActivityTagLists = exports.getTaskTagLists = exports.createTag = exports.getTagByName = exports.getTagByID = exports.getTags = void 0;
 const db_server_1 = require("../utils/db.server");
+const task_services_1 = require("./task.services");
+const activity_services_1 = require("./activity.services");
 // import { getTaskTagList, updateTaskTagList } from "./task.services";
 // import { getActivityTagList, updateActivityTagList } from "./activity.services";
 //TODO:
@@ -39,9 +41,9 @@ const getTagByID = (tag_id) => __awaiter(void 0, void 0, void 0, function* () {
 exports.getTagByID = getTagByID;
 //TO DO : Change to findUnique
 const getTagByName = (tag_name) => __awaiter(void 0, void 0, void 0, function* () {
-    return db_server_1.db.tag.findMany({
+    return db_server_1.db.tag.findUnique({
         where: {
-            tag_name,
+            tag_name: tag_name,
         },
         select: {
             tag_id: true,
@@ -88,60 +90,62 @@ const getActivityTagLists = (tag_id) => __awaiter(void 0, void 0, void 0, functi
     });
 });
 exports.getActivityTagLists = getActivityTagLists;
-// export const addTagToTask = async (tag: Tag, task_id: number): Promise<TaskTagList> => {
-//     let tagList = db.taskTagList.create({
-//         data: {
-//             task_id: task_id,
-//             tag_id: tag.tag_id,
-//         },
-//         select: {
-//             task_id: true,
-//             task_tag_list_id: true,
-//             tag_id: true,
-//         }
-//     });
-//     let task_tag_lists = await getTaskTagList(tag.tag_id);
-//     updateTaskTagList(task_id, (await tagList).task_tag_list_id);
-//     task_tag_lists = [...task_tag_lists!, (await tagList)];
-//     db.tag.update({
-//         where: {
-//             tag_id: tag.tag_id,
-//         },
-//         data: {
-//             task_tag_list: {
-//                 connect: task_tag_lists,
-//             }
-//         }
-//     })
-//     return tagList;
-// }
-// export const addTagToActivity = async (tag: Tag, activity_id: number): Promise<ActivityTagList> => {
-//     let tagList = db.activityTagList.create({
-//         data: {
-//             activity_id: activity_id,
-//             tag_id: tag.tag_id,
-//         },
-//         select: {
-//             activity_id: true,
-//             activity_tag_list_id: true,
-//             tag_id: true,
-//         }
-//     });
-//     let activity_tag_lists = await getActivityTagList(tag.tag_id);
-//     updateActivityTagList(activity_id, (await tagList));
-//     activity_tag_lists = [...activity_tag_lists!, (await tagList)];
-//     db.tag.update({
-//         where: {
-//             tag_id: tag.tag_id,
-//         },
-//         data: {
-//             activity_tag_list: {
-//                 connect: activity_tag_lists,
-//             }
-//         }
-//     })
-//     return tagList;
-// }
+const addTagToTask = (tag, task_id) => __awaiter(void 0, void 0, void 0, function* () {
+    let tagList = db_server_1.db.taskTagList.create({
+        data: {
+            task_id: task_id,
+            tag_id: tag.tag_id,
+        },
+        select: {
+            task_id: true,
+            task_tag_list_id: true,
+            tag_id: true,
+        }
+    });
+    let task_tag_lists = yield (0, task_services_1.getTaskTagList)(tag.tag_id);
+    (0, task_services_1.updateTaskTagList)(task_id, (yield tagList).task_tag_list_id);
+    task_tag_lists = [...task_tag_lists, (yield tagList)];
+    db_server_1.db.tag.update({
+        where: {
+            tag_id: tag.tag_id,
+        },
+        data: {
+            task_tag_list: {
+                connect: task_tag_lists,
+            }
+        }
+    });
+    return tagList;
+});
+exports.addTagToTask = addTagToTask;
+const addTagToActivity = (tag, activity_id) => __awaiter(void 0, void 0, void 0, function* () {
+    let tagList = db_server_1.db.activityTagList.create({
+        data: {
+            activity_id: activity_id,
+            tag_id: tag.tag_id,
+        },
+        select: {
+            activity_id: true,
+            activity_tag_list_id: true,
+            tag_id: true,
+        }
+    });
+    let activity_tag_lists = yield (0, activity_services_1.getActivityTagList)(tag.tag_id);
+    (0, activity_services_1.updateActivityTagList)(activity_id, (yield tagList));
+    activity_tag_lists = [...activity_tag_lists, (yield tagList)];
+    db_server_1.db.tag.update({
+        where: {
+            tag_id: tag.tag_id,
+        },
+        data: {
+            activity_tag_list: {
+                connect: activity_tag_lists,
+            }
+        }
+    });
+    return tagList;
+});
+exports.addTagToActivity = addTagToActivity;
 const getTaskTagListByID = (task_tag_list_id) => __awaiter(void 0, void 0, void 0, function* () {
     let list = db_server_1.db.taskTagList.findUnique({
         where: {
@@ -174,3 +178,53 @@ const getActivityTagListByID = (activity_tag_list_id) => __awaiter(void 0, void 
     });
 });
 exports.getActivityTagListByID = getActivityTagListByID;
+const getTasksByTag = (tag_id) => __awaiter(void 0, void 0, void 0, function* () {
+    let taskTagList = yield (0, exports.getTaskTagLists)(tag_id);
+    let taskIDs = yield db_server_1.db.taskTagList.findMany({
+        where: {
+            tag_id,
+        },
+        select: {
+            task_id: true,
+        }
+    });
+    let tasks;
+    taskIDs.forEach((taskID) => {
+        let task = db_server_1.db.task.findUnique({
+            where: {
+                task_id: taskID.task_id,
+            },
+        });
+        tasks = [...tasks, task];
+    });
+    if (tasks === undefined) {
+        return [];
+    }
+    return tasks;
+});
+exports.getTasksByTag = getTasksByTag;
+const getActivitiesByTag = (tag_id) => __awaiter(void 0, void 0, void 0, function* () {
+    let activityTagList = yield (0, exports.getActivityTagLists)(tag_id);
+    let activityIDs = yield db_server_1.db.activityTagList.findMany({
+        where: {
+            tag_id,
+        },
+        select: {
+            activity_id: true,
+        }
+    });
+    let activities;
+    activityIDs.forEach((activityID) => {
+        let activity = db_server_1.db.activity.findUnique({
+            where: {
+                activity_id: activityID.activity_id,
+            },
+        });
+        activities = [...activities, activity];
+    });
+    if (activities === undefined) {
+        return [];
+    }
+    return activities;
+});
+exports.getActivitiesByTag = getActivitiesByTag;

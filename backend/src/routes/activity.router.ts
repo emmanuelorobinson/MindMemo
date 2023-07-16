@@ -27,7 +27,7 @@ activityRouter
 //     .route("/upcoming")
 //     .get(activityController.getUpcomingActivities);
 
-// activityRouter
-//     .route("/tags/:tag_id")
-//     .get(activityController.getActivitiesByTag)
-//     .put(activityController.updateActivitiesTagList)
+activityRouter
+    .route("/activity/:activity_id/tags")
+    .get(activityController.getActivityTagList);
+    // .put(activityController.updateActivitiesTagList)

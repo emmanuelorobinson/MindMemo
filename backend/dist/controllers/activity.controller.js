@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteActivity = exports.updateActivity = exports.createActivity = exports.getActivityByID = exports.getActivities = void 0;
+exports.getActivityTagList = exports.deleteActivity = exports.updateActivity = exports.createActivity = exports.getActivityByID = exports.getActivities = void 0;
 const ActivityService = __importStar(require("../services/activity.services"));
 const getActivities = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -137,30 +137,14 @@ exports.deleteActivity = deleteActivity;
 //         res.json({ message: error.message });
 //     }
 // }
-// export const getActivityTagList = async (req: any, res: any) => {
-//     try {
-//         const { activity_id } = req.params;
-//         const activityTagList = await ActivityService.getActivityTagList(parseInt(activity_id));
-//     } catch (error: any){
-//         res.json({ message: error.message });
-//     }
-// }
-// export const getActivitiesByTag = async (req: any, res: any) => {
-//     try {
-//         const tag_id = req.params;
-//         const tasks = await ActivityService.getActivitiesByTag(parseInt(tag_id));
-//         res.json(tasks);
-//     } catch (error: any) {
-//         res.json({ message: error.message });
-//     }
-// }
-// export const updateActivitiesTagList = async (req: any, res: any) => {
-//     try {
-//         const activity_id = req.params;
-//         const tag_list = req.body.tag_list;
-//         const activityTagList = await ActivityService.updateActivityTagList(parseInt(activity_id), tag_list);
-//         res.json(activityTagList);
-//     } catch (error: any) {
-//         res.json({ message: error.message });
-//     }
-// }
+const getActivityTagList = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { activity_id } = req.params;
+        const activityTagList = yield ActivityService.getActivityTagList(parseInt(activity_id));
+        res.json(activityTagList);
+    }
+    catch (error) {
+        res.json({ message: error.message });
+    }
+});
+exports.getActivityTagList = getActivityTagList;

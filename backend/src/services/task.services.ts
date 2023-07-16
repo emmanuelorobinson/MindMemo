@@ -1,6 +1,6 @@
 import { db } from "../utils/db.server";
 import { Task, TaskTagList } from "@prisma/client";
-import { getTaskTagLists } from "./tag.services";
+import { getTagByID, getTagByName, getTaskTagLists } from "./tag.services";
 
 //gTODO:
 // 1. tasks by date
@@ -111,28 +111,28 @@ export const getAllTasks = async (): Promise<Task[]> => {
     })
 }
 
-export const getTodaysTasks = async (activity_id: number): Promise<Task[]> => {
-    let tasks = await getTasks(activity_id);
-    let today = new Date().toDateString();
-    let todaysTasks: Task[] = [];
+// export const getTodaysTasks = async (activity_id: number): Promise<Task[]> => {
+//     let tasks = await getTasks(activity_id);
+//     let today = new Date().toDateString();
+//     let todaysTasks: Task[] = [];
 
-    tasks.forEach((task) => {
-        let start_date = new Date(task.start_date);
-        let duration = task.duration;
-        let end_date = start_date;
-        end_date.setDate(end_date.getDate() + duration);
-        // console.log(task.task_name + end_date.toDateString());
+//     tasks.forEach((task) => {
+//         let start_date = new Date(task.start_date);
+//         let duration = task.duration;
+//         let end_date = start_date;
+//         end_date.setDate(end_date.getDate() + duration);
+//         // console.log(task.task_name + end_date.toDateString());
 
-        if (end_date.toDateString() === today) {
-            // console.log(task.task_name + end_date);
-            todaysTasks.push(task);
-        }
-    });
+//         if (end_date.toDateString() === today) {
+//             // console.log(task.task_name + end_date);
+//             todaysTasks.push(task);
+//         }
+//     });
 
-    console.log(activity_id + " Today's tasks: " + todaysTasks.length);
+//     console.log(activity_id + " Today's tasks: " + todaysTasks.length);
 
-    return todaysTasks;
-}
+//     return todaysTasks;
+// }
 
 export const getUpcomingTasks = async (activity_id: number): Promise<Task[]> => {
     let tasks = await getTasks(activity_id);
@@ -157,82 +157,79 @@ export const getUpcomingTasks = async (activity_id: number): Promise<Task[]> => 
     return upcomingTasks;
 }
 
+export const getTaskTagList = async (task_id: number): Promise<TaskTagList[] | null> => {
+    return db.taskTagList.findMany({
+        where: {
+            task_id,
+        },
+        select: {
+            task_tag_list_id: true,
+            task_id: true,
+            tag_id: true,
+        }
+    })
+}
 
+export const updateTaskTagList = async (task_id: number, tag_list_id: number): Promise<Task> => {
+    let task = await getTaskByID(task_id);
+    let tagLists = await getTaskTagList(task_id);
+    let tagList = db.taskTagList.findUnique({
+        where: {
+            task_tag_list_id: tag_list_id,
+        },
+        select: {
+            task_tag_list_id: true,
+            task_id: true,
+            tag_id: true,
+        },
+    })
+    tagLists = [...tagLists!, (await tagList)!];
 
-// export const getTaskTagList = async (task_id: number): Promise<TaskTagList[] | null> => {
-//     return db.taskTagList.findMany({
-//         where: {
-//             task_id,
-//         },
-//         select: {
-//             task_tag_list_id: true,
-//             task_id: true,
-//             tag_id: true,
-//         }
-//     })
-// }
+    return db.task.update({
+        where: {
+            task_id,
+        },
+        data: {
+            tag_list: {
+                connect: tagLists,
+            }
+        },
+        select: {
+            task_id: true,
+            task_name: true,
+            task_number: true,
+            start_date: true,
+            duration: true,
+            completed: true,
+            note: true,
+            activity_id: true,
+        }
+    });
+}
 
-// export const updateTaskTagList = async (task_id: number, tag_list_id: number): Promise<Task> => {
-//     let task = await getTaskByID(task_id);
-//     let tagLists = await getTaskTagList(task_id);
-//     let tagList = db.taskTagList.findUnique({
-//         where: {
-//             task_tag_list_id: tag_list_id,
-//         },
-//         select: {
-//             task_tag_list_id: true,
-//             task_id: true,
-//             tag_id: true,
-//         },
-//     })
-//     tagLists = [...tagLists!, (await tagList)!];
+export const getTagsByTask = async (task_id: number): Promise<string[]> => {
+    let list = await db.taskTagList.findMany({
+        where: {
+            task_id,
+        },
+        select: {
+            task_tag_list_id: true,
+            task_id: true,
+            tag_id: true,
+        }
+    })
+    console.log(list);
 
-//     return db.task.update({
-//         where: {
-//             task_id,
-//         },
-//         data: {
-//             tag_list: {
-//                 connect: tagLists,
-//             }
-//         },
-//         select: {
-//             task_id: true,
-//             task_name: true,
-//             task_number: true,
-//             days_till_due: true,
-//             completed: true,
-//             note: true,
-//             activity_id: true,
-//         }
-//     });
-// }
+    let results = [];
 
-// export const getTasksByTag = async (tag_id: number): Promise<Task[]> => {
-//     let taskTagList = await getTaskTagLists(tag_id);
-    
-//     let taskIDs = await db.taskTagList.findMany({
-//         where: {
-//             tag_id,
-//         },
-//         select: {
-//             task_id: true,
-//         }
-//     })
+    for (let i = 0; i < list.length; i++) {
+        let name = (await getTagByID(list[i].tag_id))?.tag_name;
+        if (name !== undefined)
+            results.push(name);
+    }
 
-//     let tasks;
-//     taskIDs.forEach((taskID) => {
-//         let task = db.task.findUnique({
-//             where: {
-//                 task_id: taskID.task_id,
-//             },
-//         });
-//         tasks = [...tasks!, task];
-//     })
+    console.log(results);
 
-//     if (tasks === undefined) {
-//         return [];
-//     }
+    return results;
+}
 
-//     return tasks!;
-// }

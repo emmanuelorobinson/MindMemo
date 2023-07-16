@@ -95,35 +95,16 @@ export const deleteTask = async (req: any, res: any) => {
 //     }
 // }
 
-// export const getTaskTagList = async (req: any, res: any) => {
-//     try {
-//         const task_id = req.params;
-//         const taskTagList = await TaskService.getTaskTagList(parseInt(task_id));
-//         res.json(taskTagList);
-//     } catch (error: any) {
-//         res.json({ message: error.message });
-//     }
-// }
+export const getTaskTagList = async (req: any, res: any) => {
+    try {
+        const task_id = req.params.task_id;
+        const taskTagList = await TaskService.getTagsByTask(parseInt(task_id));
+        res.json(taskTagList);
+    } catch (error: any) {
+        res.json({ message: error.message });
+    }
+}
 
-// export const getTasksByTag = async (req: any, res: any) => {
-//     try {
-//         const tag_id = req.params;
-//         const tasks = await TaskService.getTasksByTag(parseInt(tag_id));
-//         res.json(tasks);
-//     } catch (error: any) {
-//         res.json({ message: error.message });
-//     }
-// }
 
-// export const updateTaskTagList = async (req: any, res: any) => {
-//     try {
-//         const task_id = req.params;
-//         const tag_list = req.body.tag_list;
-//         const taskTagList = await TaskService.updateTaskTagList(parseInt(task_id), tag_list);
-//         res.json(taskTagList);
-//     } catch (error: any) {
-//         res.json({ message: error.message });
-//     }
-// }
 
 

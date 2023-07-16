@@ -9,8 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUpcomingTasks = exports.getTodaysTasks = exports.getAllTasks = exports.deleteTask = exports.updateTask = exports.createTask = exports.getTaskByID = exports.getTasks = void 0;
+exports.getTagsByTask = exports.updateTaskTagList = exports.getTaskTagList = exports.getUpcomingTasks = exports.getAllTasks = exports.deleteTask = exports.updateTask = exports.createTask = exports.getTaskByID = exports.getTasks = void 0;
 const db_server_1 = require("../utils/db.server");
+const tag_services_1 = require("./tag.services");
 //gTODO:
 // 1. tasks by date
 const getTasks = (activity_id) => __awaiter(void 0, void 0, void 0, function* () {
@@ -118,25 +119,24 @@ const getAllTasks = () => __awaiter(void 0, void 0, void 0, function* () {
     });
 });
 exports.getAllTasks = getAllTasks;
-const getTodaysTasks = (activity_id) => __awaiter(void 0, void 0, void 0, function* () {
-    let tasks = yield (0, exports.getTasks)(activity_id);
-    let today = new Date().toDateString();
-    let todaysTasks = [];
-    tasks.forEach((task) => {
-        let start_date = new Date(task.start_date);
-        let duration = task.duration;
-        let end_date = start_date;
-        end_date.setDate(end_date.getDate() + duration);
-        // console.log(task.task_name + end_date.toDateString());
-        if (end_date.toDateString() === today) {
-            // console.log(task.task_name + end_date);
-            todaysTasks.push(task);
-        }
-    });
-    console.log(activity_id + " Today's tasks: " + todaysTasks.length);
-    return todaysTasks;
-});
-exports.getTodaysTasks = getTodaysTasks;
+// export const getTodaysTasks = async (activity_id: number): Promise<Task[]> => {
+//     let tasks = await getTasks(activity_id);
+//     let today = new Date().toDateString();
+//     let todaysTasks: Task[] = [];
+//     tasks.forEach((task) => {
+//         let start_date = new Date(task.start_date);
+//         let duration = task.duration;
+//         let end_date = start_date;
+//         end_date.setDate(end_date.getDate() + duration);
+//         // console.log(task.task_name + end_date.toDateString());
+//         if (end_date.toDateString() === today) {
+//             // console.log(task.task_name + end_date);
+//             todaysTasks.push(task);
+//         }
+//     });
+//     console.log(activity_id + " Today's tasks: " + todaysTasks.length);
+//     return todaysTasks;
+// }
 const getUpcomingTasks = (activity_id) => __awaiter(void 0, void 0, void 0, function* () {
     let tasks = yield (0, exports.getTasks)(activity_id);
     let today = new Date();
@@ -155,73 +155,75 @@ const getUpcomingTasks = (activity_id) => __awaiter(void 0, void 0, void 0, func
     return upcomingTasks;
 });
 exports.getUpcomingTasks = getUpcomingTasks;
-// export const getTaskTagList = async (task_id: number): Promise<TaskTagList[] | null> => {
-//     return db.taskTagList.findMany({
-//         where: {
-//             task_id,
-//         },
-//         select: {
-//             task_tag_list_id: true,
-//             task_id: true,
-//             tag_id: true,
-//         }
-//     })
-// }
-// export const updateTaskTagList = async (task_id: number, tag_list_id: number): Promise<Task> => {
-//     let task = await getTaskByID(task_id);
-//     let tagLists = await getTaskTagList(task_id);
-//     let tagList = db.taskTagList.findUnique({
-//         where: {
-//             task_tag_list_id: tag_list_id,
-//         },
-//         select: {
-//             task_tag_list_id: true,
-//             task_id: true,
-//             tag_id: true,
-//         },
-//     })
-//     tagLists = [...tagLists!, (await tagList)!];
-//     return db.task.update({
-//         where: {
-//             task_id,
-//         },
-//         data: {
-//             tag_list: {
-//                 connect: tagLists,
-//             }
-//         },
-//         select: {
-//             task_id: true,
-//             task_name: true,
-//             task_number: true,
-//             days_till_due: true,
-//             completed: true,
-//             note: true,
-//             activity_id: true,
-//         }
-//     });
-// }
-// export const getTasksByTag = async (tag_id: number): Promise<Task[]> => {
-//     let taskTagList = await getTaskTagLists(tag_id);
-//     let taskIDs = await db.taskTagList.findMany({
-//         where: {
-//             tag_id,
-//         },
-//         select: {
-//             task_id: true,
-//         }
-//     })
-//     let tasks;
-//     taskIDs.forEach((taskID) => {
-//         let task = db.task.findUnique({
-//             where: {
-//                 task_id: taskID.task_id,
-//             },
-//         });
-//         tasks = [...tasks!, task];
-//     })
-//     if (tasks === undefined) {
-//         return [];
-//     }
-//     return tasks!;
-// }
+const getTaskTagList = (task_id) => __awaiter(void 0, void 0, void 0, function* () {
+    return db_server_1.db.taskTagList.findMany({
+        where: {
+            task_id,
+        },
+        select: {
+            task_tag_list_id: true,
+            task_id: true,
+            tag_id: true,
+        }
+    });
+});
+exports.getTaskTagList = getTaskTagList;
+const updateTaskTagList = (task_id, tag_list_id) => __awaiter(void 0, void 0, void 0, function* () {
+    let task = yield (0, exports.getTaskByID)(task_id);
+    let tagLists = yield (0, exports.getTaskTagList)(task_id);
+    let tagList = db_server_1.db.taskTagList.findUnique({
+        where: {
+            task_tag_list_id: tag_list_id,
+        },
+        select: {
+            task_tag_list_id: true,
+            task_id: true,
+            tag_id: true,
+        },
+    });
+    tagLists = [...tagLists, (yield tagList)];
+    return db_server_1.db.task.update({
+        where: {
+            task_id,
+        },
+        data: {
+            tag_list: {
+                connect: tagLists,
+            }
+        },
+        select: {
+            task_id: true,
+            task_name: true,
+            task_number: true,
+            start_date: true,
+            duration: true,
+            completed: true,
+            note: true,
+            activity_id: true,
+        }
+    });
+});
+exports.updateTaskTagList = updateTaskTagList;
+const getTagsByTask = (task_id) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    let list = yield db_server_1.db.taskTagList.findMany({
+        where: {
+            task_id,
+        },
+        select: {
+            task_tag_list_id: true,
+            task_id: true,
+            tag_id: true,
+        }
+    });
+    console.log(list);
+    let results = [];
+    for (let i = 0; i < list.length; i++) {
+        let name = (_a = (yield (0, tag_services_1.getTagByID)(list[i].tag_id))) === null || _a === void 0 ? void 0 : _a.tag_name;
+        if (name !== undefined)
+            results.push(name);
+    }
+    console.log(results);
+    return results;
+});
+exports.getTagsByTask = getTagsByTask;
