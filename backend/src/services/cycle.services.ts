@@ -46,6 +46,13 @@ export const deleteCycle = async (cycle_id: number): Promise<Cycle | null> => {
     });
 }
 
+export const getCycleByProjectID = async (project_id: number): Promise<Cycle | null> => {
+    return db.cycle.findUnique({
+        where: {
+            project_id,
+        },
+    })
+}
 // export const getCycleNames = async (user_id: number): Promise<String[]> => {
 //     let cycles = await getCycles();
 
@@ -69,3 +76,22 @@ export const deleteCycle = async (cycle_id: number): Promise<Cycle | null> => {
 //     return cycleNames;
 // }
 
+export const getCyclesByUser = async (user_id: string): Promise<Project[]> => {
+    return db.project.findMany({
+        where: {
+            user_id,
+            save_as_cycle: true,
+        },
+        select: {
+            project_id: true,
+            project_name: true,
+            project_start_date: true,
+            duration: true,
+            days_till_renew: true,
+            completed: true,
+            save_as_cycle: true,
+            user_id: true,
+            cycle_id: true,
+        }
+    });
+}

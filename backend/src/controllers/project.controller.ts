@@ -1,5 +1,10 @@
+import { get } from "http";
+import { getCycleByID } from "../services/cycle.services";
 import * as ProjectService from "../services/project.services";
 import { Request, Response } from "express";
+import { createActivity, getActivities, getTagsByActivity } from "../services/activity.services";
+import { createTask, getTagsByTask, getTasks } from "../services/task.services";
+import { addTagToActivity, addTagToTask, createTag, getTagByName } from "../services/tag.services";
 
 export const getProjects = async (req: Request, res: Response) => {
     try {
@@ -30,8 +35,9 @@ export const createProject = async (req: Request, res: Response) => {
         let date = (new Date(req.body.project_start_date));
         let name = req.body.project_name;
         let save_as_cycle = req.body.save_as_cycle === "true" ? true : false;
-        let cycle_id = req.body.cycle_id;
+        let cycle_id = (req.body.cycle_id == "") ? 0 : parseInt(req.body.cycle_id);
         let complete = req.body.completed === "true" ? true : false;
+
         const project = { 
             project_name: name, 
             project_start_date: date, 
@@ -42,8 +48,13 @@ export const createProject = async (req: Request, res: Response) => {
             cycle_id: cycle_id,
             user_id: userId,
         }
-        
         const newProject = await ProjectService.createProject(project);
+
+        let projectId;
+        if (cycle_id != 0) {
+            duplicateCycle(cycle_id, newProject.project_id);
+        }
+        
         res.json(newProject);
     } catch (error: any) {
         res.status(500).json({ error: error.message});
@@ -58,9 +69,9 @@ export const updateProject = async (req: Request, res: Response) => {
         let intdays = parseInt(req.body.days_till_renew);
         let date = (new Date(req.body.project_start_date));
         let name = req.body.project_name;
-        let save_as_cycle = req.body.save_as_cycle === "true" ? true : false;
+        let save_as_cycle = String(req.body.save_as_cycle) === "true";
         let cycle_id = req.body.cycle_id;
-        let complete = req.body.completed === "true" ? true : false;
+        let complete = req.body.completed === "true";
         const project = { 
             project_id: parseInt(req.params.project_id),
             project_name: name, 
@@ -87,6 +98,55 @@ export const deleteProject = async (req: Request, res: Response) => {
     } catch (error: any) {
         res.status(500).json({ error: error.message});
     }
+}
+
+export const duplicateCycle = async (cycle_id: number, project_id: number) => {
+    let cycle_project_id;
+    const cycle = await getCycleByID(cycle_id);
+    if (cycle != null) {
+        cycle_project_id = cycle.project_id;
+        let activities = await getActivities(cycle_project_id!);
+        for (const activity of activities) {
+            let newActivity = {
+                activity_name: activity.activity_name,
+                activity_number: activity.activity_number,
+                start_date: activity.start_date,
+                duration: activity.duration,
+                completed: activity.completed,
+                note: activity.note,
+                project_id: project_id,
+            }
+            let createdActivity = await createActivity(newActivity);
+            
+            let activityTags = await getTagsByActivity(activity.activity_id);
+            for (const tagName of activityTags) {
+                let tag = await getTagByName(tagName);
+                addTagToActivity(tag!, createdActivity.activity_id);
+            }
+            
+            let tasks = await getTasks(activity.activity_id);
+            for (const task of tasks) {
+                let newTask = {
+                    task_name: task.task_name,
+                    task_number: task.task_number,
+                    start_date: task.start_date,
+                    duration: task.duration,
+                    completed: task.completed,
+                    note: task.note,
+                    activity_id: createdActivity.activity_id,
+                }
+                let createdTask = await createTask(newTask);
+                
+                let taskTags = await getTagsByTask(task.task_id);
+                for (const tagName of taskTags) {
+                    let tag = await getTagByName(tagName);
+                    addTagToTask(tag!, createdTask.task_id);
+                }
+            }
+        }
+    }
+
+    
 }
 
 

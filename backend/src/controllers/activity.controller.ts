@@ -105,7 +105,7 @@ export const deleteActivity = async (req: any, res: any) => {
 export const getActivityTagList = async (req: any, res: any) => {
     try {
         const { activity_id } = req.params;
-        const activityTagList = await ActivityService.getActivityTagList(parseInt(activity_id));
+        const activityTagList = await ActivityService.getTagsByActivity(parseInt(activity_id));
         res.json(activityTagList);
     } catch (error: any){
         res.json({ message: error.message });

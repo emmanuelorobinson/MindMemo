@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteCycle = exports.getCycles = exports.getCycleByID = exports.createCycle = void 0;
+exports.getCyclesByUser = exports.getCycleByProjectID = exports.deleteCycle = exports.getCycles = exports.getCycleByID = exports.createCycle = void 0;
 const db_server_1 = require("../utils/db.server");
 const createCycle = (project_id) => __awaiter(void 0, void 0, void 0, function* () {
     return db_server_1.db.cycle.create({
@@ -56,6 +56,14 @@ const deleteCycle = (cycle_id) => __awaiter(void 0, void 0, void 0, function* ()
     });
 });
 exports.deleteCycle = deleteCycle;
+const getCycleByProjectID = (project_id) => __awaiter(void 0, void 0, void 0, function* () {
+    return db_server_1.db.cycle.findUnique({
+        where: {
+            project_id,
+        },
+    });
+});
+exports.getCycleByProjectID = getCycleByProjectID;
 // export const getCycleNames = async (user_id: number): Promise<String[]> => {
 //     let cycles = await getCycles();
 //     let cycleNames: String[] = [];
@@ -74,3 +82,23 @@ exports.deleteCycle = deleteCycle;
 //     });
 //     return cycleNames;
 // }
+const getCyclesByUser = (user_id) => __awaiter(void 0, void 0, void 0, function* () {
+    return db_server_1.db.project.findMany({
+        where: {
+            user_id,
+            save_as_cycle: true,
+        },
+        select: {
+            project_id: true,
+            project_name: true,
+            project_start_date: true,
+            duration: true,
+            days_till_renew: true,
+            completed: true,
+            save_as_cycle: true,
+            user_id: true,
+            cycle_id: true,
+        }
+    });
+});
+exports.getCyclesByUser = getCyclesByUser;
