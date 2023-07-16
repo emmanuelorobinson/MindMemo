@@ -170,20 +170,10 @@ export const getTaskTagList = async (task_id: number): Promise<TaskTagList[] | n
     })
 }
 
-export const updateTaskTagList = async (task_id: number, tag_list_id: number): Promise<Task> => {
+export const updateTaskTagList = async (task_id: number, tag_list: TaskTagList): Promise<Task> => {
     let task = await getTaskByID(task_id);
     let tagLists = await getTaskTagList(task_id);
-    let tagList = db.taskTagList.findUnique({
-        where: {
-            task_tag_list_id: tag_list_id,
-        },
-        select: {
-            task_tag_list_id: true,
-            task_id: true,
-            tag_id: true,
-        },
-    })
-    tagLists = [...tagLists!, (await tagList)!];
+    tagLists = [...tagLists!, tag_list];
 
     return db.task.update({
         where: {

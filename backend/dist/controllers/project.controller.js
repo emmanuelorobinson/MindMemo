@@ -32,8 +32,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteProject = exports.updateProject = exports.createProject = exports.getProjectByID = exports.getProjects = void 0;
+exports.duplicateCycle = exports.deleteProject = exports.updateProject = exports.createProject = exports.getProjectByID = exports.getProjects = void 0;
+const cycle_services_1 = require("../services/cycle.services");
 const ProjectService = __importStar(require("../services/project.services"));
+const activity_services_1 = require("../services/activity.services");
+const task_services_1 = require("../services/task.services");
+const tag_services_1 = require("../services/tag.services");
 const getProjects = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { user_id } = req.params;
@@ -65,7 +69,7 @@ const createProject = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         let date = (new Date(req.body.project_start_date));
         let name = req.body.project_name;
         let save_as_cycle = req.body.save_as_cycle === "true" ? true : false;
-        let cycle_id = req.body.cycle_id;
+        let cycle_id = (req.body.cycle_id == "") ? 0 : parseInt(req.body.cycle_id);
         let complete = req.body.completed === "true" ? true : false;
         const project = {
             project_name: name,
@@ -78,6 +82,10 @@ const createProject = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             user_id: userId,
         };
         const newProject = yield ProjectService.createProject(project);
+        let projectId;
+        if (cycle_id != 0) {
+            (0, exports.duplicateCycle)(cycle_id, newProject.project_id);
+        }
         res.json(newProject);
     }
     catch (error) {
@@ -92,9 +100,9 @@ const updateProject = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         let intdays = parseInt(req.body.days_till_renew);
         let date = (new Date(req.body.project_start_date));
         let name = req.body.project_name;
-        let save_as_cycle = req.body.save_as_cycle === "true" ? true : false;
+        let save_as_cycle = String(req.body.save_as_cycle) === "true";
         let cycle_id = req.body.cycle_id;
-        let complete = req.body.completed === "true" ? true : false;
+        let complete = req.body.completed === "true";
         const project = {
             project_id: parseInt(req.params.project_id),
             project_name: name,
@@ -125,3 +133,47 @@ const deleteProject = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.deleteProject = deleteProject;
+const duplicateCycle = (cycle_id, project_id) => __awaiter(void 0, void 0, void 0, function* () {
+    let cycle_project_id;
+    const cycle = yield (0, cycle_services_1.getCycleByID)(cycle_id);
+    if (cycle != null) {
+        cycle_project_id = cycle.project_id;
+        let activities = yield (0, activity_services_1.getActivities)(cycle_project_id);
+        for (const activity of activities) {
+            let newActivity = {
+                activity_name: activity.activity_name,
+                activity_number: activity.activity_number,
+                start_date: activity.start_date,
+                duration: activity.duration,
+                completed: activity.completed,
+                note: activity.note,
+                project_id: project_id,
+            };
+            let createdActivity = yield (0, activity_services_1.createActivity)(newActivity);
+            let activityTags = yield (0, activity_services_1.getTagsByActivity)(activity.activity_id);
+            for (const tagName of activityTags) {
+                let tag = yield (0, tag_services_1.getTagByName)(tagName);
+                (0, tag_services_1.addTagToActivity)(tag, createdActivity.activity_id);
+            }
+            let tasks = yield (0, task_services_1.getTasks)(activity.activity_id);
+            for (const task of tasks) {
+                let newTask = {
+                    task_name: task.task_name,
+                    task_number: task.task_number,
+                    start_date: task.start_date,
+                    duration: task.duration,
+                    completed: task.completed,
+                    note: task.note,
+                    activity_id: createdActivity.activity_id,
+                };
+                let createdTask = yield (0, task_services_1.createTask)(newTask);
+                let taskTags = yield (0, task_services_1.getTagsByTask)(task.task_id);
+                for (const tagName of taskTags) {
+                    let tag = yield (0, tag_services_1.getTagByName)(tagName);
+                    (0, tag_services_1.addTagToTask)(tag, createdTask.task_id);
+                }
+            }
+        }
+    }
+});
+exports.duplicateCycle = duplicateCycle;

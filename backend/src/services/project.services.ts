@@ -1,6 +1,7 @@
 import { db } from "../utils/db.server";
 import { Activity, Project} from "@prisma/client";
-import { createCycle } from "./cycle.services";
+import { createCycle, getCycleByProjectID } from "./cycle.services";
+import { get } from "http";
 
 //get all projects by user
 export const getProjects = async (user_id: string): Promise<Project[]> => {
@@ -68,7 +69,7 @@ export const createProject = async (project: Omit<Project, 'project_id'>): Promi
 }
 
 export const updateProject = async (project: Project): Promise<Project | null> => {
-    return db.project.update({
+    let newProject = db.project.update({
         where: {
             project_id: project.project_id,
         },
@@ -85,6 +86,15 @@ export const updateProject = async (project: Project): Promise<Project | null> =
             cycle_id: true,
         }
     });
+
+    if ((await newProject).save_as_cycle) {
+        let cycle = await getCycleByProjectID((await newProject).project_id);
+        if (cycle == null) {
+            createCycle((await newProject).project_id);
+        }
+    }
+
+    return newProject;
 }
 
 export const deleteProject = async (project_id: number): Promise<Project | null> => {

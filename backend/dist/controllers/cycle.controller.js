@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteCycle = exports.getCycles = exports.getCycleByID = exports.createCycle = void 0;
+exports.getCyclesByUser = exports.deleteCycle = exports.getCycles = exports.getCycleByID = exports.createCycle = void 0;
 const CycleService = __importStar(require("../services/cycle.services"));
 const createCycle = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -76,3 +76,14 @@ const deleteCycle = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.deleteCycle = deleteCycle;
+const getCyclesByUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { user_id } = req.params;
+        const cycles = yield CycleService.getCyclesByUser((user_id));
+        res.json(cycles);
+    }
+    catch (error) {
+        res.json({ message: error.message });
+    }
+});
+exports.getCyclesByUser = getCyclesByUser;

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getActivitiesByTask = exports.updateActivityTagList = exports.getActivityTagList = exports.getUpcomingActivities = exports.deleteActivity = exports.updateActivity = exports.createActivity = exports.getActivityByID = exports.getActivities = void 0;
+exports.getTagsByActivity = exports.updateActivityTagList = exports.getActivityTagList = exports.getUpcomingActivities = exports.deleteActivity = exports.updateActivity = exports.createActivity = exports.getActivityByID = exports.getActivities = void 0;
 const db_server_1 = require("../utils/db.server");
 const tag_services_1 = require("./tag.services");
 //TODO: 
@@ -178,7 +178,7 @@ const updateActivityTagList = (activity_id, tag_list) => __awaiter(void 0, void 
     });
 });
 exports.updateActivityTagList = updateActivityTagList;
-const getActivitiesByTask = (activity_id) => __awaiter(void 0, void 0, void 0, function* () {
+const getTagsByActivity = (activity_id) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     let list = yield db_server_1.db.activityTagList.findMany({
         where: {
@@ -200,4 +200,4 @@ const getActivitiesByTask = (activity_id) => __awaiter(void 0, void 0, void 0, f
     console.log(results);
     return results;
 });
-exports.getActivitiesByTask = getActivitiesByTask;
+exports.getTagsByActivity = getTagsByActivity;

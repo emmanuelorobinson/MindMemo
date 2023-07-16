@@ -37,3 +37,13 @@ export const deleteCycle = async (req: any, res: any) => {
         res.json({ message: error.message });
     }
 }
+
+export const getCyclesByUser = async (req: any, res: any) => {
+    try {
+        const { user_id } = req.params;
+        const cycles = await CycleService.getCyclesByUser((user_id));
+        res.json(cycles);
+    } catch (error: any) {
+        res.json({ message: error.message });
+    }
+}

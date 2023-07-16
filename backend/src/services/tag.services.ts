@@ -95,7 +95,7 @@ export const addTagToTask = async (tag: Tag, task_id: number): Promise<TaskTagLi
     });
     let task_tag_lists = await getTaskTagList(tag.tag_id);
 
-    updateTaskTagList(task_id, (await tagList).task_tag_list_id);
+    updateTaskTagList(task_id, (await tagList));
     task_tag_lists = [...task_tag_lists!, (await tagList)];
 
     db.tag.update({

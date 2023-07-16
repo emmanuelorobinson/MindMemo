@@ -100,7 +100,6 @@ export const getUpcomingTask = async (req: any, res: any) => {
             }
         }
    
-        
         res.json(tasks);
     } catch (error: any) {
         res.json({ message: error.message });

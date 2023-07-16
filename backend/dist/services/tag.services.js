@@ -103,7 +103,7 @@ const addTagToTask = (tag, task_id) => __awaiter(void 0, void 0, void 0, functio
         }
     });
     let task_tag_lists = yield (0, task_services_1.getTaskTagList)(tag.tag_id);
-    (0, task_services_1.updateTaskTagList)(task_id, (yield tagList).task_tag_list_id);
+    (0, task_services_1.updateTaskTagList)(task_id, (yield tagList));
     task_tag_lists = [...task_tag_lists, (yield tagList)];
     db_server_1.db.tag.update({
         where: {

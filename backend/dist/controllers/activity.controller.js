@@ -140,7 +140,7 @@ exports.deleteActivity = deleteActivity;
 const getActivityTagList = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { activity_id } = req.params;
-        const activityTagList = yield ActivityService.getActivityTagList(parseInt(activity_id));
+        const activityTagList = yield ActivityService.getTagsByActivity(parseInt(activity_id));
         res.json(activityTagList);
     }
     catch (error) {

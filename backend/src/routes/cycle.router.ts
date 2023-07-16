@@ -12,7 +12,11 @@ cycleRouter
     .post(cycleController.createCycle);
 
 cycleRouter
-    .route("/:cycle_id")
+    .route("/:user_id")
+    .get(cycleController.getCyclesByUser);
+
+cycleRouter
+    .route("/cycle/:cycle_id")
     .get(cycleController.getCycleByID)
     .delete(cycleController.deleteCycle);   
 

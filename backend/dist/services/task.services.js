@@ -168,20 +168,10 @@ const getTaskTagList = (task_id) => __awaiter(void 0, void 0, void 0, function* 
     });
 });
 exports.getTaskTagList = getTaskTagList;
-const updateTaskTagList = (task_id, tag_list_id) => __awaiter(void 0, void 0, void 0, function* () {
+const updateTaskTagList = (task_id, tag_list) => __awaiter(void 0, void 0, void 0, function* () {
     let task = yield (0, exports.getTaskByID)(task_id);
     let tagLists = yield (0, exports.getTaskTagList)(task_id);
-    let tagList = db_server_1.db.taskTagList.findUnique({
-        where: {
-            task_tag_list_id: tag_list_id,
-        },
-        select: {
-            task_tag_list_id: true,
-            task_id: true,
-            tag_id: true,
-        },
-    });
-    tagLists = [...tagLists, (yield tagList)];
+    tagLists = [...tagLists, tag_list];
     return db_server_1.db.task.update({
         where: {
             task_id,

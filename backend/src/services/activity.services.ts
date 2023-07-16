@@ -180,7 +180,7 @@ export const updateActivityTagList = async (activity_id: number, tag_list: Activ
     });
 }
 
-export const getActivitiesByTask = async (activity_id: number): Promise<string[]> => {
+export const getTagsByActivity = async (activity_id: number): Promise<string[]> => {
     let list = await db.activityTagList.findMany({
         where: {
             activity_id,

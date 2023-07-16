@@ -76,7 +76,7 @@ const createProject = (project) => __awaiter(void 0, void 0, void 0, function* (
 });
 exports.createProject = createProject;
 const updateProject = (project) => __awaiter(void 0, void 0, void 0, function* () {
-    return db_server_1.db.project.update({
+    let newProject = db_server_1.db.project.update({
         where: {
             project_id: project.project_id,
         },
@@ -93,6 +93,13 @@ const updateProject = (project) => __awaiter(void 0, void 0, void 0, function* (
             cycle_id: true,
         }
     });
+    if ((yield newProject).save_as_cycle) {
+        let cycle = yield (0, cycle_services_1.getCycleByProjectID)((yield newProject).project_id);
+        if (cycle == null) {
+            (0, cycle_services_1.createCycle)((yield newProject).project_id);
+        }
+    }
+    return newProject;
 });
 exports.updateProject = updateProject;
 const deleteProject = (project_id) => __awaiter(void 0, void 0, void 0, function* () {
