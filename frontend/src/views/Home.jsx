@@ -3,7 +3,7 @@ import Calendar from '../components/Home/Calendar'
 import Task from '../components/Home/Task'
 import { useClerk } from '@clerk/clerk-react'
 import { getUpcomingTasks } from '../utils/TaskController'
-
+import Spinner from '../components/Spinner'
 const Home = () => {
 
   const { user } = useClerk()
@@ -21,7 +21,10 @@ const Home = () => {
   }, [])
 
   if (loading) {
-    return <div>Loading...</div>
+    
+    return <div className='flex w-[100%] h-[100vh] justify-center align-middle my-auto'>
+      <Spinner />
+    </div>
   }
   else {
     console.log('task', task)
