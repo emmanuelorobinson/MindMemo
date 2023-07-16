@@ -129,7 +129,7 @@ const ActivityItem = ({ data }) => {
           <MenuDropdown onDelete={onDeleteClick} onEdit={onEditClick} />
 
           <Link
-            to={`/project/activity/task?projectId=${data.project_id}&activityId=${data.id}`}
+            to={`/project/activity/task?projectId=${data.project_id}&activityId=${data.activity_id}`}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

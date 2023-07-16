@@ -48,13 +48,18 @@ const ProjectItem = ({ data }) => {
   // project due date is data.project_start_date + data.duration (duration in days)
   // date format: 2023-06-30T20:00:00.000Z
   // convert to  March 17, 2023 format
-  const dueDate = new Date(data.project_start_date);
-  dueDate.setDate(dueDate.getDate() + data.duration);
-  const formattedDueDate = dueDate.toLocaleDateString("en-US", {
+
+  const formatDate = (date, duration) => {
+    const dueDate = new Date(date);
+    dueDate.setDate(dueDate.getDate() +duration);
+    const formattedDueDate = dueDate.toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
     day: "numeric",
-  });
+    });
+
+    return formattedDueDate;
+  };
 
   return (
     <>
@@ -75,7 +80,7 @@ const ProjectItem = ({ data }) => {
             </div>
           </div>
           <p className="mt-1 truncate text-xs leading-5 text-gray-500">
-            Due on {formattedDueDate}
+            Due on {formatDate(data.project_start_date, data.duration)}
           </p>
         </div>
       </div>

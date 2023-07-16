@@ -22,8 +22,6 @@ const Activity = () => {
   }, [])
 
 
-  const data = activity.filter((item) => item.projectId == id);
-
   return (
     <div className='p-5 h-[100vh]'>
       <Breadcrumbs />

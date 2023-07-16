@@ -1,9 +1,9 @@
 import { Tag } from "./TagController";
 
 export interface Task {
-  id?: string; // created by server
-  project_id: string;
-  activity_id: string;
+  task_id?: number; // created by server
+  project_id: number;
+  activity_id: number;
   task_number: number;
   task_name: string;
   start_date: Date;
@@ -15,8 +15,8 @@ export interface Task {
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-export const getTasks = async (): Promise<Task[]> => {
-  const URL = API_URL + "/tasks/" + "activity_id";
+export const getTasks = async (activity_id: number): Promise<Task[]> => {
+  const URL = API_URL + "/tasks/" + activity_id;
 
   const response = await fetch(URL, {
     method: "GET",
@@ -53,7 +53,7 @@ export const createTask = async (task: Task): Promise<Task> => {
 };
 
 export const updateTask = async (task: Task): Promise<Task> => {
-  const URL = API_URL + "/tasks/task/" + task.id;
+  const URL = API_URL + "/tasks/task/" + task.task_id;
 
   const response = await fetch(URL, {
     method: "PUT",

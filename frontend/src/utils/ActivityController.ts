@@ -58,6 +58,7 @@ export const updateActivity = async (activity: Activity): Promise<Activity> => {
   console.log(activity);
   const URL = API_URL + '/activities/activity/' + activity.activity_id;
 
+
   const response = await fetch(URL, {
     method: 'PUT',
     headers: {
