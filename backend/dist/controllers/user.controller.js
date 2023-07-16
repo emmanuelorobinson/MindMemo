@@ -32,7 +32,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteUser = exports.updateUser = exports.createUser = exports.getUserByID = exports.getUsers = void 0;
+exports.getUpcomingActivity = exports.getUpcomingTask = exports.deleteUser = exports.updateUser = exports.createUser = exports.getUserByID = exports.getUsers = void 0;
+const activity_services_1 = require("../services/activity.services");
+const project_services_1 = require("../services/project.services");
+const task_services_1 = require("../services/task.services");
 const UserService = __importStar(require("../services/user.services"));
 const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -93,3 +96,59 @@ const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.deleteUser = deleteUser;
+// export const getTodayTasks = async (req: any, res: any) => {
+//     try {
+//         const { user_id } = req.params;
+//         const projects = await getProjects(user_id);
+//         let tasks: Task[] = [];
+//         for (const project of projects) {
+//             const activities = await getActivities(project.project_id);
+//             for (const activity of activities) {
+//                 let list = await getTodaysTasks(activity.activity_id);
+//                 console.log(activity.activity_id + " " + list.length);
+//                 tasks = [...tasks, ...list];
+//                 console.log("tasks: " + tasks.length);
+//             }
+//         } 
+//         res.json(tasks);
+//     } catch (error: any) {
+//         res.json({ message: error.message });
+//     }
+// }
+const getUpcomingTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { user_id } = req.params;
+        const projects = yield (0, project_services_1.getProjects)(user_id);
+        let tasks = [];
+        for (const project of projects) {
+            const activities = yield (0, activity_services_1.getActivities)(project.project_id);
+            for (const activity of activities) {
+                let list = yield (0, task_services_1.getUpcomingTasks)(activity.activity_id);
+                console.log(activity.activity_id + " " + list.length);
+                tasks = [...tasks, ...list];
+                console.log("tasks: " + tasks.length);
+            }
+        }
+        res.json(tasks);
+    }
+    catch (error) {
+        res.json({ message: error.message });
+    }
+});
+exports.getUpcomingTask = getUpcomingTask;
+const getUpcomingActivity = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { user_id } = req.params;
+        const projects = yield (0, project_services_1.getProjects)(user_id);
+        let activities = [];
+        for (const project of projects) {
+            let list = yield (0, activity_services_1.getUpcomingActivities)(project.project_id);
+            activities = [...activities, ...list];
+        }
+        res.json(activities);
+    }
+    catch (error) {
+        res.json({ message: error.message });
+    }
+});
+exports.getUpcomingActivity = getUpcomingActivity;

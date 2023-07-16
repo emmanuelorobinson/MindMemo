@@ -115,22 +115,29 @@ export const deleteActivity = async (activity_id: number): Promise<Activity | nu
 //     })
 // }
 
-// export const getUpcomingActivities = async (): Promise<Activity[]> => {
-//     return db.activity.findMany({
-//         where: {
-//             duration: 0 || 1 || 2,
-//         },
-//         select: {
-//             activity_id: true,
-//             activity_name: true,
-//             activity_number: true,
-//             duration: true,
-//             completed: true,
-//             note: true,
-//             project_id: true,
-//         }
-//     })
-// }
+
+export const getUpcomingActivities = async (project_id: number): Promise<Activity[]> => {
+    let activities = await getActivities(project_id);
+    let today = new Date();
+    let upcomingActivities: Activity[] = [];
+
+    activities.forEach((activity) => {
+        let start_date = new Date(activity.start_date);
+        let duration = activity.duration;
+        let end_date = new Date(start_date.getTime() + duration * 24 * 60 * 60 * 1000);
+
+        // Calculate the date difference in days
+        let dateDifference = Math.floor((end_date.getTime() - today.getTime()) / (24 * 60 * 60 * 1000));
+
+        if (dateDifference >= 0 && dateDifference <= 3) {
+            upcomingActivities.push(activity);
+        }
+    });
+
+    // console.log(_id + " Upcoming tasks within 3 days: " + upcomingTasks.length);
+
+    return upcomingActivities;
+}
 
 // export const getActivityTagList = async (activity_id: number): Promise<ActivityTagList[] | null> => {
 //     return db.activityTagList.findMany({

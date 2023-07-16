@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteTask = exports.updateTask = exports.createTask = exports.getTaskByID = exports.getTasks = void 0;
+exports.getUpcomingTasks = exports.getTodaysTasks = exports.getAllTasks = exports.deleteTask = exports.updateTask = exports.createTask = exports.getTaskByID = exports.getTasks = void 0;
 const db_server_1 = require("../utils/db.server");
 //gTODO:
 // 1. tasks by date
@@ -103,38 +103,58 @@ const deleteTask = (task_id) => __awaiter(void 0, void 0, void 0, function* () {
     });
 });
 exports.deleteTask = deleteTask;
-// export const getTodaysTasks = async (): Promise<Task[]> => {
-//     return db.task.findMany({
-//         where: {
-//             days_till_due: 0,
-//         },
-//         select: {
-//             task_id: true,
-//             task_name: true,
-//             task_number: true,
-//             days_till_due: true,
-//             completed: true,
-//             note: true,
-//             activity_id: true,
-//         }
-//     })
-// }
-// export const getUpcomingTasks = async (): Promise<Task[]> => {
-//     return db.task.findMany({
-//         where: {
-//             days_till_due: 0 || 1 || 2,
-//         },
-//         select: {
-//             task_id: true,
-//             task_name: true,
-//             task_number: true,
-//             days_till_due: true,
-//             completed: true,
-//             note: true,
-//             activity_id: true,
-//         }
-//     })
-// }
+const getAllTasks = () => __awaiter(void 0, void 0, void 0, function* () {
+    return db_server_1.db.task.findMany({
+        select: {
+            task_id: true,
+            task_name: true,
+            task_number: true,
+            start_date: true,
+            duration: true,
+            completed: true,
+            note: true,
+            activity_id: true,
+        }
+    });
+});
+exports.getAllTasks = getAllTasks;
+const getTodaysTasks = (activity_id) => __awaiter(void 0, void 0, void 0, function* () {
+    let tasks = yield (0, exports.getTasks)(activity_id);
+    let today = new Date().toDateString();
+    let todaysTasks = [];
+    tasks.forEach((task) => {
+        let start_date = new Date(task.start_date);
+        let duration = task.duration;
+        let end_date = start_date;
+        end_date.setDate(end_date.getDate() + duration);
+        // console.log(task.task_name + end_date.toDateString());
+        if (end_date.toDateString() === today) {
+            // console.log(task.task_name + end_date);
+            todaysTasks.push(task);
+        }
+    });
+    console.log(activity_id + " Today's tasks: " + todaysTasks.length);
+    return todaysTasks;
+});
+exports.getTodaysTasks = getTodaysTasks;
+const getUpcomingTasks = (activity_id) => __awaiter(void 0, void 0, void 0, function* () {
+    let tasks = yield (0, exports.getTasks)(activity_id);
+    let today = new Date();
+    let upcomingTasks = [];
+    tasks.forEach((task) => {
+        let start_date = new Date(task.start_date);
+        let duration = task.duration;
+        let end_date = new Date(start_date.getTime() + duration * 24 * 60 * 60 * 1000);
+        // Calculate the date difference in days
+        let dateDifference = Math.floor((end_date.getTime() - today.getTime()) / (24 * 60 * 60 * 1000));
+        if (dateDifference >= 0 && dateDifference <= 3) {
+            upcomingTasks.push(task);
+        }
+    });
+    console.log(activity_id + " Upcoming tasks within 3 days: " + upcomingTasks.length);
+    return upcomingTasks;
+});
+exports.getUpcomingTasks = getUpcomingTasks;
 // export const getTaskTagList = async (task_id: number): Promise<TaskTagList[] | null> => {
 //     return db.taskTagList.findMany({
 //         where: {

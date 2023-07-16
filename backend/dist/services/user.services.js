@@ -9,8 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteUser = exports.updateUser = exports.createUser = exports.getUserByID = exports.getUsers = void 0;
+exports.getProjectTasks = exports.deleteUser = exports.updateUser = exports.createUser = exports.getUserByID = exports.getUsers = void 0;
 const db_server_1 = require("../utils/db.server");
+const activity_services_1 = require("./activity.services");
+const task_services_1 = require("./task.services");
 const getUsers = () => __awaiter(void 0, void 0, void 0, function* () {
     return db_server_1.db.user.findMany({
         select: {
@@ -82,3 +84,17 @@ const deleteUser = (user_id) => __awaiter(void 0, void 0, void 0, function* () {
     });
 });
 exports.deleteUser = deleteUser;
+const getProjectTasks = (projects) => __awaiter(void 0, void 0, void 0, function* () {
+    let tasks = [];
+    for (const project of projects) {
+        const activities = yield (0, activity_services_1.getActivities)(project.project_id);
+        for (const activity of activities) {
+            let list = yield (0, task_services_1.getTodaysTasks)(activity.activity_id);
+            console.log(activity.activity_id + " " + list.length);
+            tasks = [...tasks, ...list];
+            console.log("tasks: " + tasks.length);
+        }
+    }
+    return tasks;
+});
+exports.getProjectTasks = getProjectTasks;

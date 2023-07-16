@@ -84,14 +84,7 @@ export const deleteTask = async (req: any, res: any) => {
     }
 }
 
-// export const getTodayTasks = async (req: any, res: any) => {
-//     try {
-//         const tasks = await TaskService.getTodaysTasks();
-//         res.json(tasks);
-//     } catch (error: any) {
-//         res.json({ message: error.message });
-//     }
-// }
+
 
 // export const getUpcomingTasks = async (req: any, res: any) => {
 //     try {

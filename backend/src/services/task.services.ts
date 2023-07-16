@@ -96,40 +96,68 @@ export const deleteTask = async (task_id: number): Promise<Task | null> => {
     });
 }
 
-// export const getTodaysTasks = async (): Promise<Task[]> => {
-    
-//     return db.task.findMany({
-//         where: {
-//             days_till_due: 0,
-//         },
-//         select: {
-//             task_id: true,
-//             task_name: true,
-//             task_number: true,
-//             days_till_due: true,
-//             completed: true,
-//             note: true,
-//             activity_id: true,
-//         }
-//     })
-// }
+export const getAllTasks = async (): Promise<Task[]> => {
+    return db.task.findMany({
+        select: {
+            task_id: true,
+            task_name: true,
+            task_number: true,
+            start_date: true,
+            duration: true,
+            completed: true,
+            note: true,
+            activity_id: true,
+        }
+    })
+}
 
-// export const getUpcomingTasks = async (): Promise<Task[]> => {
-//     return db.task.findMany({
-//         where: {
-//             days_till_due: 0 || 1 || 2,
-//         },
-//         select: {
-//             task_id: true,
-//             task_name: true,
-//             task_number: true,
-//             days_till_due: true,
-//             completed: true,
-//             note: true,
-//             activity_id: true,
-//         }
-//     })
-// }
+export const getTodaysTasks = async (activity_id: number): Promise<Task[]> => {
+    let tasks = await getTasks(activity_id);
+    let today = new Date().toDateString();
+    let todaysTasks: Task[] = [];
+
+    tasks.forEach((task) => {
+        let start_date = new Date(task.start_date);
+        let duration = task.duration;
+        let end_date = start_date;
+        end_date.setDate(end_date.getDate() + duration);
+        // console.log(task.task_name + end_date.toDateString());
+
+        if (end_date.toDateString() === today) {
+            // console.log(task.task_name + end_date);
+            todaysTasks.push(task);
+        }
+    });
+
+    console.log(activity_id + " Today's tasks: " + todaysTasks.length);
+
+    return todaysTasks;
+}
+
+export const getUpcomingTasks = async (activity_id: number): Promise<Task[]> => {
+    let tasks = await getTasks(activity_id);
+    let today = new Date();
+    let upcomingTasks: Task[] = [];
+
+    tasks.forEach((task) => {
+        let start_date = new Date(task.start_date);
+        let duration = task.duration;
+        let end_date = new Date(start_date.getTime() + duration * 24 * 60 * 60 * 1000);
+
+        // Calculate the date difference in days
+        let dateDifference = Math.floor((end_date.getTime() - today.getTime()) / (24 * 60 * 60 * 1000));
+
+        if (dateDifference >= 0 && dateDifference <= 3) {
+            upcomingTasks.push(task);
+        }
+    });
+
+    console.log(activity_id + " Upcoming tasks within 3 days: " + upcomingTasks.length);
+
+    return upcomingTasks;
+}
+
+
 
 // export const getTaskTagList = async (task_id: number): Promise<TaskTagList[] | null> => {
 //     return db.taskTagList.findMany({

@@ -40,3 +40,9 @@ exports.userRouter
     .get(userController.getUserByID)
     .put(userController.updateUser)
     .delete(userController.deleteUser);
+exports.userRouter
+    .route("/:user_id/tasks")
+    .get(userController.getUpcomingTask);
+exports.userRouter
+    .route("/:user_id/activities")
+    .get(userController.getUpcomingActivity);

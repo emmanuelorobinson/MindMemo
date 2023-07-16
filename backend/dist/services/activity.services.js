@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getActivitiesByTag = exports.deleteActivity = exports.updateActivity = exports.createActivity = exports.getActivityByID = exports.getActivities = void 0;
+exports.getActivitiesByTag = exports.getUpcomingActivities = exports.deleteActivity = exports.updateActivity = exports.createActivity = exports.getActivityByID = exports.getActivities = void 0;
 const db_server_1 = require("../utils/db.server");
 const tag_services_1 = require("./tag.services");
 //TODO: 
@@ -121,22 +121,24 @@ exports.deleteActivity = deleteActivity;
 //         }
 //     })
 // }
-// export const getUpcomingActivities = async (): Promise<Activity[]> => {
-//     return db.activity.findMany({
-//         where: {
-//             duration: 0 || 1 || 2,
-//         },
-//         select: {
-//             activity_id: true,
-//             activity_name: true,
-//             activity_number: true,
-//             duration: true,
-//             completed: true,
-//             note: true,
-//             project_id: true,
-//         }
-//     })
-// }
+const getUpcomingActivities = (project_id) => __awaiter(void 0, void 0, void 0, function* () {
+    let activities = yield (0, exports.getActivities)(project_id);
+    let today = new Date();
+    let upcomingActivities = [];
+    activities.forEach((activity) => {
+        let start_date = new Date(activity.start_date);
+        let duration = activity.duration;
+        let end_date = new Date(start_date.getTime() + duration * 24 * 60 * 60 * 1000);
+        // Calculate the date difference in days
+        let dateDifference = Math.floor((end_date.getTime() - today.getTime()) / (24 * 60 * 60 * 1000));
+        if (dateDifference >= 0 && dateDifference <= 3) {
+            upcomingActivities.push(activity);
+        }
+    });
+    // console.log(_id + " Upcoming tasks within 3 days: " + upcomingTasks.length);
+    return upcomingActivities;
+});
+exports.getUpcomingActivities = getUpcomingActivities;
 // export const getActivityTagList = async (activity_id: number): Promise<ActivityTagList[] | null> => {
 //     return db.activityTagList.findMany({
 //         where: {

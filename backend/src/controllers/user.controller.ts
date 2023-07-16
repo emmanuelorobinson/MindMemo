@@ -1,5 +1,9 @@
+import { getActivities, getUpcomingActivities } from "../services/activity.services";
+import { getProjects } from "../services/project.services";
+import { getUpcomingTasks } from "../services/task.services";
 import * as UserService from "../services/user.services";
 import { Request, Response } from "express";
+import { Activity, Task } from "@prisma/client";
 
 export const getUsers = async (req: Request, res: Response) => {
     try {
@@ -55,3 +59,68 @@ export const deleteUser = async (req: Request, res: Response) => {
     }
 }
 
+
+// export const getTodayTasks = async (req: any, res: any) => {
+//     try {
+//         const { user_id } = req.params;
+//         const projects = await getProjects(user_id);
+//         let tasks: Task[] = [];
+    
+//         for (const project of projects) {
+//             const activities = await getActivities(project.project_id);
+            
+//             for (const activity of activities) {
+//                 let list = await getTodaysTasks(activity.activity_id);
+//                 console.log(activity.activity_id + " " + list.length);
+//                 tasks = [...tasks, ...list];
+//                 console.log("tasks: " + tasks.length);
+//             }
+//         } 
+        
+//         res.json(tasks);
+//     } catch (error: any) {
+//         res.json({ message: error.message });
+//     }
+// }
+
+export const getUpcomingTask = async (req: any, res: any) => {
+    try {
+        const { user_id } = req.params;
+        const projects = await getProjects(user_id);
+        let tasks: Task[] = [];
+    
+        for (const project of projects) {
+            const activities = await getActivities(project.project_id);
+            
+            for (const activity of activities) {
+                let list = await getUpcomingTasks(activity.activity_id);
+                console.log(activity.activity_id + " " + list.length);
+                tasks = [...tasks, ...list];
+                console.log("tasks: " + tasks.length);
+            }
+        }
+   
+        
+        res.json(tasks);
+    } catch (error: any) {
+        res.json({ message: error.message });
+    }
+}
+
+export const getUpcomingActivity = async (req: any, res: any) => {
+    try {
+        const { user_id } = req.params;
+        const projects = await getProjects(user_id);
+        let activities: Activity[] = [];
+    
+        for (const project of projects) {
+            let list = await getUpcomingActivities(project.project_id);
+            activities = [...activities, ...list];
+            
+        }
+        
+        res.json(activities);
+    } catch (error: any) {
+        res.json({ message: error.message });
+    }
+}
