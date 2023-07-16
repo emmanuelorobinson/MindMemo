@@ -31,6 +31,7 @@ model Project {
   days_till_renew Int
   completed Boolean
   save_as_cycle Boolean @default(false)
+  cycle_name String @db.VarChar(100)
   
   user User @relation(fields: [user_id], references: [user_id])
   user_id String

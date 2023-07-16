@@ -85,9 +85,9 @@ exports.createTask = createTask;
 const updateTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const task_id = parseInt(req.params.task_id);
-        let activityId = parseInt(req.params.project_id);
+        let activityId = parseInt(req.body.activity_id);
         let taskName = req.body.task_name;
-        let taskNumber = parseInt(req.body.task_number);
+        let taskNumber = (req.body.task_number == '') ? 0 : parseInt(req.body.task_number);
         let startDate = (req.body.start_date == '') ? new Date() : new Date(req.body.start_date);
         let intduration = parseInt(req.body.duration);
         let complete = req.body.completed === 'true' ? true : false;

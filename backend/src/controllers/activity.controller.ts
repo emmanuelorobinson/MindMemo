@@ -48,11 +48,11 @@ export const createActivity = async (req: any, res: any) => {
 
 export const updateActivity = async (req: any, res: any) => {
     try {
+        let projectId = parseInt(req.body.project_id);
         let activity_id = parseInt(req.params.activity_id);
-        let projectId = parseInt(req.params.project_id);
-        let activityName = req.body.activity_name;
-        let activityNumber = parseInt(req.body.activity_number);
-        let startDate = (req.body.start_date == '') ? new Date() : new Date(req.body.start_date);
+        let activityName = req.body.activity_name;            
+        let activityNumber = (req.body.activity_number == '') ? 0 : parseInt(req.body.activity_number);
+        let startDate = (req.body.start_date == undefined) ? new Date() : new Date(req.body.start_date);
         let intduration = parseInt(req.body.duration);
         let complete = req.body.completed === 'true' ? true : false;
         let acitivtyNote = req.body.note;

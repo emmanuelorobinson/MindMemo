@@ -84,11 +84,11 @@ const createActivity = (req, res) => __awaiter(void 0, void 0, void 0, function*
 exports.createActivity = createActivity;
 const updateActivity = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        let projectId = parseInt(req.body.project_id);
         let activity_id = parseInt(req.params.activity_id);
-        let projectId = parseInt(req.params.project_id);
         let activityName = req.body.activity_name;
-        let activityNumber = parseInt(req.body.activity_number);
-        let startDate = (req.body.start_date == '') ? new Date() : new Date(req.body.start_date);
+        let activityNumber = (req.body.activity_number == '') ? 0 : parseInt(req.body.activity_number);
+        let startDate = (req.body.start_date == undefined) ? new Date() : new Date(req.body.start_date);
         let intduration = parseInt(req.body.duration);
         let complete = req.body.completed === 'true' ? true : false;
         let acitivtyNote = req.body.note;
