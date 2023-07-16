@@ -65,7 +65,7 @@ const createProject = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         let date = (new Date(req.body.project_start_date));
         let name = req.body.project_name;
         let save_as_cycle = req.body.save_as_cycle === "true" ? true : false;
-        let cycle_name = req.body.cycle_name;
+        let cycle_id = req.body.cycle_id;
         let complete = req.body.completed === "true" ? true : false;
         const project = {
             project_name: name,
@@ -74,7 +74,7 @@ const createProject = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             days_till_renew: intdays,
             completed: complete,
             save_as_cycle: save_as_cycle,
-            cycle_name: cycle_name,
+            cycle_id: cycle_id,
             user_id: userId,
         };
         const newProject = yield ProjectService.createProject(project);
@@ -93,7 +93,7 @@ const updateProject = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         let date = (new Date(req.body.project_start_date));
         let name = req.body.project_name;
         let save_as_cycle = req.body.save_as_cycle === "true" ? true : false;
-        let cycle_name = req.body.cycle_name;
+        let cycle_id = req.body.cycle_id;
         let complete = req.body.completed === "true" ? true : false;
         const project = {
             project_id: parseInt(req.params.project_id),
@@ -103,7 +103,7 @@ const updateProject = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             days_till_renew: intdays,
             completed: complete,
             save_as_cycle: save_as_cycle,
-            cycle_name: cycle_name,
+            cycle_id: cycle_id,
             user_id: userId,
         };
         const updatedProject = yield ProjectService.updateProject(project);
