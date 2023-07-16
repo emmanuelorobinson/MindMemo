@@ -13,8 +13,10 @@ export interface Task {
   completed: boolean;
 }
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 export const getTasks = async (): Promise<Task[]> => {
-  const URL = "";
+  const URL = API_URL + "/tasks/" + "activity_id";
 
   const response = await fetch(URL, {
     method: "GET",
@@ -32,7 +34,7 @@ export const getTasks = async (): Promise<Task[]> => {
 };
 
 export const createTask = async (task: Task): Promise<Task> => {
-  const URL = "";
+  const URL = API_URL + "/tasks/";
 
   const response = await fetch(URL, {
     method: "POST",
@@ -51,7 +53,7 @@ export const createTask = async (task: Task): Promise<Task> => {
 };
 
 export const updateTask = async (task: Task): Promise<Task> => {
-  const URL = "";
+  const URL = API_URL + "/tasks/task/" + task.id;
 
   const response = await fetch(URL, {
     method: "PUT",
@@ -69,15 +71,14 @@ export const updateTask = async (task: Task): Promise<Task> => {
   }
 };
 
-export const deleteTask = async (task: Task): Promise<Task> => {
-  const URL = "";
+export const deleteTask = async (task_id: number): Promise<Task> => {
+  const URL = API_URL + "/tasks/task/" + task_id;
 
   const response = await fetch(URL, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(task),
   });
 
   try {

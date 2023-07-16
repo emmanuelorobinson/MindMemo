@@ -2,15 +2,16 @@ import React from "react";
 import { Link } from "react-router-dom";
 import MenuDropdown from "../MenuDropdown";
 import EditActivityComponent from "./EditActvityComponent";
+import { deleteActivity, updateActivity } from "../../utils/ActivityController";
 
 const colorScheme = (status) => {
   switch (status) {
-    case "In Progress":
+    case false:
       return {
         outer: "bg-yellow-100 border-yellow-800",
         inner: "bg-yellow-400",
       };
-    case "Completed":
+    case true:
       return {
         outer: "bg-green-100 border-green-800",
         inner: "bg-green-400",
@@ -25,7 +26,7 @@ const colorScheme = (status) => {
 };
 
 const ActivityItem = ({ data }) => {
-  console.log(data);
+  // console.log(data);
   const [showEditModal, setShowEditModal] = React.useState(false);
 
   const onEditClick = () => {
@@ -33,9 +34,30 @@ const ActivityItem = ({ data }) => {
     showEditModal ? setShowEditModal(false) : setShowEditModal(true);
   };
 
-  const onDeleteClick = () => {
-    console.log("delete");
+  const onDeleteClick = async() => {
+    // console.log("delete");
+    try {
+      const response =  await deleteActivity(data.activity_id);
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+
+    // refresh page
+    // window.location.reload();
   };
+
+  const onCheckClick = async (e) => {
+    try {
+      console.log(data.activity_id)
+      const newData = { ...data, completed: e.target.checked };
+      const response = await updateActivity(newData);
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
 
   return (
     <>
@@ -45,6 +67,8 @@ const ActivityItem = ({ data }) => {
           <div className="relative flex items-start">
             <div className="flex items-center h-5">
               <input
+                onClick={(e) => onCheckClick(e)}
+                value={data.completed}
                 type="checkbox"
                 className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
               />
@@ -57,18 +81,18 @@ const ActivityItem = ({ data }) => {
                 {/* double circle status */}
                 <div
                   className={`flex items-center justify-center h-5 w-5 rounded-full ${
-                    colorScheme(data.status).outer
+                    colorScheme(data.completed).outer
                   }`}
                 >
                   <div
                     className={`h-3.5 w-3.5 rounded-full ${
-                      colorScheme(data.status).inner
+                      colorScheme(data.completed).inner
                     }`}
                   ></div>
                 </div>
               </div>
               <p className="text-sm font-semibold leading-6 text-gray-900">
-                {data.name}
+                {data.activity_name}
               </p>
             </div>
             {data.tags && (
@@ -88,11 +112,11 @@ const ActivityItem = ({ data }) => {
                     stroke-linejoin="round"
                   />
                 </svg>
-                {data.tags.map((tag) => (
+                {/* {data.tags.map((tag) => (
                   <span className="text-sm font-medium text-gray-500 mt-0.5 bg-[#F9FAFB] px-2 border rounded-lg">
                     {tag}
                   </span>
-                ))}
+                ))} */}
               </div>
             )}
           </div>
@@ -105,7 +129,7 @@ const ActivityItem = ({ data }) => {
           <MenuDropdown onDelete={onDeleteClick} onEdit={onEditClick} />
 
           <Link
-            to={`/project/activity/task?projectId=${data.projectId}&activityId=${data.id}`}
+            to={`/project/activity/task?projectId=${data.project_id}&activityId=${data.id}`}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

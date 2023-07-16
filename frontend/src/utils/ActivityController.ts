@@ -1,8 +1,8 @@
 import { Tag } from "./TagController";
 
 export interface Activity {
-  id?: string;
-  project_id: string;
+  activity_id?: number;
+  project_id: number;
   activity_number: number;
   activity_name: string;
   dependency: string;
@@ -13,8 +13,10 @@ export interface Activity {
   completed: boolean;
 }
 
-export const getActivities = async (): Promise<Activity[]> => {
-  const URL = '';
+const API_URL = process.env.REACT_APP_API_URL;
+
+export const getActivities = async (project_id: number): Promise<Activity[]> => {
+  const URL = API_URL + '/activities/' + project_id;
 
   const response = await fetch(URL, {
     method: 'GET',
@@ -33,7 +35,7 @@ export const getActivities = async (): Promise<Activity[]> => {
 }
 
 export const createActivity = async (activity: Activity): Promise<Activity> => {
-  const URL = '';
+  const URL = API_URL + '/activities/';
 
   const response = await fetch(URL, {
     method: 'POST',
@@ -53,7 +55,8 @@ export const createActivity = async (activity: Activity): Promise<Activity> => {
 }
 
 export const updateActivity = async (activity: Activity): Promise<Activity> => {
-  const URL = '';
+  console.log(activity);
+  const URL = API_URL + '/activities/activity/' + activity.activity_id;
 
   const response = await fetch(URL, {
     method: 'PUT',
@@ -72,15 +75,14 @@ export const updateActivity = async (activity: Activity): Promise<Activity> => {
   }
 }
 
-export const deleteActivity = async (activity: Activity): Promise<Activity> => {
-  const URL = '';
+export const deleteActivity = async (activity_id: number): Promise<Activity> => {
+  const URL = API_URL + '/activities/activity/' + activity_id;
 
   const response = await fetch(URL, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(activity),
   });
 
   try {

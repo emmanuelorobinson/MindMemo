@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Form, Formik, ErrorMessage } from "formik";
 import SelectMenu from "../SelectMenu";
 import Toggle from "../Toggle";
+import { createActivity } from "../../utils/ActivityController";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const options = [
   { id: 1, name: "Wade Cooper" },
@@ -16,7 +18,13 @@ const options = [
   { id: 10, name: "Emil Schaefer" },
 ];
 
-const CreateActivityComponent = ({ project_id }) => {
+const CreateActivityComponent = () => {
+
+  const search = useLocation().search;
+  const project_id = new URLSearchParams(search).get('id');
+
+  const navigate = useNavigate();
+
   const [projects, setProjects] = useState({
     project_id: project_id,
     activity_number: "",
@@ -38,14 +46,18 @@ const CreateActivityComponent = ({ project_id }) => {
     <Formik
       initialValues={projects}
       onSubmit={(values, { setSubmitting }) => {
-        values.previous_cycle = selectedValue;
+        values.dependency = selectedValue;
 
-        console.log(values);
+        try {
+          const response = createActivity(values);
+          console.log(response);
 
-        setTimeout(() => {
-          alert(JSON.stringify(values, null, 2));
           setSubmitting(false);
-        }, 400);
+        } catch (error) {
+          console.log(error);
+        }
+
+        navigate(`/project/activity?id=${project_id}`);
       }}
     >
       {({

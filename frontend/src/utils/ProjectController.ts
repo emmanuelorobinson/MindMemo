@@ -2,7 +2,7 @@
 // import dotenv from 'dotenv';
 
 export interface Project {
-    cycle: string;
+    cycle: number;
     project_id?: number;
     project_name: string;
     project_start_date: Date;
@@ -62,7 +62,7 @@ export const createProject = async (project: Project): Promise<Project> => {
 }
 
 export const updateProject = async (project: Project): Promise<Project> => {
-  const URL = '';
+  const URL = API_URL + '/projects/project/' + project.project_id;
 
   const response = await fetch(URL, {
     method: 'PUT',
@@ -81,15 +81,20 @@ export const updateProject = async (project: Project): Promise<Project> => {
   }
 }
 
-export const deleteProject = async (project: Project): Promise<Project> => {
-  const URL = '';
+export const deleteProject = async (project_id: number): Promise<Project> => {
+  //check if project_id exists
+  if (!project_id) {
+    throw new Error('project_id is undefined');
+  }
+
+  const URL = API_URL + '/projects/project/' + project_id;
+  console.log(URL);
 
   const response = await fetch(URL, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(project),
   });
 
   try {

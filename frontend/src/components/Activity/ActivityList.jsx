@@ -3,7 +3,7 @@ import ActivityItem from "./ActivityItem";
 import AddButton from "../AddButton";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 
-const ActivityList = ({ data }) => {
+const ActivityList = ({ activityList }) => {
   const navigate = useNavigate();
   // const { id } = useParams();
   const { search } = useLocation();
@@ -32,8 +32,8 @@ const ActivityList = ({ data }) => {
       </div>
       <div className="mt-6 flow-root">
         <ul role="list" className="divide-y divide-gray-100">
-          {data.map((i) => (
-            <li key={i.name} className="flex justify-between gap-x-6 py-5">
+          {activityList.map((i) => (
+            <li key={i.id} className="flex justify-between gap-x-6 py-5">
               <ActivityItem data={i} />
             </li>
           ))}

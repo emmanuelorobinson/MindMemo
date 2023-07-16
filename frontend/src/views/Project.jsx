@@ -11,7 +11,7 @@ import { useClerk } from '@clerk/clerk-react'
 const Project = () => {
 
   const { user } = useClerk()
-  console.log('use.id', user.id)
+  // console.log('use.id', user.id)
 
   const [project, setProject] = useState([])
 
@@ -19,7 +19,7 @@ const Project = () => {
   useEffect(() => {
     const fetchProjects = async () => {
       const response = await getProjects(user.id)
-      console.log('response', response)
+      // console.log('response', response)
       setProject(response)
     }
     fetchProjects()

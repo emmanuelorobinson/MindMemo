@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import MenuDropdown from "../MenuDropdown";
+import { deleteProject } from "../../utils/ProjectController";
+import { useClerk } from "@clerk/clerk-react";
 
 const colorScheme = (status) => {
   switch (status) {
@@ -15,14 +17,32 @@ const colorScheme = (status) => {
 };
 
 const ProjectItem = ({ data }) => {
-  console.log(data);
+  // const [user, setUser] = useState({});
+
+  // useEffect(async () => {
+  //   console.log('user id', data.user_id)
+  //   const userId = data.user_id;
+  //   const clerkUser = await clerkClient.users.getUser(userId);
+  //   setUser(clerkUser);
+  //   console.log(clerkUser);
+  // }, []);
+  // // console.log(data);
 
   const onEditClick = () => {
     console.log("edit");
   };
 
-  const onDeleteClick = () => {
-    console.log("delete");
+  const onDeleteClick = async () => {
+    // console.log("delete");
+    try {
+      const response = await deleteProject(data.project_id);
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+
+    // refresh page
+    window.location.reload();
   };
 
   // project due date is data.project_start_date + data.duration (duration in days)
@@ -35,8 +55,6 @@ const ProjectItem = ({ data }) => {
     month: "long",
     day: "numeric",
   });
-  
-
 
   return (
     <>
@@ -57,7 +75,7 @@ const ProjectItem = ({ data }) => {
             </div>
           </div>
           <p className="mt-1 truncate text-xs leading-5 text-gray-500">
-            Due on {formattedDueDate} - Created by {data.createdBy}
+            Due on {formattedDueDate}
           </p>
         </div>
       </div>

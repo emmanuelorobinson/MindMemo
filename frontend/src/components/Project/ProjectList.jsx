@@ -3,23 +3,6 @@ import ProjectItem from "./ProjectItem";
 import AddButton from "../AddButton";
 import { useNavigate } from "react-router-dom";
 
-const entries = [
-  {
-    id: 1,
-    name: "Farming For Eggs",
-    status: "In Progress",
-    due: "March 17, 2023",
-    createdBy: "John Doe",
-  },
-  {
-    id: 2,
-    name: "Project 2",
-    status: "Completed",
-    due: "March 17, 2023",
-    createdBy: "John Doe",
-  },
-];
-
 const ProjectList = ({projectList}) => {
 
   const navigate = useNavigate();
