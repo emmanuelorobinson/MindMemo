@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react'
-import EmptyProject from '../components/Project/EmptyProject'
+import EmptyItem from '../components/EmptyItem'
 import ProjectList from '../components/Project/ProjectList'
 import Breadcrumbs from '../components/Breadcrumbs'
 import { getProjects } from '../utils/ProjectController'
 import { useClerk } from '@clerk/clerk-react'
+import { Navigate } from 'react-router-dom'
 
 
 // const project = [1, 2]
@@ -25,13 +26,16 @@ const Project = () => {
     fetchProjects()
   }, [])
 
+  const onEmptyButtonClick = () => {
+    Navigate('/project/create')
+  }
 
 
 
   return (
     <div className='p-5 h-[100vh]'>
       <Breadcrumbs />
-      {project.length ? <ProjectList projectList={project} /> : <EmptyProject/>}
+      {project.length ? <ProjectList projectList={project} /> : <EmptyItem title={"No projects"} subtitle={"Get started by creating a new project."} buttonText={"New Project"} onButtonClick={onEmptyButtonClick}/>}
     </div>
   )
 }

@@ -88,3 +88,23 @@ export const deleteTask = async (task_id: number): Promise<Task> => {
     throw new Error(error);
   }
 };
+
+export const getUpcomingTasks = async (
+  user_id: string
+): Promise<Task[]> => {
+  const URL = API_URL + "/users/" + user_id + "/tasks";
+
+  const response = await fetch(URL, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  try {
+    const data = await response.json();
+    return data;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+}

@@ -13,7 +13,7 @@ function generateDays(currentMonth, currentYear, events) {
   // fill in the days of the month for currentMonth and currentYear
   const days = [];
   const daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
-  console.log("daysInMonth", daysInMonth);
+  // console.log("daysInMonth", daysInMonth);
   for (let i = 1; i <= daysInMonth; i++) {
     const date = new Date(currentYear, currentMonth, i)
       .toISOString()
@@ -21,7 +21,7 @@ function generateDays(currentMonth, currentYear, events) {
     days.push({ date, events: [] });
     // console.log('date', date)
   }
-  console.log("days", days);
+  // console.log("days", days);
   // remove earliest date from array
   days.shift();
 

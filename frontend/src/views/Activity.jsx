@@ -1,14 +1,15 @@
 import React, { useEffect } from 'react'
-import EmptyProject from '../components/Project/EmptyProject'
+import EmptyItem from '../components/EmptyItem'
 import ActivityList from '../components/Activity/ActivityList'
 import Breadcrumbs from '../components/Breadcrumbs'
-import { Link, useParams, useLocation } from "react-router-dom";
+import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
 import { getActivities } from '../utils/ActivityController'
 
 
 const Activity = () => {
   const search = useLocation().search;
   const id = new URLSearchParams(search).get('id');
+  const navigate = useNavigate();
 
   const [activity, setActivity] = React.useState([])
 
@@ -21,11 +22,15 @@ const Activity = () => {
     fetchActivity()
   }, [])
 
+  const onEmptyButtonClick = () => {
+    navigate(`/project/activity/create?id=${id}`);
+  }
+
 
   return (
     <div className='p-5 h-[100vh]'>
       <Breadcrumbs />
-      {activity.length ? <ActivityList activityList={activity} /> : ""}
+      {activity.length ? <ActivityList activityList={activity} /> : <EmptyItem title={"No activity"} subtitle={"Get started by creating a new activity."} buttonText={"New Activity"} onButtonClick={onEmptyButtonClick}/>}
     </div>
   )
 }
