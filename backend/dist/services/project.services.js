@@ -27,6 +27,7 @@ const getProjects = (user_id) => __awaiter(void 0, void 0, void 0, function* () 
             completed: true,
             save_as_cycle: true,
             user_id: true,
+            cycle_name: true,
         }
     });
 });
@@ -46,6 +47,7 @@ const getProjectByID = (project_id) => __awaiter(void 0, void 0, void 0, functio
             completed: true,
             save_as_cycle: true,
             user_id: true,
+            cycle_name: true,
         }
     });
 });
@@ -64,6 +66,7 @@ const createProject = (project) => __awaiter(void 0, void 0, void 0, function* (
             completed: true,
             save_as_cycle: true,
             user_id: true,
+            cycle_name: true,
         }
     });
     if ((yield newProject).save_as_cycle) {
@@ -85,8 +88,9 @@ const updateProject = (project) => __awaiter(void 0, void 0, void 0, function* (
             duration: true,
             days_till_renew: true,
             completed: true,
-            user_id: true,
             save_as_cycle: true,
+            user_id: true,
+            cycle_name: true,
         }
     });
 });
@@ -103,8 +107,9 @@ const deleteProject = (project_id) => __awaiter(void 0, void 0, void 0, function
             duration: true,
             days_till_renew: true,
             completed: true,
-            user_id: true,
             save_as_cycle: true,
+            user_id: true,
+            cycle_name: true,
         }
     });
 });

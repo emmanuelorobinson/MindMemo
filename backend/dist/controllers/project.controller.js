@@ -64,7 +64,8 @@ const createProject = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         let intdays = parseInt(req.body.days_till_renew);
         let date = (new Date(req.body.project_start_date));
         let name = req.body.project_name;
-        let cycle = req.body.save_as_cycle === "true" ? true : false;
+        let save_as_cycle = req.body.save_as_cycle === "true" ? true : false;
+        let cycle_name = req.body.cycle_name;
         let complete = req.body.completed === "true" ? true : false;
         const project = {
             project_name: name,
@@ -72,7 +73,8 @@ const createProject = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             duration: intduration,
             days_till_renew: intdays,
             completed: complete,
-            save_as_cycle: cycle,
+            save_as_cycle: save_as_cycle,
+            cycle_name: cycle_name,
             user_id: userId,
         };
         const newProject = yield ProjectService.createProject(project);
@@ -90,17 +92,18 @@ const updateProject = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         let intdays = parseInt(req.body.days_till_renew);
         let date = (new Date(req.body.project_start_date));
         let name = req.body.project_name;
+        let save_as_cycle = req.body.save_as_cycle === "true" ? true : false;
+        let cycle_name = req.body.cycle_name;
         let complete = req.body.completed === "true" ? true : false;
-        let cycle = req.body.save_as_cycle === "true" ? true : false;
-        const project_id = parseInt(req.params.project_id);
         const project = {
-            project_id: project_id,
+            project_id: parseInt(req.params.project_id),
             project_name: name,
             project_start_date: date,
             duration: intduration,
             days_till_renew: intdays,
             completed: complete,
-            save_as_cycle: cycle,
+            save_as_cycle: save_as_cycle,
+            cycle_name: cycle_name,
             user_id: userId,
         };
         const updatedProject = yield ProjectService.updateProject(project);

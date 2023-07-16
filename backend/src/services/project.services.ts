@@ -17,6 +17,7 @@ export const getProjects = async (user_id: string): Promise<Project[]> => {
             completed: true,
             save_as_cycle: true,
             user_id: true,
+            cycle_name: true,
         }
     })
 };
@@ -36,6 +37,7 @@ export const getProjectByID = async (project_id: number): Promise<Project | null
             completed: true,
             save_as_cycle: true,
             user_id: true,
+            cycle_name: true,
         }
     });
 }
@@ -54,6 +56,7 @@ export const createProject = async (project: Omit<Project, 'project_id'>): Promi
             completed: true,
             save_as_cycle: true,
             user_id: true,
+            cycle_name: true,
         }
     });
 
@@ -77,8 +80,9 @@ export const updateProject = async (project: Project): Promise<Project | null> =
             duration: true,
             days_till_renew: true,
             completed: true,
-            user_id: true,
             save_as_cycle: true,
+            user_id: true,
+            cycle_name: true,
         }
     });
 }
@@ -95,8 +99,9 @@ export const deleteProject = async (project_id: number): Promise<Project | null>
             duration: true,
             days_till_renew: true,
             completed: true,
-            user_id: true,
             save_as_cycle: true,
+            user_id: true,
+            cycle_name: true,
         }
     });
 }
