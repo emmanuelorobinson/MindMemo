@@ -13,8 +13,6 @@ exports.getActivitiesByTag = exports.getTasksByTag = exports.getActivityTagListB
 const db_server_1 = require("../utils/db.server");
 const task_services_1 = require("./task.services");
 const activity_services_1 = require("./activity.services");
-// import { getTaskTagList, updateTaskTagList } from "./task.services";
-// import { getActivityTagList, updateActivityTagList } from "./activity.services";
 //TODO:
 // 1. update tag
 // 2. delete tag
@@ -105,13 +103,17 @@ const addTagToTask = (tag, task_id) => __awaiter(void 0, void 0, void 0, functio
     let task_tag_lists = yield (0, task_services_1.getTaskTagList)(tag.tag_id);
     (0, task_services_1.updateTaskTagList)(task_id, (yield tagList));
     task_tag_lists = [...task_tag_lists, (yield tagList)];
+    let task_tag_lists_ids;
+    task_tag_lists === null || task_tag_lists === void 0 ? void 0 : task_tag_lists.map((task_tag_list) => {
+        task_tag_lists_ids = [...task_tag_lists_ids, task_tag_list.task_tag_list_id];
+    });
     db_server_1.db.tag.update({
         where: {
             tag_id: tag.tag_id,
         },
         data: {
             task_tag_list: {
-                connect: task_tag_lists,
+                connect: task_tag_lists_ids,
             }
         }
     });
@@ -130,19 +132,22 @@ const addTagToActivity = (tag, activity_id) => __awaiter(void 0, void 0, void 0,
             tag_id: true,
         }
     });
-    let activity_tag_lists = yield (0, activity_services_1.getActivityTagList)(tag.tag_id);
     (0, activity_services_1.updateActivityTagList)(activity_id, (yield tagList));
-    activity_tag_lists = [...activity_tag_lists, (yield tagList)];
-    db_server_1.db.tag.update({
-        where: {
-            tag_id: tag.tag_id,
-        },
-        data: {
-            activity_tag_list: {
-                connect: activity_tag_lists,
-            }
-        }
-    });
+    let activity_tag_lists = yield (0, activity_services_1.getActivityTagList)(tag.tag_id);
+    // let activity_tag_lists_ids;
+    // activity_tag_lists?.map((activity_tag_list) => {
+    //     activity_tag_lists_ids = [...activity_tag_lists_ids!, (await tagList).activity_tag_list_id];
+    // })
+    // db.tag.update({
+    //     where: {
+    //         tag_id: tag.tag_id,
+    //     },
+    //     data: {
+    //         activity_tag_list: {
+    //             connect: activity_tag_lists_ids,
+    //         }
+    //     }
+    // })
     return tagList;
 });
 exports.addTagToActivity = addTagToActivity;

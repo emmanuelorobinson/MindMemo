@@ -138,6 +138,7 @@ export const duplicateCycle = async (cycle_id: number, project_id: number) => {
                 let createdTask = await createTask(newTask);
                 
                 let taskTags = await getTagsByTask(task.task_id);
+                console.log("TAGS:" + taskTags);
                 for (const tagName of taskTags) {
                     let tag = await getTagByName(tagName);
                     addTagToTask(tag!, createdTask.task_id);

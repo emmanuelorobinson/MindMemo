@@ -2,8 +2,7 @@ import { db } from "../utils/db.server";
 import { Activity, ActivityTagList, Tag, Task, TaskTagList } from "@prisma/client";
 import { getTaskTagList, updateTaskTagList } from "./task.services";
 import { getActivityTagList, updateActivityTagList } from "./activity.services";
-// import { getTaskTagList, updateTaskTagList } from "./task.services";
-// import { getActivityTagList, updateActivityTagList } from "./activity.services";
+
 
 //TODO:
 // 1. update tag
@@ -94,9 +93,14 @@ export const addTagToTask = async (tag: Tag, task_id: number): Promise<TaskTagLi
         }
     });
     let task_tag_lists = await getTaskTagList(tag.tag_id);
-
+    
     updateTaskTagList(task_id, (await tagList));
     task_tag_lists = [...task_tag_lists!, (await tagList)];
+
+    let task_tag_lists_ids;
+    task_tag_lists?.map((task_tag_list) => {
+        task_tag_lists_ids = [...task_tag_lists_ids!, task_tag_list.task_tag_list_id];
+    })
 
     db.tag.update({
         where: {
@@ -104,7 +108,7 @@ export const addTagToTask = async (tag: Tag, task_id: number): Promise<TaskTagLi
         },
         data: {
             task_tag_list: {
-                connect: task_tag_lists,
+                connect: task_tag_lists_ids,
             }
         }
     })
@@ -124,21 +128,25 @@ export const addTagToActivity = async (tag: Tag, activity_id: number): Promise<A
             tag_id: true,
         }
     });
+    updateActivityTagList(activity_id, (await tagList));
+    
     let activity_tag_lists = await getActivityTagList(tag.tag_id);
 
-    updateActivityTagList(activity_id, (await tagList));
-    activity_tag_lists = [...activity_tag_lists!, (await tagList)];
+    // let activity_tag_lists_ids;
+    // activity_tag_lists?.map((activity_tag_list) => {
+    //     activity_tag_lists_ids = [...activity_tag_lists_ids!, (await tagList).activity_tag_list_id];
+    // })
 
-    db.tag.update({
-        where: {
-            tag_id: tag.tag_id,
-        },
-        data: {
-            activity_tag_list: {
-                connect: activity_tag_lists,
-            }
-        }
-    })
+    // db.tag.update({
+    //     where: {
+    //         tag_id: tag.tag_id,
+    //     },
+    //     data: {
+    //         activity_tag_list: {
+    //             connect: activity_tag_lists_ids,
+    //         }
+    //     }
+    // })
     
     return tagList;
 }

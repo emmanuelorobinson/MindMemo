@@ -168,6 +168,7 @@ const duplicateCycle = (cycle_id, project_id) => __awaiter(void 0, void 0, void 
                 };
                 let createdTask = yield (0, task_services_1.createTask)(newTask);
                 let taskTags = yield (0, task_services_1.getTagsByTask)(task.task_id);
+                console.log("TAGS:" + taskTags);
                 for (const tagName of taskTags) {
                     let tag = yield (0, tag_services_1.getTagByName)(tagName);
                     (0, tag_services_1.addTagToTask)(tag, createdTask.task_id);

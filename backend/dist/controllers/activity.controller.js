@@ -84,8 +84,8 @@ const createActivity = (req, res) => __awaiter(void 0, void 0, void 0, function*
 exports.createActivity = createActivity;
 const updateActivity = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        let projectId = parseInt(req.body.project_id);
         let activity_id = parseInt(req.params.activity_id);
+        let projectId = parseInt(req.body.project_id);
         let activityName = req.body.activity_name;
         let activityNumber = (req.body.activity_number == '') ? 0 : parseInt(req.body.activity_number);
         let startDate = (req.body.start_date == undefined) ? new Date() : new Date(req.body.start_date);
@@ -102,6 +102,7 @@ const updateActivity = (req, res) => __awaiter(void 0, void 0, void 0, function*
             note: acitivtyNote,
             project_id: projectId,
         };
+        console.log(activity);
         const updatedActivity = yield ActivityService.updateActivity(activity);
         res.json(updatedActivity);
     }

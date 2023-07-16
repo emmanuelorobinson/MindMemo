@@ -48,8 +48,8 @@ export const createActivity = async (req: any, res: any) => {
 
 export const updateActivity = async (req: any, res: any) => {
     try {
-        let projectId = parseInt(req.body.project_id);
         let activity_id = parseInt(req.params.activity_id);
+        let projectId = parseInt(req.body.project_id);
         let activityName = req.body.activity_name;            
         let activityNumber = (req.body.activity_number == '') ? 0 : parseInt(req.body.activity_number);
         let startDate = (req.body.start_date == undefined) ? new Date() : new Date(req.body.start_date);
@@ -66,6 +66,7 @@ export const updateActivity = async (req: any, res: any) => {
             note: acitivtyNote,
             project_id: projectId,
         }
+        console.log(activity);
         const updatedActivity = await ActivityService.updateActivity(activity);
         res.json(updatedActivity);
     } catch (error: any) {
