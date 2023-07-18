@@ -4,7 +4,7 @@ import ProjectList from '../components/Project/ProjectList'
 import Breadcrumbs from '../components/Breadcrumbs'
 import { getProjects } from '../utils/ProjectController'
 import { useClerk } from '@clerk/clerk-react'
-import { Navigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 
 // const project = [1, 2]
@@ -15,19 +15,20 @@ const Project = () => {
   // console.log('use.id', user.id)
 
   const [project, setProject] = useState([])
+  const navigate = useNavigate()
 
 
   useEffect(() => {
     const fetchProjects = async () => {
       const response = await getProjects(user.id)
-      // console.log('response', response)
       setProject(response)
     }
     fetchProjects()
   }, [])
 
   const onEmptyButtonClick = () => {
-    Navigate('/project/create')
+    // Navigate('/project/create')
+    navigate('/project/create')
   }
 
 

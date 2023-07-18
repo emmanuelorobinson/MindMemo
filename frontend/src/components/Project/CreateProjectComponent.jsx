@@ -62,7 +62,12 @@ const CreateProjectComponent = () => {
           console.log(error);
         }
 
-        navigate("/project");
+        // navigate("/project");
+        // set timer for 2 seconds
+        setTimeout(() => {
+          navigate("/project");
+        }
+        , 2000);
         
       }}
     >
