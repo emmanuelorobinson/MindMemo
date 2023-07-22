@@ -3,7 +3,7 @@ import ActivityItem from "./ActivityItem";
 import AddButton from "../AddButton";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 
-const ActivityList = ({ activityList }) => {
+const ActivityList = ({ activityList, reFetch }) => {
   const navigate = useNavigate();
   // const { id } = useParams();
   const { search } = useLocation();
@@ -34,7 +34,7 @@ const ActivityList = ({ activityList }) => {
         <ul role="list" className="divide-y divide-gray-100">
           {activityList.map((i) => (
             <li key={i.id} className="flex justify-between gap-x-6 py-5">
-              <ActivityItem data={i} />
+              <ActivityItem data={i} reFetch={reFetch} />
             </li>
           ))}
         </ul>

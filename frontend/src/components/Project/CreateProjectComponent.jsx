@@ -25,7 +25,7 @@ const CreateProjectComponent = () => {
   const navigate = useNavigate();
 
   const [projects, setProjects] = useState({
-    cycle: "",
+    cycle_id: "",
     project_name: "",
     project_start_date: "",
     duration: "",
@@ -62,12 +62,12 @@ const CreateProjectComponent = () => {
           console.log(error);
         }
 
-        // navigate("/project");
+        navigate("/project");
         // set timer for 2 seconds
-        setTimeout(() => {
-          navigate("/project");
-        }
-        , 2000);
+        // setTimeout(() => {
+        //   navigate("/project");
+        // }
+        // , 2000);
         
       }}
     >

@@ -7,8 +7,8 @@ import { Link, useLocation } from 'react-router-dom';
 export default function Breadcrumbs() {
 
   const location = useLocation();
-  console.log(location.state);
-  console.log(location.pathname);
+  // console.log(location.state);
+  // console.log(location.pathname);
 
   const pages = location.pathname.split('/').filter((i) => i);
 

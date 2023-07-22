@@ -25,7 +25,7 @@ const colorScheme = (status) => {
   }
 };
 
-const ActivityItem = ({ data }) => {
+const ActivityItem = ({ data, reFetch }) => {
   // console.log(data);
   const [showEditModal, setShowEditModal] = React.useState(false);
 
@@ -34,30 +34,31 @@ const ActivityItem = ({ data }) => {
     showEditModal ? setShowEditModal(false) : setShowEditModal(true);
   };
 
-  const onDeleteClick = async() => {
+  const onDeleteClick = async () => {
     // console.log("delete");
     try {
-      const response =  await deleteActivity(data.activity_id);
+      const response = await deleteActivity(data.activity_id);
       console.log(response);
     } catch (error) {
       console.log(error);
     }
 
-    // refresh page
-    // window.location.reload();
+    reFetch();
   };
 
   const onCheckClick = async (e) => {
     try {
-      console.log(data.activity_id)
-      const newData = { ...data, completed: e.target.checked };
+      console.log(e.target.checked);
+      console.log(data.activity_id);
+      const check = e.target.checked.toString();
+      const newData = { ...data, completed: check };
       const response = await updateActivity(newData);
-      console.log(response);
     } catch (error) {
       console.log(error);
     }
-  };
 
+    reFetch();
+  };
 
   return (
     <>
@@ -69,6 +70,7 @@ const ActivityItem = ({ data }) => {
               <input
                 onClick={(e) => onCheckClick(e)}
                 value={data.completed}
+                checked={data.completed}
                 type="checkbox"
                 className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
               />
