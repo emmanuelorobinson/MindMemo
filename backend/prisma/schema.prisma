@@ -13,8 +13,8 @@ datasource db {
 
 model User {
   user_id String @id @default(uuid())
-  first_name String @db.VarChar(15)
-  last_name String @db.VarChar(15) 
+  first_name String @db.VarChar(15) @default("")
+  last_name String @db.VarChar(15) @default("")
   email String @db.VarChar(50) 
   username String @db.VarChar(15) 
 

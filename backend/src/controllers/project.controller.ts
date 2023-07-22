@@ -35,7 +35,7 @@ export const createProject = async (req: Request, res: Response) => {
         let date = (new Date(req.body.project_start_date));
         let name = req.body.project_name;
         let save_as_cycle = req.body.save_as_cycle === "true" ? true : false;
-        let cycle_id = (req.body.cycle_id == "") ? 0 : parseInt(req.body.cycle_id);
+        let cycle_id = (req.body.cycle_id == "" || req.body.cycle_id === undefined) ? 0 : parseInt(req.body.cycle_id);
         let complete = req.body.completed === "true" ? true : false;
 
         const project = { 
@@ -50,10 +50,9 @@ export const createProject = async (req: Request, res: Response) => {
         }
         const newProject = await ProjectService.createProject(project);
 
-        let projectId;
-        if (cycle_id != 0) {
-            duplicateCycle(cycle_id, newProject.project_id);
-        }
+        // if (cycle_id != 0) {
+        //     duplicateCycle(cycle_id, newProject.project_id);
+        // }
         
         res.json(newProject);
     } catch (error: any) {
@@ -137,12 +136,12 @@ export const duplicateCycle = async (cycle_id: number, project_id: number) => {
                 }
                 let createdTask = await createTask(newTask);
                 
-                let taskTags = await getTagsByTask(task.task_id);
-                console.log("TAGS:" + taskTags);
-                for (const tagName of taskTags) {
-                    let tag = await getTagByName(tagName);
-                    addTagToTask(tag!, createdTask.task_id);
-                }
+                // let taskTags = await getTagsByTask(task.task_id);
+                // console.log("TAGS:" + taskTags);
+                // for (const tagName of taskTags) {
+                //     let tag = await getTagByName(tagName);
+                //     addTagToTask(tag!, createdTask.task_id);
+                // }
             }
         }
     }
