@@ -28,13 +28,14 @@ const colorScheme = (status) => {
 const ActivityItem = ({ data, reFetch }) => {
   // console.log(data);
   const [showEditModal, setShowEditModal] = React.useState(false);
+  const [itemChecked, setItemChecked] = React.useState(data.completed);
 
   const onEditClick = () => {
     console.log("edit");
     showEditModal ? setShowEditModal(false) : setShowEditModal(true);
   };
 
-  const onDeleteClick = async () => {
+  const onDeleteClick = async (activity_id) => {
     // console.log("delete");
     try {
       const response = await deleteActivity(data.activity_id);
@@ -48,11 +49,20 @@ const ActivityItem = ({ data, reFetch }) => {
 
   const onCheckClick = async (e) => {
     try {
-      console.log(e.target.checked);
-      console.log(data.activity_id);
+
+      if (e.target.checked) {
+        setItemChecked(true);
+      }
+
+      if (!e.target.checked) {
+        setItemChecked(false);
+      }
+
       const check = e.target.checked.toString();
       const newData = { ...data, completed: check };
       const response = await updateActivity(newData);
+      console.log(response);
+
     } catch (error) {
       console.log(error);
     }
@@ -69,10 +79,10 @@ const ActivityItem = ({ data, reFetch }) => {
             <div className="flex items-center h-5">
               <input
                 onClick={(e) => onCheckClick(e)}
-                value={data.completed}
-                checked={data.completed}
+                value={itemChecked}
+                checked={itemChecked}
                 type="checkbox"
-                className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded cursor-pointer"
               />
             </div>
           </div>
@@ -128,9 +138,10 @@ const ActivityItem = ({ data, reFetch }) => {
         {/* view project button and 3 dots to pop up a menu */}
 
         <div className="flex align-middle justify-center">
-          <MenuDropdown onDelete={onDeleteClick} onEdit={onEditClick} />
+          <MenuDropdown onDelete={onDeleteClick} onEdit={onEditClick} index={data.activity_id} />
 
           <Link
+          className="cursor-pointer"
             to={`/project/activity/task?projectId=${data.project_id}&activityId=${data.activity_id}`}
           >
             <svg

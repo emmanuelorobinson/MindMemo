@@ -3,10 +3,11 @@ import Pagination from "./Pagination";
 import MenuDropdown from "../MenuDropdown";
 // import { getProducts } from "../utils/ProductController";
 // import Image from "next/image";
+import { updateTask, deleteTask } from "../../utils/TaskController";
 
 const pageSize = 7;
 
-const TaskTable = ({ taskList }: any) => {
+const TaskTable = ({ taskList, reFetch }: any) => {
   const [currentPage, setCurrentPage] = React.useState(1);
 
   const formatDate = (date: any, duration: any) => {
@@ -44,9 +45,34 @@ const TaskTable = ({ taskList }: any) => {
     console.log("edit");
   };
 
-  const onDeleteClick = async () => {
-    console.log("delete");
+  const onDeleteClick = async (task_id:number) => {
+    try {
+      const res = await deleteTask(task_id);
+      console.log(res);
+    }
+    catch (err) {
+      console.log(err);
+    }
+
+    reFetch();
   };
+
+  const onCheckboxClick = async (e:any, task_id:number) => {
+    console.log(task_id);
+    try {
+      // console.log(e.target.checked);
+      const check = e.target.checked.toString();
+      const newTask = {...taskList.find((task:any) => task.task_id === task_id), completed: check};
+      const res = await updateTask(newTask);
+      console.log(res);
+    }
+    catch (err) {
+      console.log(err);
+    }
+
+    reFetch();
+  };
+
 
   return (
     <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
@@ -98,11 +124,12 @@ const TaskTable = ({ taskList }: any) => {
               <tr key={task.task_id}>
                 <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                   <div className="text-gray-900 text-center">
-                  <input
-                    disabled
-                    type="checkbox"
-                    className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
-                  />
+                    <input
+                      type="checkbox"
+                      onChange={(e) => onCheckboxClick(e, task.task_id)}
+                      checked={task.completed}
+                      className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                    />
                   </div>
                 </td>
                 <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
@@ -134,10 +161,7 @@ const TaskTable = ({ taskList }: any) => {
                   </div>
                 </td>
                 <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                  <MenuDropdown
-                    onEdit={onEditClick}
-                    onDelete={onDeleteClick}
-                  />
+                  <MenuDropdown onEdit={onEditClick} onDelete={onDeleteClick} index={task.task_id} />
                 </td>
               </tr>
             ))}
