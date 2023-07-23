@@ -1,6 +1,7 @@
 import { db } from "../utils/db.server";
 import { Activity, ActivityTagList, Task, } from "@prisma/client";
 import { getActivityTagLists, getTagByID } from "./tag.services";
+import { getTasks } from "./task.services";
 
 //TODO: 
 // 1. today's activities
@@ -80,6 +81,18 @@ export const updateActivity = async (activity: Activity): Promise<Activity | nul
 }
 
 export const deleteActivity = async (activity_id: number): Promise<Activity | null> => {
+    await db.task.deleteMany({
+        where: {
+            activity_id,
+        }
+    });
+
+    await db.activityTagList.deleteMany({
+        where: {
+            activity_id,
+        }
+    });
+
     return db.activity.delete({
         where: {
             activity_id,

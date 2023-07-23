@@ -88,6 +88,16 @@ const updateActivity = (activity) => __awaiter(void 0, void 0, void 0, function*
 });
 exports.updateActivity = updateActivity;
 const deleteActivity = (activity_id) => __awaiter(void 0, void 0, void 0, function* () {
+    yield db_server_1.db.task.deleteMany({
+        where: {
+            activity_id,
+        }
+    });
+    yield db_server_1.db.activityTagList.deleteMany({
+        where: {
+            activity_id,
+        }
+    });
     return db_server_1.db.activity.delete({
         where: {
             activity_id,

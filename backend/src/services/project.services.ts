@@ -2,6 +2,7 @@ import { db } from "../utils/db.server";
 import { Activity, Project} from "@prisma/client";
 import { createCycle, getCycleByProjectID } from "./cycle.services";
 import { get } from "http";
+import { getActivities } from "./activity.services";
 
 //get all projects by user
 export const getProjects = async (user_id: string): Promise<Project[]> => {
@@ -98,6 +99,14 @@ export const updateProject = async (project: Project): Promise<Project | null> =
 }
 
 export const deleteProject = async (project_id: number): Promise<Project | null> => {
+    let activities = await getActivities(project_id);
+    activities.forEach(async (activity) => {
+        db.activity.delete({
+            where: {
+                activity_id: activity.activity_id,
+            },
+        })
+    });
     return db.project.delete({
         where: {
             project_id,

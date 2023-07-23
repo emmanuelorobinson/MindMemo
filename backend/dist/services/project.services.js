@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteProject = exports.updateProject = exports.createProject = exports.getProjectByID = exports.getProjects = void 0;
 const db_server_1 = require("../utils/db.server");
 const cycle_services_1 = require("./cycle.services");
+const activity_services_1 = require("./activity.services");
 //get all projects by user
 const getProjects = (user_id) => __awaiter(void 0, void 0, void 0, function* () {
     return db_server_1.db.project.findMany({
@@ -103,6 +104,14 @@ const updateProject = (project) => __awaiter(void 0, void 0, void 0, function* (
 });
 exports.updateProject = updateProject;
 const deleteProject = (project_id) => __awaiter(void 0, void 0, void 0, function* () {
+    let activities = yield (0, activity_services_1.getActivities)(project_id);
+    activities.forEach((activity) => __awaiter(void 0, void 0, void 0, function* () {
+        db_server_1.db.activity.delete({
+            where: {
+                activity_id: activity.activity_id,
+            },
+        });
+    }));
     return db_server_1.db.project.delete({
         where: {
             project_id,
