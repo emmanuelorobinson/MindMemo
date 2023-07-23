@@ -2,9 +2,8 @@ import React, { useState } from "react";
 import { Form, Formik, ErrorMessage } from "formik";
 import SelectMenu from "../SelectMenu";
 import Toggle from "../Toggle";
-import { useClerk } from "@clerk/clerk-react";
-import { createProject } from "../../utils/ProjectController";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { createTask } from "../../utils/TaskController";
 
 const options = [
   { id: 1, name: "Wade Cooper" },
@@ -19,42 +18,40 @@ const options = [
   { id: 10, name: "Emil Schaefer" },
 ];
 
-const CreateProjectComponent = () => {
-  const { user } = useClerk();
+const CreateTaskComponent = () => {
+
+  const search = useLocation().search;
+  const project_id = new URLSearchParams(search).get('projectId');
+  const activity_id = new URLSearchParams(search).get('activityId');
 
   const navigate = useNavigate();
 
-  const [projects, setProjects] = useState({
-    cycle_id: "",
-    project_name: "",
-    project_start_date: "",
+  const [task, setTask] = useState({
+    project_id: project_id,
+    activity_id: activity_id,
+    task_number: "",
+    task_name: "",
+    dependency: "",
+    start_date: "",
     duration: "",
-    days_till_renew: "",
-    save_as_cycle: "",
-    user_id: user.id,
+    note: "",
     completed: false,
   });
 
   const [selectedValue, setSelectedValue] = useState("None");
-  const [selectedCycle, setSelectedCycle] = useState(false);
 
   const handleSelectedValueChange = (value) => {
     setSelectedValue(value);
   };
 
-  const handleSelectedCycleChange = (value) => {
-    setSelectedCycle(value);
-  };
-
   return (
     <Formik
-      initialValues={projects}
-      onSubmit={ async (values, { setSubmitting }) => {
-        values.cycle = selectedValue;
-        values.save_as_cycle = selectedCycle;
+      initialValues={task}
+      onSubmit={(values, { setSubmitting }) => {
+        values.dependency = selectedValue;
 
         try {
-          const response = await createProject(values);
+          const response = createTask(values);
           console.log(response);
 
           setSubmitting(false);
@@ -62,13 +59,7 @@ const CreateProjectComponent = () => {
           console.log(error);
         }
 
-        navigate("/project");
-        // set timer for 2 seconds
-        // setTimeout(() => {
-        //   navigate("/project");
-        // }
-        // , 2000);
-        
+        navigate(`/project/activity/task?projectId=${project_id}&activityId=${activity_id}`);
       }}
     >
       {({
@@ -86,39 +77,50 @@ const CreateProjectComponent = () => {
             <div className="space-y-6 pt-8 sm:space-y-5 sm:pt-10 py-6 px-6">
               <div>
                 <h3 className="text-lg font-medium leading-6 text-gray-900">
-                  Create New Project
+                  Create New Task
                 </h3>
                 <p className="mt-1 max-w-2xl text-sm text-gray-500">
-                  Create a project from scratch or from an existing cycle if
-                  available.
+                  Create a task from scratch and selected a predecessor
+                  (optional).
                 </p>
               </div>
 
               <div className="space-y-6 sm:space-y-5">
-                {/*Previous Cycle*/}
-                <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
-                  <SelectMenu
-                    label={"Previous Cycle"}
-                    options={options}
-                    onSelectedValueChange={handleSelectedValueChange}
-                  />
-                </div>
-
                 {/* Name */}
                 <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
                   <label
-                    htmlFor="project_name"
+                    htmlFor="task_name"
                     className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
                   >
-                    Project Name
+                    Task Name
                   </label>
                   <div className="mt-1 sm:col-span-2 sm:mt-0">
                     <input
                       className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
                       type="text"
-                      name="project_name"
-                      id="project_name"
-                      value={values.project_name}
+                      name="task_name"
+                      id="task_name"
+                      value={values.task_name}
+                      onChange={handleChange}
+                    />
+                  </div>
+                </div>
+
+                {/* Activity Number */}
+                <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+                  <label
+                    htmlFor="task_number"
+                    className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
+                  >
+                    Task Number
+                  </label>
+                  <div className="mt-1 sm:col-span-2 sm:mt-0">
+                    <input
+                      className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
+                      type="number"
+                      name="task_number"
+                      id="task_number"
+                      value={values.task_number}
                       onChange={handleChange}
                     />
                   </div>
@@ -127,7 +129,7 @@ const CreateProjectComponent = () => {
                 {/* Start Date */}
                 <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
                   <label
-                    htmlFor="project_start_date"
+                    htmlFor="start_date"
                     className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
                   >
                     Start Date
@@ -136,12 +138,21 @@ const CreateProjectComponent = () => {
                     <input
                       className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
                       type="date"
-                      name="project_start_date"
-                      id="project_start_date"
-                      value={values.project_start_date}
+                      name="start_date"
+                      id="start_date"
+                      value={values.start_date}
                       onChange={handleChange}
                     />
                   </div>
+                </div>
+
+                {/*Dependency*/}
+                <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+                  <SelectMenu
+                    label={"Dependency"}
+                    options={options}
+                    onSelectedValueChange={handleSelectedValueChange}
+                  />
                 </div>
 
                 {/* Duration */}
@@ -164,36 +175,26 @@ const CreateProjectComponent = () => {
                   </div>
                 </div>
 
-                {/* Renew */}
+                {/* Note */}
                 <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
                   <label
-                    htmlFor="days_till_renew"
+                    htmlFor="note"
                     className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
                   >
-                    Renew after days
+                    Note
                   </label>
                   <div className="mt-1 sm:col-span-2 sm:mt-0">
-                    <input
-                      className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
-                      type="number"
-                      name="days_till_renew"
-                      id="days_till_renew"
-                      value={values.days_till_renew}
+                    <textarea
+                      className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                      id="note"
+                      name="note"
+                      rows={3}
+                      value={values.note}
                       onChange={handleChange}
                     />
-                  </div>
-                </div>
-
-                {/* Cycle */}
-                <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
-                  <label
-                    htmlFor="renew"
-                    className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
-                  >
-                    Save as cycle
-                  </label>
-                  <div className="mt-1 sm:col-span-2 sm:mt-0">
-                    <Toggle onToggle={handleSelectedCycleChange} />
+                    <p className="mt-2 text-sm text-gray-500">
+                      Write a few sentences about the task.
+                    </p>
                   </div>
                 </div>
               </div>
@@ -206,7 +207,6 @@ const CreateProjectComponent = () => {
                   type="button"
                   onClick={() => {
                     // router.push("/product");
-                    navigate("/project");
                   }}
                   className="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 >
@@ -228,4 +228,4 @@ const CreateProjectComponent = () => {
   );
 };
 
-export default CreateProjectComponent;
+export default CreateTaskComponent;

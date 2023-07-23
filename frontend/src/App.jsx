@@ -27,6 +27,7 @@ import Task from "./views/Task";
 
 import CreateProject from "./views/CreateProject";
 import CreateActivity from "./views/CreateActivity";
+import CreateTask from "./views/CreateTask";
 import NotFound from "./views/NotFound";
 
 if (!process.env.REACT_APP_CLERK_PUBLISHABLE_KEY) {
@@ -85,6 +86,10 @@ function ClerkProviderWithRoutes() {
             <Route
               path="/project/activity/create"
               element={<CreateActivity />}
+            />
+            <Route
+              path="/project/activity/task/create"
+              element={<CreateTask />}
             />
           </Route>
           <Route path="*" element={<NotFound />} />

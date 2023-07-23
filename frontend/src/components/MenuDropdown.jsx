@@ -3,7 +3,7 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { Link, useParams, useLocation } from "react-router-dom";
 
-export default function MenuDropdown({ onEdit, onDelete }) {
+export default function MenuDropdown({ onEdit, onDelete, index }) {
   return (
     <Menu as="div" className="relative inline-block text-left ">
       <Menu.Button className=" bg-transparent inline-flex w-full justify-center rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
@@ -71,7 +71,7 @@ export default function MenuDropdown({ onEdit, onDelete }) {
                   className={`${
                     active ? " bg-indigo-600 text-white" : "text-gray-900"
                   } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                  onClick={onDelete}
+                  onClick={() => onDelete(index)}
                 >
                   {active ? (
                     <DeleteActiveIcon

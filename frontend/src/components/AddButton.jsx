@@ -2,7 +2,7 @@ import React from "react";
 
 const AddButton = ({ onAddClick }) => {
   return (
-    <div>
+    <div className="cursor-pointer">
       {/* add circle with plus svg inner */}
       <div
         onClick={onAddClick}

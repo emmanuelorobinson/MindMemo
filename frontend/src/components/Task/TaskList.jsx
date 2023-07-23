@@ -3,11 +3,16 @@ import TaskTable from './TaskTable'
 import AddButton from '../AddButton'
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 
-const TaskList = ({taskList}) => {
+const TaskList = ({taskList, reFetch}) => {
+
+  const navigate = useNavigate();
+  const search = useLocation().search;
+  const projectId = new URLSearchParams(search).get('projectId');
+  const activityId = new URLSearchParams(search).get('activityId');
 
   const onAddClick = () => {
     console.log('add')
-    // navigate(`/project/activity/create?id=${id}`);
+    navigate(`/project/activity/task/create?projectId=${projectId}&activityId=${activityId}`);
   };
 
   return (
@@ -26,7 +31,7 @@ const TaskList = ({taskList}) => {
         </div>
       </div>
       <div className="mt-6 flow-root">
-        <TaskTable taskList={taskList} />
+        <TaskTable taskList={taskList} reFetch={reFetch} />
       </div>
     </div>
   )

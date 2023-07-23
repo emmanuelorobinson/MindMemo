@@ -2,7 +2,7 @@
 // import dotenv from 'dotenv';
 
 export interface Project {
-    cycle: number;
+    cycle_id: number;
     project_id?: number;
     project_name: string;
     project_start_date: Date;

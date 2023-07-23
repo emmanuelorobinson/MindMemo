@@ -13,6 +13,7 @@ const Task = () => {
   const navigate = useNavigate();
 
   const [task, setTask] = React.useState([])
+  const [reFetch, setReFetch] = React.useState(false)
 
   useEffect(() => {
     const fetchTask = async () => {
@@ -21,10 +22,15 @@ const Task = () => {
       setTask(response)
     }
     fetchTask()
-  }, [])
+  }, [reFetch])
 
   const onEmptyButtonClick = () => {
     navigate(`/project/activity/task/create?projectId=${projectId}&activityId=${activityId}`);
+  }
+
+  const triggerReFetch = () => {
+    setReFetch(!reFetch)
+    console.log('triggered')
   }
 
 
@@ -32,7 +38,7 @@ const Task = () => {
   return (
     <div className='p-5 h-[100vh]'>
       <Breadcrumbs />
-      {task.length ? <TaskList taskList={task} /> : <EmptyItem title={"No task"} subtitle={"Get started by creating a new task."} buttonText={"New Task"} onButtonClick={onEmptyButtonClick}/>}
+      {task.length ? <TaskList taskList={task} reFetch={triggerReFetch} /> : <EmptyItem title={"No task"} subtitle={"Get started by creating a new task."} buttonText={"New Task"} onButtonClick={onEmptyButtonClick}/>}
     </div>
   )
 }
