@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import MenuDropdown from "../MenuDropdown";
 import { deleteProject } from "../../utils/ProjectController";
-import { useClerk } from "@clerk/clerk-react";
+import EditProjectComponent from "./EditProjectComponent";
 
 const colorScheme = (status) => {
   switch (status) {
@@ -16,24 +16,16 @@ const colorScheme = (status) => {
   }
 };
 
-const ProjectItem = ({ data }) => {
-  // const [user, setUser] = useState({});
-
-  // useEffect(async () => {
-  //   console.log('user id', data.user_id)
-  //   const userId = data.user_id;
-  //   const clerkUser = await clerkClient.users.getUser(userId);
-  //   setUser(clerkUser);
-  //   console.log(clerkUser);
-  // }, []);
-  // // console.log(data);
+const ProjectItem = ({ data, reFetch }) => {
+  const [showEditModal, setShowEditModal] = React.useState(false);
 
   const onEditClick = () => {
-    console.log("edit");
+    showEditModal ? setShowEditModal(false) : setShowEditModal(true);
   };
 
   const onDeleteClick = async () => {
     // console.log("delete");
+
     try {
       const response = await deleteProject(data.project_id);
       console.log(response);
@@ -41,8 +33,7 @@ const ProjectItem = ({ data }) => {
       console.log(error);
     }
 
-    // refresh page
-    window.location.reload();
+    reFetch();
   };
 
   // project due date is data.project_start_date + data.duration (duration in days)
@@ -51,11 +42,11 @@ const ProjectItem = ({ data }) => {
 
   const formatDate = (date, duration) => {
     const dueDate = new Date(date);
-    dueDate.setDate(dueDate.getDate() +duration);
+    dueDate.setDate(dueDate.getDate() + duration);
     const formattedDueDate = dueDate.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
 
     return formattedDueDate;
@@ -100,6 +91,14 @@ const ProjectItem = ({ data }) => {
           <MenuDropdown onEdit={onEditClick} onDelete={onDeleteClick} />
         </div>
       </div>
+      {showEditModal && (
+        <EditProjectComponent
+          show={showEditModal}
+          onClose={() => setShowEditModal(false)}
+          project={data}
+          reFetch={reFetch}
+        />
+      )}
     </>
   );
 };

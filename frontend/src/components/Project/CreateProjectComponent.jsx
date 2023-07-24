@@ -6,18 +6,7 @@ import { useClerk } from "@clerk/clerk-react";
 import { createProject } from "../../utils/ProjectController";
 import { useNavigate } from "react-router-dom";
 
-const options = [
-  { id: 1, name: "Wade Cooper" },
-  { id: 2, name: "Arlene Mccoy" },
-  { id: 3, name: "Devon Webb" },
-  { id: 4, name: "Tom Cook" },
-  { id: 5, name: "Tanya Fox" },
-  { id: 6, name: "Hellen Schmidt" },
-  { id: 7, name: "Caroline Schultz" },
-  { id: 8, name: "Mason Heaney" },
-  { id: 9, name: "Claudie Smitham" },
-  { id: 10, name: "Emil Schaefer" },
-];
+const options = [{ id: 1, name: "Test" }];
 
 const CreateProjectComponent = () => {
   const { user } = useClerk();
@@ -35,7 +24,7 @@ const CreateProjectComponent = () => {
     completed: false,
   });
 
-  const [selectedValue, setSelectedValue] = useState("None");
+  const [selectedValue, setSelectedValue] = useState(0);
   const [selectedCycle, setSelectedCycle] = useState(false);
 
   const handleSelectedValueChange = (value) => {
@@ -49,8 +38,8 @@ const CreateProjectComponent = () => {
   return (
     <Formik
       initialValues={projects}
-      onSubmit={ async (values, { setSubmitting }) => {
-        values.cycle = selectedValue;
+      onSubmit={async (values, { setSubmitting }) => {
+        values.cycle_id = selectedValue;
         values.save_as_cycle = selectedCycle;
 
         try {
@@ -63,12 +52,6 @@ const CreateProjectComponent = () => {
         }
 
         navigate("/project");
-        // set timer for 2 seconds
-        // setTimeout(() => {
-        //   navigate("/project");
-        // }
-        // , 2000);
-        
       }}
     >
       {({
@@ -205,7 +188,6 @@ const CreateProjectComponent = () => {
                 <button
                   type="button"
                   onClick={() => {
-                    // router.push("/product");
                     navigate("/project");
                   }}
                   className="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"

@@ -5,23 +5,11 @@ import Toggle from "../Toggle";
 import { createActivity } from "../../utils/ActivityController";
 import { useNavigate, useLocation } from "react-router-dom";
 
-const options = [
-  { id: 1, name: "Wade Cooper" },
-  { id: 2, name: "Arlene Mccoy" },
-  { id: 3, name: "Devon Webb" },
-  { id: 4, name: "Tom Cook" },
-  { id: 5, name: "Tanya Fox" },
-  { id: 6, name: "Hellen Schmidt" },
-  { id: 7, name: "Caroline Schultz" },
-  { id: 8, name: "Mason Heaney" },
-  { id: 9, name: "Claudie Smitham" },
-  { id: 10, name: "Emil Schaefer" },
-];
+const options = [{ id: 1, name: "Test" }];
 
 const CreateActivityComponent = () => {
-
   const search = useLocation().search;
-  const project_id = new URLSearchParams(search).get('id');
+  const project_id = new URLSearchParams(search).get("id");
 
   const navigate = useNavigate();
 
@@ -36,7 +24,7 @@ const CreateActivityComponent = () => {
     completed: false,
   });
 
-  const [selectedValue, setSelectedValue] = useState("None");
+  const [selectedValue, setSelectedValue] = useState(0);
 
   const handleSelectedValueChange = (value) => {
     setSelectedValue(value);
@@ -45,11 +33,11 @@ const CreateActivityComponent = () => {
   return (
     <Formik
       initialValues={projects}
-      onSubmit={(values, { setSubmitting }) => {
+      onSubmit={async (values, { setSubmitting }) => {
         values.dependency = selectedValue;
 
         try {
-          const response = createActivity(values);
+          const response = await createActivity(values);
           console.log(response);
 
           setSubmitting(false);

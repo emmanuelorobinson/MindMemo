@@ -15,6 +15,7 @@ const Project = () => {
   // console.log('use.id', user.id)
 
   const [project, setProject] = useState([])
+  const [reFetch, setReFetch] = React.useState(false)
   const navigate = useNavigate()
 
 
@@ -24,10 +25,15 @@ const Project = () => {
       setProject(response)
     }
     fetchProjects()
-  }, [])
+  }, [reFetch])
+
+  const triggerReFetch = () => {
+    setReFetch(!reFetch)
+    console.log('triggered')
+  }
+
 
   const onEmptyButtonClick = () => {
-    // Navigate('/project/create')
     navigate('/project/create')
   }
 
@@ -36,7 +42,7 @@ const Project = () => {
   return (
     <div className='p-5 h-[100vh]'>
       <Breadcrumbs />
-      {project.length ? <ProjectList projectList={project} /> : <EmptyItem title={"No projects"} subtitle={"Get started by creating a new project."} buttonText={"New Project"} onButtonClick={onEmptyButtonClick}/>}
+      {project.length ? <ProjectList projectList={project} reFetch={triggerReFetch} /> : <EmptyItem title={"No projects"} subtitle={"Get started by creating a new project."} buttonText={"New Project"} onButtonClick={onEmptyButtonClick}/>}
     </div>
   )
 }

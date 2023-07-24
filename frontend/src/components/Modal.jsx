@@ -2,6 +2,11 @@ import React from 'react'
 
 const Modal = ({children, show, onClose}) => {
 
+  const onModalClose = (e) => {
+    e.stopPropagation();
+    onClose();
+  };
+
 
   return (
     <div
@@ -9,7 +14,8 @@ const Modal = ({children, show, onClose}) => {
       aria-labelledby="modal-title"
       role="dialog"
       aria-modal="true"
-      onClick={onClose}
+      // onClick={onClose}
+      // onClick={(e) => onModalClose(e)}
     >
       <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
 

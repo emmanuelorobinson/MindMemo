@@ -31,7 +31,6 @@ const ActivityItem = ({ data, reFetch }) => {
   const [itemChecked, setItemChecked] = React.useState(data.completed);
 
   const onEditClick = () => {
-    console.log("edit");
     showEditModal ? setShowEditModal(false) : setShowEditModal(true);
   };
 
@@ -45,6 +44,11 @@ const ActivityItem = ({ data, reFetch }) => {
     }
 
     reFetch();
+  };
+
+  const onModalClose = (e) => {
+    // e.stopPropagation();
+    setShowEditModal(false);
   };
 
   const onCheckClick = async (e) => {
@@ -164,7 +168,9 @@ const ActivityItem = ({ data, reFetch }) => {
       {showEditModal && (
         <EditActivityComponent
           show={showEditModal}
-          onClose={() => setShowEditModal(false)}
+          onClose={onModalClose}
+          activity={data}
+          reFetch={reFetch}
         />
       )}
     </>
