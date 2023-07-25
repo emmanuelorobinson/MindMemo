@@ -102,7 +102,7 @@ const updateActivityReminder = (req, res) => __awaiter(void 0, void 0, void 0, f
 exports.updateActivityReminder = updateActivityReminder;
 const deleteTaskReminder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { task_reminder_id } = req.params;
+        const { task_reminder_id } = req.body;
         const reminder = yield ReminderService.deleteTaskReminder(parseInt(task_reminder_id));
         res.json(reminder);
     }
@@ -113,7 +113,7 @@ const deleteTaskReminder = (req, res) => __awaiter(void 0, void 0, void 0, funct
 exports.deleteTaskReminder = deleteTaskReminder;
 const deleteActivityReminder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { activity_reminder_id } = req.params;
+        const { activity_reminder_id } = req.body;
         const reminder = yield ReminderService.deleteActivityReminder(parseInt(activity_reminder_id));
         res.json(reminder);
     }

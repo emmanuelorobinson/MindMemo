@@ -1,5 +1,6 @@
 import * as TaskService from '../services/task.services';
 import { getTaskTagListByID } from '../services/tag.services';
+import { createTaskReminder } from '../services/reminder.services';
 
 export const getTasks = async (req: any, res: any) => {
     try {
@@ -30,6 +31,8 @@ export const createTask = async (req: any, res: any) => {
         let intduration = parseInt(req.body.duration);
         let complete = req.body.completed === 'true' ? true : false;
         let taskNote = req.body.note;
+        let reminder_date = req.body.reminder_datetime == "" ? new Date() : new Date(req.body.reminder_datetime);
+        let user_id = req.body.user_id == "" ? "null" : req.body.user_id;
         let task = {
             task_name: taskName,
             task_number: taskNumber,
@@ -41,6 +44,8 @@ export const createTask = async (req: any, res: any) => {
         }
 
         const newTask = await TaskService.createTask(task);
+        const newReminder = await createTaskReminder({task_id: newTask.task_id, reminder_date, user_id});
+        
         res.json(newTask);
     } catch (error: any) {
         res.json({ message: error.message });
@@ -57,6 +62,8 @@ export const updateTask = async (req: any, res: any) => {
         let intduration = parseInt(req.body.duration);
         let complete = req.body.completed === 'true' ? true : false;
         let taskNote = req.body.note;
+        let reminder_date = req.body.reminder_datetime == "" ? new Date() : new Date(req.body.reminder_datetime);
+        let user_id = req.body.user_id == "" ? "null" : req.body.user_id;
         let task = {
             task_id: task_id,
             task_name: taskName,
@@ -68,6 +75,7 @@ export const updateTask = async (req: any, res: any) => {
             activity_id: activityId,
         }
         const updatedTask = await TaskService.updateTask(task);
+        const newReminder = await createTaskReminder({task_id, reminder_date, user_id});
         res.json(updatedTask);
     } catch (error: any) {
         res.json({ message: error.message });

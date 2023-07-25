@@ -9,23 +9,23 @@ export const reminderRouter = express.Router();
 reminderRouter
     .route("/activity")
     .post(reminderController.createActivityReminder)
+    .delete(reminderController.deleteActivityReminder)
+    .put(reminderController.updateActivityReminder);
     
 
 reminderRouter
-    .route("/activity/:activity_id")
-    // .get(reminderController.getActivityReminders)
-    .delete(reminderController.deleteActivityReminder)
-    .put(reminderController.updateActivityReminder);
+    .route("/activity/:user_id")
+    .get(reminderController.getActivityReminders);
 
 reminderRouter
     .route("/task")
     .post(reminderController.createTaskReminder)
-
-reminderRouter
-    .route("/task/:task_id")
-    // .get(reminderController.getTaskReminders)
     .delete(reminderController.deleteTaskReminder)
     .put(reminderController.updateTaskReminder);
+
+reminderRouter
+    .route("/task/:user_id")
+    .get(reminderController.getTaskReminders)
 
 reminderRouter
     .route("/send")

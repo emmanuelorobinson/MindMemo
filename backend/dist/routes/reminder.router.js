@@ -33,20 +33,20 @@ exports.reminderRouter = express_1.default.Router();
 //Get: Get all reminders
 exports.reminderRouter
     .route("/activity")
-    .post(reminderController.createActivityReminder);
-exports.reminderRouter
-    .route("/activity/:activity_id")
-    // .get(reminderController.getActivityReminders)
+    .post(reminderController.createActivityReminder)
     .delete(reminderController.deleteActivityReminder)
     .put(reminderController.updateActivityReminder);
 exports.reminderRouter
-    .route("/task")
-    .post(reminderController.createTaskReminder);
+    .route("/activity/:user_id")
+    .get(reminderController.getActivityReminders);
 exports.reminderRouter
-    .route("/task/:task_id")
-    // .get(reminderController.getTaskReminders)
+    .route("/task")
+    .post(reminderController.createTaskReminder)
     .delete(reminderController.deleteTaskReminder)
     .put(reminderController.updateTaskReminder);
+exports.reminderRouter
+    .route("/task/:user_id")
+    .get(reminderController.getTaskReminders);
 exports.reminderRouter
     .route("/send")
     .post(reminderController.sendReminder);

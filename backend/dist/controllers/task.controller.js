@@ -34,6 +34,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getTaskTagList = exports.deleteTask = exports.updateTask = exports.createTask = exports.getTaskByID = exports.getTasks = void 0;
 const TaskService = __importStar(require("../services/task.services"));
+const reminder_services_1 = require("../services/reminder.services");
 const getTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { activity_id } = req.params;
@@ -65,6 +66,8 @@ const createTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         let intduration = parseInt(req.body.duration);
         let complete = req.body.completed === 'true' ? true : false;
         let taskNote = req.body.note;
+        let reminder_date = req.body.reminder_datetime == "" ? new Date() : new Date(req.body.reminder_datetime);
+        let user_id = req.body.user_id == "" ? "null" : req.body.user_id;
         let task = {
             task_name: taskName,
             task_number: taskNumber,
@@ -75,6 +78,7 @@ const createTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             activity_id: activityId,
         };
         const newTask = yield TaskService.createTask(task);
+        const newReminder = yield (0, reminder_services_1.createTaskReminder)({ task_id: newTask.task_id, reminder_date, user_id });
         res.json(newTask);
     }
     catch (error) {
@@ -92,6 +96,8 @@ const updateTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         let intduration = parseInt(req.body.duration);
         let complete = req.body.completed === 'true' ? true : false;
         let taskNote = req.body.note;
+        let reminder_date = req.body.reminder_datetime == "" ? new Date() : new Date(req.body.reminder_datetime);
+        let user_id = req.body.user_id == "" ? "null" : req.body.user_id;
         let task = {
             task_id: task_id,
             task_name: taskName,
@@ -103,6 +109,7 @@ const updateTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             activity_id: activityId,
         };
         const updatedTask = yield TaskService.updateTask(task);
+        const newReminder = yield (0, reminder_services_1.createTaskReminder)({ task_id, reminder_date, user_id });
         res.json(updatedTask);
     }
     catch (error) {

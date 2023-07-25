@@ -12,6 +12,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendTaskReminder = exports.sendActivityReminder = exports.deleteTaskReminder = exports.deleteActivityReminder = exports.updateActivityReminder = exports.updateTaskReminder = exports.getTaskReminders = exports.getActivityReminders = exports.createTaskReminder = exports.createActivityReminder = void 0;
 const db_server_1 = require("../utils/db.server");
 const nodemailer = require('nodemailer');
+const fs = require('fs');
+const mjml2html = require('mjml');
+const mjmlTemplate = fs.readFileSync('D:/GitHub/MindMemo/backend/src/utils/template.mjml', 'utf8');
+const { html } = mjml2html(mjmlTemplate, {});
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -19,12 +23,6 @@ const transporter = nodemailer.createTransport({
         pass: process.env.PASSWORD,
     },
 });
-const mailOptions = {
-    from: process.env.EMAIL,
-    to: {},
-    subject: 'Hello from MindMemo',
-    text: 'This is a reminder.',
-};
 const createActivityReminder = (reminder) => __awaiter(void 0, void 0, void 0, function* () {
     return db_server_1.db.activityReminder.create({
         data: reminder,
@@ -164,6 +162,25 @@ const sendActivityReminder = (date) => __awaiter(void 0, void 0, void 0, functio
             },
         });
         if (user != null && activity != null) {
+            const placeholders = {
+                '{{type}}': 'Upcoming Activity',
+                '{{name}}': activity.activity_name,
+                '{{date}}': date.toDateString(),
+                // Add more placeholders and their values as needed
+            };
+            // Function to replace placeholders in the HTML
+            function replacePlaceholders(html, placeholders) {
+                const placeholderRegex = new RegExp(Object.keys(placeholders).join('|'), 'g');
+                return html.replace(placeholderRegex, (matched) => placeholders[matched]);
+            }
+            // Use the replacePlaceholders function
+            const replacedHtml = replacePlaceholders(html, placeholders);
+            const mailOptions = {
+                from: process.env.EMAIL,
+                to: {},
+                subject: 'Hello from MindMemo',
+                html: replacedHtml,
+            };
             mailOptions.to = 'bkghaghda@gmail.com';
             transporter.sendMail(mailOptions, function (error, info) {
                 if (error) {
@@ -198,7 +215,7 @@ const sendTaskReminder = (date) => __awaiter(void 0, void 0, void 0, function* (
                 email: true,
             },
         });
-        let activity = yield db_server_1.db.task.findUnique({
+        let task = yield db_server_1.db.task.findUnique({
             where: {
                 task_id: reminder.task_id,
             },
@@ -206,7 +223,26 @@ const sendTaskReminder = (date) => __awaiter(void 0, void 0, void 0, function* (
                 task_name: true,
             },
         });
-        if (user != null && activity != null) {
+        if (user != null && task != null) {
+            const placeholders = {
+                '{{type}}': 'Upcoming Task',
+                '{{name}}': task.task_name,
+                '{{date}}': date.toDateString(),
+                // Add more placeholders and their values as needed
+            };
+            // Function to replace placeholders in the HTML
+            function replacePlaceholders(html, placeholders) {
+                const placeholderRegex = new RegExp(Object.keys(placeholders).join('|'), 'g');
+                return html.replace(placeholderRegex, (matched) => placeholders[matched]);
+            }
+            // Use the replacePlaceholders function
+            const replacedHtml = replacePlaceholders(html, placeholders);
+            const mailOptions = {
+                from: process.env.EMAIL,
+                to: {},
+                subject: 'MindMemo',
+                html: replacedHtml,
+            };
             mailOptions.to = 'bkghaghda@gmail.com';
             transporter.sendMail(mailOptions, function (error, info) {
                 if (error) {

@@ -1,4 +1,5 @@
 import * as ActivityService from '../services/activity.services';
+import { createActivityReminder } from '../services/reminder.services';
 
 export const getActivities = async (req: any, res: any) => {
     try {
@@ -28,6 +29,8 @@ export const createActivity = async (req: any, res: any) => {
         let startDate = (req.body.start_date == undefined) ? new Date() : new Date(req.body.start_date);
         let intduration = parseInt(req.body.duration);
         let complete = req.body.completed === 'true' ? true : false;
+        let reminder_date = req.body.reminder_datetime == "" ? new Date() : new Date(req.body.reminder_datetime);
+        let user_id = req.body.user_id == "" ? "null" : req.body.user_id;
         let acitivtyNote = req.body.note;
         const activity = {
             activity_name: activityName,
@@ -38,8 +41,9 @@ export const createActivity = async (req: any, res: any) => {
             note: acitivtyNote,
             project_id: projectId,
         }
-       
+        
         const newActivity = await ActivityService.createActivity(activity);
+        const newReminder = await createActivityReminder({activity_id: newActivity.activity_id, reminder_date, user_id});
         res.json(newActivity);
     } catch (error: any) {
         res.json({ message: error.message });
@@ -56,6 +60,8 @@ export const updateActivity = async (req: any, res: any) => {
         let intduration = parseInt(req.body.duration);
         let complete = req.body.completed === 'true' ? true : false;
         let acitivtyNote = req.body.note;
+        let reminder_date = req.body.reminder_datetime == "" ? new Date() : new Date(req.body.reminder_datetime);
+        let user_id = req.body.user_id == "" ? "null" : req.body.user_id;
         const activity = {
             activity_id: activity_id,
             activity_name: activityName,
@@ -67,7 +73,9 @@ export const updateActivity = async (req: any, res: any) => {
             project_id: projectId,
         }
         console.log(activity);
+
         const updatedActivity = await ActivityService.updateActivity(activity);
+        const newReminder = await createActivityReminder({activity_id, reminder_date, user_id});
         res.json(updatedActivity);
     } catch (error: any) {
         res.json({ message: error.message });

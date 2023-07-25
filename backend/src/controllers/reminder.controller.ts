@@ -62,7 +62,7 @@ export const updateActivityReminder = async (req: any, res: any) => {
 
 export const deleteTaskReminder = async (req: any, res: any) => {
     try {
-        const { task_reminder_id } = req.params;
+        const { task_reminder_id } = req.body;
         const reminder = await ReminderService.deleteTaskReminder(parseInt(task_reminder_id));
         res.json(reminder);
     } catch (error: any) {
@@ -72,7 +72,7 @@ export const deleteTaskReminder = async (req: any, res: any) => {
 
 export const deleteActivityReminder = async (req: any, res: any) => {
     try {
-        const { activity_reminder_id } = req.params;
+        const { activity_reminder_id } = req.body;
         const reminder = await ReminderService.deleteActivityReminder(parseInt(activity_reminder_id));
         res.json(reminder);
     } catch (error: any) {

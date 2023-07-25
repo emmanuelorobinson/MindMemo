@@ -8,6 +8,7 @@ import { taskRouter } from './routes/task.router';
 import { tagRouter } from './routes/tag.router';
 import { cycleRouter } from './routes/cycle.router';
 import { reminderRouter } from './routes/reminder.router';
+import { sendActivityReminder, sendTaskReminder } from './services/reminder.services';
 
 dotenv.config();
 
@@ -17,6 +18,7 @@ const prisma = db;
 const http = require("http").Server(app);
 const cors = require("cors");
 const nodemailer = require('nodemailer');
+const cron = require('node-cron');
 
 app.use(cors());
 app.use(express.json());
@@ -60,5 +62,10 @@ app.use("/reminders", reminderRouter);
 
 app.listen(port, () => {
   console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
+});
+
+cron.schedule('45 21 * * *', async () => {
+  sendActivityReminder(new Date("2023-07-07T00:00:00.000Z"));
+  sendTaskReminder(new Date("2023-07-07T00:00:00.000Z"));
 });
 
