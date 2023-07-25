@@ -5,18 +5,7 @@ import Toggle from "../Toggle";
 import { useNavigate, useLocation } from "react-router-dom";
 import { createTask } from "../../utils/TaskController";
 
-const options = [
-  { id: 1, name: "Wade Cooper" },
-  { id: 2, name: "Arlene Mccoy" },
-  { id: 3, name: "Devon Webb" },
-  { id: 4, name: "Tom Cook" },
-  { id: 5, name: "Tanya Fox" },
-  { id: 6, name: "Hellen Schmidt" },
-  { id: 7, name: "Caroline Schultz" },
-  { id: 8, name: "Mason Heaney" },
-  { id: 9, name: "Claudie Smitham" },
-  { id: 10, name: "Emil Schaefer" },
-];
+const options = [{ id: 1, name: "Test" }];
 
 const CreateTaskComponent = () => {
 
@@ -38,7 +27,7 @@ const CreateTaskComponent = () => {
     completed: false,
   });
 
-  const [selectedValue, setSelectedValue] = useState("None");
+  const [selectedValue, setSelectedValue] = useState(0);
 
   const handleSelectedValueChange = (value) => {
     setSelectedValue(value);

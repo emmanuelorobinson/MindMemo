@@ -1,14 +1,14 @@
 import React, { useMemo, useEffect, useState } from "react";
 import Pagination from "./Pagination";
 import MenuDropdown from "../MenuDropdown";
-// import { getProducts } from "../utils/ProductController";
-// import Image from "next/image";
 import { updateTask, deleteTask } from "../../utils/TaskController";
+import EditTaskComponent from "./EditTaskComponent";
 
 const pageSize = 7;
 
 const TaskTable = ({ taskList, reFetch }: any) => {
   const [currentPage, setCurrentPage] = React.useState(1);
+  const [showEditModal, setShowEditModal] = React.useState(false);
 
   const formatDate = (date: any, duration: any) => {
     const dueDate = new Date(date);
@@ -43,36 +43,37 @@ const TaskTable = ({ taskList, reFetch }: any) => {
 
   const onEditClick = () => {
     console.log("edit");
+    showEditModal ? setShowEditModal(false) : setShowEditModal(true);
   };
 
-  const onDeleteClick = async (task_id:number) => {
+  const onDeleteClick = async (task_id: number) => {
     try {
       const res = await deleteTask(task_id);
       console.log(res);
-    }
-    catch (err) {
+    } catch (err) {
       console.log(err);
     }
 
     reFetch();
   };
 
-  const onCheckboxClick = async (e:any, task_id:number) => {
+  const onCheckboxClick = async (e: any, task_id: number) => {
     console.log(task_id);
     try {
       // console.log(e.target.checked);
       const check = e.target.checked.toString();
-      const newTask = {...taskList.find((task:any) => task.task_id === task_id), completed: check};
+      const newTask = {
+        ...taskList.find((task: any) => task.task_id === task_id),
+        completed: check,
+      };
       const res = await updateTask(newTask);
       console.log(res);
-    }
-    catch (err) {
+    } catch (err) {
       console.log(err);
     }
 
     reFetch();
   };
-
 
   return (
     <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
@@ -161,8 +162,20 @@ const TaskTable = ({ taskList, reFetch }: any) => {
                   </div>
                 </td>
                 <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                  <MenuDropdown onEdit={onEditClick} onDelete={onDeleteClick} index={task.task_id} />
+                  <MenuDropdown
+                    onEdit={onEditClick}
+                    onDelete={onDeleteClick}
+                    index={task.task_id}
+                  />
                 </td>
+                {showEditModal && (
+                  <EditTaskComponent
+                    show={showEditModal}
+                    onClose={(e: any) => setShowEditModal(false)}
+                    task={task}
+                    reFetch={reFetch}
+                  />
+                )}
               </tr>
             ))}
           </tbody>

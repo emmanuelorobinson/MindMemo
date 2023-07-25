@@ -2,30 +2,34 @@ import React, { useState } from "react";
 import { Form, Formik, ErrorMessage } from "formik";
 import SelectMenu from "../SelectMenu";
 import Modal from "../Modal";
-import { updateActivity } from "../../utils/ActivityController";
+import Toggle from "../Toggle";
+import { updateProject } from "../../utils/ProjectController";
 
-const options = [
-  { id: 1, name: "Test" },
-];
+const options = [{ id: 1, name: "Test" }];
 
-const EditActivityComponent = ({ show, onClose, activity, reFetch }) => {
+const EditProjectComponent = ({ onClose, project, reFetch }) => {
   const [selectedValue, setSelectedValue] = useState(0);
+  const [selectedCycle, setSelectedCycle] = useState(false);
+
+  const handleSelectedCycleChange = (value) => {
+    setSelectedCycle(value);
+  };
 
   const handleSelectedValueChange = (value) => {
     setSelectedValue(value);
   };
 
   return (
-    //modal
     <Modal onClose={onClose}>
       <Formik
-        initialValues={activity}
+        initialValues={project}
         onSubmit={async (values, { setSubmitting }) => {
-          values.previous_cycle = selectedValue;
+          values.cycle_id = selectedValue;
+          values.save_as_cycle = selectedCycle;
           values.start_date = new Date(values.start_date);
 
           try {
-            const response = await updateActivity(values);
+            const response = await updateProject(values);
             console.log(response);
 
             setSubmitting(false);
@@ -52,49 +56,38 @@ const EditActivityComponent = ({ show, onClose, activity, reFetch }) => {
               <div className="space-y-6 pt-8 sm:space-y-5 sm:pt-10 py-6 px-6">
                 <div>
                   <h3 className="text-lg font-medium leading-6 text-gray-900">
-                    Edit Activity
+                    Edit Project
                   </h3>
                   <p className="mt-1 max-w-2xl text-sm text-gray-500">
-                    Edit an activity, changes may take a while to reflect.
+                    Edit a project, changes may take a while to reflect.
                   </p>
                 </div>
 
                 <div className="space-y-6 sm:space-y-5">
+                  {/*Previous Cycle*/}
+                  <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+                    <SelectMenu
+                      label={"Previous Cycle"}
+                      options={options}
+                      onSelectedValueChange={handleSelectedValueChange}
+                    />
+                  </div>
+
                   {/* Name */}
                   <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
                     <label
-                      htmlFor="activity_name"
+                      htmlFor="project_name"
                       className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
                     >
-                      Activity Name
+                      Project Name
                     </label>
                     <div className="mt-1 sm:col-span-2 sm:mt-0">
                       <input
                         className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
                         type="text"
-                        name="activity_name"
-                        id="activity_name"
-                        value={values.activity_name}
-                        onChange={handleChange}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Activity Number */}
-                  <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
-                    <label
-                      htmlFor="activity_number"
-                      className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
-                    >
-                      Activity Number
-                    </label>
-                    <div className="mt-1 sm:col-span-2 sm:mt-0">
-                      <input
-                        className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
-                        type="number"
-                        name="activity_number"
-                        id="activity_number"
-                        value={values.activity_number}
+                        name="project_name"
+                        id="project_name"
+                        value={values.project_name}
                         onChange={handleChange}
                       />
                     </div>
@@ -103,7 +96,7 @@ const EditActivityComponent = ({ show, onClose, activity, reFetch }) => {
                   {/* Start Date */}
                   <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
                     <label
-                      htmlFor="start_date"
+                      htmlFor="project_start_date"
                       className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
                     >
                       Start Date
@@ -112,21 +105,12 @@ const EditActivityComponent = ({ show, onClose, activity, reFetch }) => {
                       <input
                         className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
                         type="date"
-                        name="start_date"
-                        id="start_date"
-                        value={values.start_date}
+                        name="project_start_date"
+                        id="project_start_date"
+                        value={values.project_start_date}
                         onChange={handleChange}
                       />
                     </div>
-                  </div>
-
-                  {/*Dependency*/}
-                  <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
-                    <SelectMenu
-                      label={"Dependency"}
-                      options={options}
-                      onSelectedValueChange={handleSelectedValueChange}
-                    />
                   </div>
 
                   {/* Duration */}
@@ -149,26 +133,36 @@ const EditActivityComponent = ({ show, onClose, activity, reFetch }) => {
                     </div>
                   </div>
 
-                  {/* Note */}
+                  {/* Renew */}
                   <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
                     <label
-                      htmlFor="note"
+                      htmlFor="days_till_renew"
                       className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
                     >
-                      Note
+                      Renew after days
                     </label>
                     <div className="mt-1 sm:col-span-2 sm:mt-0">
-                      <textarea
-                        className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                        id="note"
-                        name="note"
-                        rows={3}
-                        value={values.note}
+                      <input
+                        className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
+                        type="number"
+                        name="days_till_renew"
+                        id="days_till_renew"
+                        value={values.days_till_renew}
                         onChange={handleChange}
                       />
-                      <p className="mt-2 text-sm text-gray-500">
-                        Write a few sentences about the activity.
-                      </p>
+                    </div>
+                  </div>
+
+                  {/* Cycle */}
+                  <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+                    <label
+                      htmlFor="renew"
+                      className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
+                    >
+                      Save as cycle
+                    </label>
+                    <div className="mt-1 sm:col-span-2 sm:mt-0">
+                      <Toggle onToggle={handleSelectedCycleChange} />
                     </div>
                   </div>
                 </div>
@@ -202,4 +196,4 @@ const EditActivityComponent = ({ show, onClose, activity, reFetch }) => {
   );
 };
 
-export default EditActivityComponent;
+export default EditProjectComponent;

@@ -2,13 +2,11 @@ import React, { useState } from "react";
 import { Form, Formik, ErrorMessage } from "formik";
 import SelectMenu from "../SelectMenu";
 import Modal from "../Modal";
-import { updateActivity } from "../../utils/ActivityController";
+import { updateTask } from "../../utils/TaskController";
 
-const options = [
-  { id: 1, name: "Test" },
-];
+const options = [{ id: 1, name: "Test" }];
 
-const EditActivityComponent = ({ show, onClose, activity, reFetch }) => {
+const EditActivityComponent = ({ show, onClose, task, reFetch }) => {
   const [selectedValue, setSelectedValue] = useState(0);
 
   const handleSelectedValueChange = (value) => {
@@ -19,13 +17,13 @@ const EditActivityComponent = ({ show, onClose, activity, reFetch }) => {
     //modal
     <Modal onClose={onClose}>
       <Formik
-        initialValues={activity}
+        initialValues={task}
         onSubmit={async (values, { setSubmitting }) => {
           values.previous_cycle = selectedValue;
           values.start_date = new Date(values.start_date);
 
           try {
-            const response = await updateActivity(values);
+            const response = await updateTask(values);
             console.log(response);
 
             setSubmitting(false);
@@ -52,10 +50,10 @@ const EditActivityComponent = ({ show, onClose, activity, reFetch }) => {
               <div className="space-y-6 pt-8 sm:space-y-5 sm:pt-10 py-6 px-6">
                 <div>
                   <h3 className="text-lg font-medium leading-6 text-gray-900">
-                    Edit Activity
+                    Edit Task
                   </h3>
                   <p className="mt-1 max-w-2xl text-sm text-gray-500">
-                    Edit an activity, changes may take a while to reflect.
+                    Edit a task, changes may take a while to reflect.
                   </p>
                 </div>
 
@@ -63,18 +61,18 @@ const EditActivityComponent = ({ show, onClose, activity, reFetch }) => {
                   {/* Name */}
                   <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
                     <label
-                      htmlFor="activity_name"
+                      htmlFor="task_name"
                       className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
                     >
-                      Activity Name
+                      Task Name
                     </label>
                     <div className="mt-1 sm:col-span-2 sm:mt-0">
                       <input
                         className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
                         type="text"
-                        name="activity_name"
-                        id="activity_name"
-                        value={values.activity_name}
+                        name="task_name"
+                        id="task_name"
+                        value={values.task_name}
                         onChange={handleChange}
                       />
                     </div>
@@ -83,18 +81,18 @@ const EditActivityComponent = ({ show, onClose, activity, reFetch }) => {
                   {/* Activity Number */}
                   <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
                     <label
-                      htmlFor="activity_number"
+                      htmlFor="task_number"
                       className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
                     >
-                      Activity Number
+                      Task Number
                     </label>
                     <div className="mt-1 sm:col-span-2 sm:mt-0">
                       <input
                         className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
                         type="number"
-                        name="activity_number"
-                        id="activity_number"
-                        value={values.activity_number}
+                        name="task_number"
+                        id="task_number"
+                        value={values.task_number}
                         onChange={handleChange}
                       />
                     </div>
@@ -167,7 +165,7 @@ const EditActivityComponent = ({ show, onClose, activity, reFetch }) => {
                         onChange={handleChange}
                       />
                       <p className="mt-2 text-sm text-gray-500">
-                        Write a few sentences about the activity.
+                        Write a few sentences about the task.
                       </p>
                     </div>
                   </div>
