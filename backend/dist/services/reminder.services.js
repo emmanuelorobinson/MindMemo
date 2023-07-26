@@ -12,10 +12,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendTaskReminder = exports.sendActivityReminder = exports.deleteTaskReminder = exports.deleteActivityReminder = exports.updateActivityReminder = exports.updateTaskReminder = exports.getTaskReminders = exports.getActivityReminders = exports.createTaskReminder = exports.createActivityReminder = void 0;
 const db_server_1 = require("../utils/db.server");
 const nodemailer = require('nodemailer');
-const fs = require('fs');
-const mjml2html = require('mjml');
-const mjmlTemplate = fs.readFileSync('D:/GitHub/MindMemo/backend/src/utils/template.mjml', 'utf8');
-const { html } = mjml2html(mjmlTemplate, {});
+// const fs = require('fs');
+// const mjml2html = require('mjml');
+// const mjmlTemplate = fs.readFileSync('../template.mjml', 'utf8');
+// const { html } = mjml2html(mjmlTemplate, {});
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -174,12 +174,12 @@ const sendActivityReminder = (date) => __awaiter(void 0, void 0, void 0, functio
                 return html.replace(placeholderRegex, (matched) => placeholders[matched]);
             }
             // Use the replacePlaceholders function
-            const replacedHtml = replacePlaceholders(html, placeholders);
+            // const replacedHtml = replacePlaceholders(html, placeholders);
             const mailOptions = {
                 from: process.env.EMAIL,
                 to: {},
                 subject: 'Hello from MindMemo',
-                html: replacedHtml,
+                html: 'hello',
             };
             mailOptions.to = 'bkghaghda@gmail.com';
             transporter.sendMail(mailOptions, function (error, info) {
@@ -236,12 +236,12 @@ const sendTaskReminder = (date) => __awaiter(void 0, void 0, void 0, function* (
                 return html.replace(placeholderRegex, (matched) => placeholders[matched]);
             }
             // Use the replacePlaceholders function
-            const replacedHtml = replacePlaceholders(html, placeholders);
+            // const replacedHtml = replacePlaceholders(html, placeholders);
             const mailOptions = {
                 from: process.env.EMAIL,
                 to: {},
                 subject: 'MindMemo',
-                html: replacedHtml,
+                html: 'hello',
             };
             mailOptions.to = 'bkghaghda@gmail.com';
             transporter.sendMail(mailOptions, function (error, info) {

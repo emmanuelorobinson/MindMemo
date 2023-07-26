@@ -3,11 +3,11 @@ import { db } from "../utils/db.server";
 import { ActivityReminder, TaskReminder } from "@prisma/client";
 
 const nodemailer = require('nodemailer');
-const fs = require('fs');
-const mjml2html = require('mjml');
+// const fs = require('fs');
+// const mjml2html = require('mjml');
 
-const mjmlTemplate = fs.readFileSync('D:/GitHub/MindMemo/backend/src/utils/template.mjml', 'utf8');
-const { html } = mjml2html(mjmlTemplate, {});
+// const mjmlTemplate = fs.readFileSync('../template.mjml', 'utf8');
+// const { html } = mjml2html(mjmlTemplate, {});
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -172,13 +172,13 @@ export const sendActivityReminder = async (date: Date): Promise<Boolean> => {
               }
   
             // Use the replacePlaceholders function
-            const replacedHtml = replacePlaceholders(html, placeholders);
+            // const replacedHtml = replacePlaceholders(html, placeholders);
 
             const mailOptions = {
                 from: process.env.EMAIL,
                 to: {},
                 subject: 'Hello from MindMemo',
-                html: replacedHtml,
+                html: 'hello',
               };
 
             mailOptions.to = 'bkghaghda@gmail.com';
@@ -240,13 +240,13 @@ export const sendTaskReminder = async (date: Date): Promise<Boolean> => {
               }
   
             // Use the replacePlaceholders function
-            const replacedHtml = replacePlaceholders(html, placeholders);
+            // const replacedHtml = replacePlaceholders(html, placeholders);
 
             const mailOptions = {
                 from: process.env.EMAIL,
                 to: {},
                 subject: 'MindMemo',
-                html: replacedHtml,
+                html: 'hello',
               };
 
             mailOptions.to = 'bkghaghda@gmail.com';

@@ -17,6 +17,7 @@ const prisma = db;
 const http = require("http").Server(app);
 const cors = require("cors");
 const nodemailer = require('nodemailer');
+
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
