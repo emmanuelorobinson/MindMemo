@@ -3,11 +3,36 @@ import { db } from "../utils/db.server";
 import { ActivityReminder, TaskReminder } from "@prisma/client";
 
 const nodemailer = require('nodemailer');
-// const fs = require('fs');
-// const mjml2html = require('mjml');
+const fs = require('fs');
+const mjml2html = require('mjml');
 
-// const mjmlTemplate = fs.readFileSync('../template.mjml', 'utf8');
-// const { html } = mjml2html(mjmlTemplate, {});
+const mjmlTemplate = `
+<mjml>
+     <mj-head>
+         <mj-attributes>
+         <mj-all font-family="Arial, sans-serif" />
+         <mj-text font-size="16px" line-height="24px" color="#000000" />
+         </mj-attributes>
+     </mj-head>
+     <mj-body>
+         <mj-container background-color="#FFFFFF">
+         <mj-section padding-bottom="20px">
+             <mj-column> 
+             <mj-text align="center" font-size="24px" font-weight="bold" color="#000">MindMemo</mj-text>
+             <mj-divider border-color="#E5E5E5" padding-bottom="20px" />
+                <!-- UPCOMING TASK/ACTIVITY-->
+             <mj-text align="center" font-size="36px" font-weight="bold" color="#4F46E5">{{type}}</mj-text>
+             <mj-text align="center" padding-top="30px">You have a reminder from MindMemo.</mj-text>
+             <mj-text align="center">{{name}} is due on {{date}}</mj-text>
+             <mj-button href="https://mind-memo.vercel.app/" background-color="#4F46E5" color="#F9FAFB" font-size="18px" padding="20px 40px" border-radius="4px" font-weight="bold" align="center" inner-padding="10px 25px">View Project</mj-button>
+             </mj-column>
+         </mj-section>
+         </mj-container>
+     </mj-body>
+ </mjml>
+`;
+
+const { html } = mjml2html(mjmlTemplate, {});
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -240,7 +265,7 @@ export const sendTaskReminder = async (date: Date): Promise<Boolean> => {
               }
   
             // Use the replacePlaceholders function
-            // const replacedHtml = replacePlaceholders(html, placeholders);
+            const replacedHtml = replacePlaceholders(html, placeholders);
 
             const mailOptions = {
                 from: process.env.EMAIL,
