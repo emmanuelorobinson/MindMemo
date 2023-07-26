@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteUser = exports.updateUser = exports.createUser = exports.getUserByID = exports.getUsers = void 0;
 const db_server_1 = require("../utils/db.server");
+//USER SERVICES
 const getUsers = () => __awaiter(void 0, void 0, void 0, function* () {
     return db_server_1.db.user.findMany({
         select: {
