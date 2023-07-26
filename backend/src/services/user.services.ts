@@ -1,7 +1,7 @@
 import { db } from "../utils/db.server";
 // import { User, Project, ProjectList } from "../utils/db.types";
 import { Project, Task, User } from "@prisma/client";
-
+//USER SERVICES
 
 export const getUsers = async (): Promise<User[]> => {
     return db.user.findMany({
