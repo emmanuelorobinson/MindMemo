@@ -1,5 +1,6 @@
 import * as ActivityService from '../services/activity.services';
 import { createActivityReminder } from '../services/reminder.services';
+import { addTagsToActivity } from './tag.controller';
 
 export const getActivities = async (req: any, res: any) => {
     try {
@@ -32,6 +33,7 @@ export const createActivity = async (req: any, res: any) => {
         let reminder_date = req.body.reminder_datetime == "" ? new Date() : new Date(req.body.reminder_datetime);
         let user_id = req.body.user_id == "" ? "null" : req.body.user_id;
         let acitivtyNote = req.body.note;
+        let tags = req.body.tags;
         const activity = {
             activity_name: activityName,
             activity_number: activityNumber,
@@ -44,6 +46,10 @@ export const createActivity = async (req: any, res: any) => {
         
         const newActivity = await ActivityService.createActivity(activity);
         const newReminder = await createActivityReminder({activity_id: newActivity.activity_id, reminder_date, user_id});
+
+        tags.forEach(async (tag: any) => {
+            addTagsToActivity(tag, newActivity.activity_id);
+        });
         res.json(newActivity);
     } catch (error: any) {
         res.json({ message: error.message });
@@ -62,6 +68,7 @@ export const updateActivity = async (req: any, res: any) => {
         let acitivtyNote = req.body.note;
         let reminder_date = req.body.reminder_datetime == "" ? new Date() : new Date(req.body.reminder_datetime);
         let user_id = req.body.user_id == "" ? "null" : req.body.user_id;
+        let tags = req.body.tags;
         const activity = {
             activity_id: activity_id,
             activity_name: activityName,
@@ -76,6 +83,12 @@ export const updateActivity = async (req: any, res: any) => {
 
         const updatedActivity = await ActivityService.updateActivity(activity);
         const newReminder = await createActivityReminder({activity_id, reminder_date, user_id});
+
+        const activityTagList = await ActivityService.getTagsByActivity(activity_id);
+        tags.forEach(async (tag: any) => {
+            if (!activityTagList.includes(tag))
+                addTagsToActivity(tag, updatedActivity!.activity_id);
+        });
         res.json(updatedActivity);
     } catch (error: any) {
         res.json({ message: error.message });

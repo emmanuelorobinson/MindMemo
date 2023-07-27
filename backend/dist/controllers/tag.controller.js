@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTagActivities = exports.getTagTasks = exports.addTagToActivity = exports.addTagToTask = exports.createTag = exports.getTagByName = exports.getTagByID = exports.getTags = void 0;
+exports.addTagsToActivity = exports.addTagsToTask = exports.getTagActivities = exports.getTagTasks = exports.addTagToActivity = exports.addTagToTask = exports.createTag = exports.getTagByName = exports.getTagByID = exports.getTags = void 0;
 const TagService = __importStar(require("../services/tag.services"));
 const getTags = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -79,8 +79,8 @@ const createTag = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.createTag = createTag;
 const addTagToTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const task_id = parseInt(req.params.task_id);
-        const tag_name = req.params.tag_name;
+        const task_id = parseInt(req.body.task_id);
+        const tag_name = req.body.tag_name;
         let tag = yield TagService.getTagByName(tag_name);
         if (tag === null) {
             tag = yield TagService.createTag(tag_name);
@@ -95,8 +95,8 @@ const addTagToTask = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 exports.addTagToTask = addTagToTask;
 const addTagToActivity = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const activity_id = parseInt(req.params.activity_id);
-        const tag_name = req.params.tag_name;
+        const activity_id = parseInt(req.body.activity_id);
+        const tag_name = req.body.tag_name;
         let tag = yield TagService.getTagByName(tag_name);
         if (tag === null) {
             tag = yield TagService.createTag(tag_name);
@@ -131,3 +131,29 @@ const getTagActivities = (req, res) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 exports.getTagActivities = getTagActivities;
+const addTagsToTask = (tag_name, task_id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let tag = yield TagService.getTagByName(tag_name);
+        if (tag === null) {
+            tag = yield TagService.createTag(tag_name);
+        }
+        const newTag = yield TagService.addTagToTask(tag, task_id);
+    }
+    catch (error) {
+        console.log(error.message);
+    }
+});
+exports.addTagsToTask = addTagsToTask;
+const addTagsToActivity = (tag_name, activity_id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let tag = yield TagService.getTagByName(tag_name);
+        if (tag === null) {
+            tag = yield TagService.createTag(tag_name);
+        }
+        const newTag = yield TagService.addTagToActivity(tag, activity_id);
+    }
+    catch (error) {
+        console.log(error.message);
+    }
+});
+exports.addTagsToActivity = addTagsToActivity;

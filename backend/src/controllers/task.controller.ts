@@ -1,6 +1,7 @@
 import * as TaskService from '../services/task.services';
 import { getTaskTagListByID } from '../services/tag.services';
 import { createTaskReminder } from '../services/reminder.services';
+import { addTagsToTask } from './tag.controller';
 
 export const getTasks = async (req: any, res: any) => {
     try {
@@ -33,6 +34,7 @@ export const createTask = async (req: any, res: any) => {
         let taskNote = req.body.note;
         let reminder_date = req.body.reminder_datetime == "" ? new Date() : new Date(req.body.reminder_datetime);
         let user_id = req.body.user_id == "" ? "null" : req.body.user_id;
+        let tags = req.body.tags;
         let task = {
             task_name: taskName,
             task_number: taskNumber,
@@ -45,7 +47,9 @@ export const createTask = async (req: any, res: any) => {
 
         const newTask = await TaskService.createTask(task);
         const newReminder = await createTaskReminder({task_id: newTask.task_id, reminder_date, user_id});
-        
+        tags.forEach(async (tag: any) => {
+            addTagsToTask(tag, newTask.activity_id);
+        });
         res.json(newTask);
     } catch (error: any) {
         res.json({ message: error.message });
@@ -64,6 +68,7 @@ export const updateTask = async (req: any, res: any) => {
         let taskNote = req.body.note;
         let reminder_date = req.body.reminder_datetime == "" ? new Date() : new Date(req.body.reminder_datetime);
         let user_id = req.body.user_id == "" ? "null" : req.body.user_id;
+        let tags = req.body.tags;
         let task = {
             task_id: task_id,
             task_name: taskName,
@@ -76,6 +81,12 @@ export const updateTask = async (req: any, res: any) => {
         }
         const updatedTask = await TaskService.updateTask(task);
         const newReminder = await createTaskReminder({task_id, reminder_date, user_id});
+
+        const activityTagList = await TaskService.getTagsByTask(task_id);
+        tags.forEach(async (tag: any) => {
+            if (!activityTagList.includes(tag))
+                addTagsToTask(tag, updatedTask!.activity_id);
+        });
         res.json(updatedTask);
     } catch (error: any) {
         res.json({ message: error.message });
