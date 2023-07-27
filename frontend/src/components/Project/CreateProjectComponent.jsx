@@ -1,31 +1,51 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Formik, ErrorMessage } from "formik";
 import SelectMenu from "../SelectMenu";
 import Toggle from "../Toggle";
 import { useClerk } from "@clerk/clerk-react";
 import { createProject } from "../../utils/ProjectController";
 import { useNavigate } from "react-router-dom";
+import { getProjects } from "../../utils/ProjectController";
+import AppContext from "../../context/AppContext";
 
 const options = [{ id: 1, name: "Test" }];
 
 const CreateProjectComponent = () => {
-  const { user } = useClerk();
 
+  const [options, setOptions] = useState([]);
+  const [selectedValue, setSelectedValue] = useState(0);
+  const [selectedCycle, setSelectedCycle] = useState(false);
+  const [selectedRenew, setSelectedRenew] = useState(false);
+  const {refetch, setRefetch, projectCycles, setProjectCycles} = React.useContext(AppContext)
+
+  const { user } = useClerk();
   const navigate = useNavigate();
+
 
   const [projects, setProjects] = useState({
     cycle_id: "",
     project_name: "",
     project_start_date: "",
     duration: "",
+    renew: false,
     days_till_renew: "",
     save_as_cycle: "",
     user_id: user.id,
     completed: false,
   });
 
-  const [selectedValue, setSelectedValue] = useState(0);
-  const [selectedCycle, setSelectedCycle] = useState(false);
+  useEffect(() => {
+    const fetchProjects = async () => {
+      const response = await getProjects(user.id);
+      setOptions(response);
+    };
+    fetchProjects();
+
+    console.log('appcontext', refetch)
+  }, []);
+
+
+
 
   const handleSelectedValueChange = (value) => {
     setSelectedValue(value);
@@ -33,6 +53,10 @@ const CreateProjectComponent = () => {
 
   const handleSelectedCycleChange = (value) => {
     setSelectedCycle(value);
+  };
+
+  const handleSelectedRenewChange = (value) => {
+    setSelectedRenew(value);
   };
 
   return (
@@ -139,6 +163,7 @@ const CreateProjectComponent = () => {
                     <input
                       className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
                       type="number"
+                      min={1}
                       name="duration"
                       id="duration"
                       value={values.duration}
@@ -150,22 +175,38 @@ const CreateProjectComponent = () => {
                 {/* Renew */}
                 <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
                   <label
-                    htmlFor="days_till_renew"
+                    htmlFor="renew"
                     className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
                   >
-                    Renew after days
+                    Renew
                   </label>
                   <div className="mt-1 sm:col-span-2 sm:mt-0">
-                    <input
-                      className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
-                      type="number"
-                      name="days_till_renew"
-                      id="days_till_renew"
-                      value={values.days_till_renew}
-                      onChange={handleChange}
-                    />
+                    <Toggle onToggle={handleSelectedRenewChange} />
                   </div>
                 </div>
+
+                {/* Renew after datys */}
+                {selectedRenew && (
+                  <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+                    <label
+                      htmlFor="days_till_renew"
+                      className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
+                    >
+                      Renew after days
+                    </label>
+                    <div className="mt-1 sm:col-span-2 sm:mt-0">
+                      <input
+                        className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
+                        type="number"
+                        min={1}
+                        name="days_till_renew"
+                        id="days_till_renew"
+                        value={values.days_till_renew}
+                        onChange={handleChange}
+                      />
+                    </div>
+                  </div>
+                )}
 
                 {/* Cycle */}
                 <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
@@ -187,9 +228,7 @@ const CreateProjectComponent = () => {
               <div className="flex justify-end">
                 <button
                   type="button"
-                  onClick={() => {
-                    navigate("/project");
-                  }}
+                  onClick={() => navigate("/project")}
                   className="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 >
                   Cancel

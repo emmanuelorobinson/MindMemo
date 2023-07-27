@@ -3,16 +3,20 @@ import { Form, Formik, ErrorMessage } from "formik";
 import SelectMenu from "../SelectMenu";
 import Modal from "../Modal";
 import { updateActivity } from "../../utils/ActivityController";
-
-const options = [
-  { id: 1, name: "Test" },
-];
+import { AppContext } from "../../context/AppContext";
 
 const EditActivityComponent = ({ show, onClose, activity, reFetch }) => {
-  const [selectedValue, setSelectedValue] = useState(0);
+  const { activity: activityOptions } = React.useContext(AppContext);
+  const activityList = activityOptions.map((item) => {
+    return {
+      id: item.activity_id,
+      name: item.activity_name,
+    };
+  });
+  const [selectedValue, setSelectedValue] = useState(activity.activity_number);
 
   const handleSelectedValueChange = (value) => {
-    setSelectedValue(value);
+    setSelectedValue(value.id);
   };
 
   return (
@@ -21,7 +25,7 @@ const EditActivityComponent = ({ show, onClose, activity, reFetch }) => {
       <Formik
         initialValues={activity}
         onSubmit={async (values, { setSubmitting }) => {
-          values.previous_cycle = selectedValue;
+          values.activity_number = selectedValue;
           values.start_date = new Date(values.start_date);
 
           try {
@@ -80,26 +84,6 @@ const EditActivityComponent = ({ show, onClose, activity, reFetch }) => {
                     </div>
                   </div>
 
-                  {/* Activity Number */}
-                  <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
-                    <label
-                      htmlFor="activity_number"
-                      className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
-                    >
-                      Activity Number
-                    </label>
-                    <div className="mt-1 sm:col-span-2 sm:mt-0">
-                      <input
-                        className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
-                        type="number"
-                        name="activity_number"
-                        id="activity_number"
-                        value={values.activity_number}
-                        onChange={handleChange}
-                      />
-                    </div>
-                  </div>
-
                   {/* Start Date */}
                   <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
                     <label
@@ -124,7 +108,18 @@ const EditActivityComponent = ({ show, onClose, activity, reFetch }) => {
                   <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
                     <SelectMenu
                       label={"Dependency"}
-                      options={options}
+                      options={activityList}
+                      value={{
+                        id: selectedValue ? selectedValue : 0,
+                        //check for undefined
+                        name: activityList.find(
+                          (item) => item.id === selectedValue
+                        )
+                          ? activityList.find(
+                              (item) => item.id === selectedValue
+                            ).name
+                          : "none",
+                      }}
                       onSelectedValueChange={handleSelectedValueChange}
                     />
                   </div>

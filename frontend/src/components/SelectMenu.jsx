@@ -2,15 +2,22 @@ import { Fragment, useState } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 
-
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-const SelectMenu = ({ label, options, onSelectedValueChange }) => {
+const SelectMenu = ({
+  value = {
+    id: 0,
+    name: "none",
+  },
+  label,
+  options,
+  onSelectedValueChange,
+}) => {
   const [selected, setSelected] = useState({
-    id: 1,
-    name: "None",
+    id: value.id,
+    name: value.name,
   });
 
   return (
@@ -46,47 +53,44 @@ const SelectMenu = ({ label, options, onSelectedValueChange }) => {
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-                <Listbox.Options className="block max-w-sm z-10 mt-1 max-h-60 w-[20rem] overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                  {options.map((option) => (
-                    <Listbox.Option
-                      key={option.id}
-                      className={({ active }) =>
-                        classNames(
-                          active ? "text-white bg-indigo-600" : "text-gray-900",
-                          "relative cursor-default select-none py-2 pl-8 pr-4"
-                        )
-                      }
-                      value={option}
-                    >
-                      {({ selected, active }) => (
-                        <>
+              <Listbox.Options className="block max-w-sm z-10 mt-1 max-h-60 w-[20rem] overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                {options.map((option) => (
+                  <Listbox.Option
+                    key={option.id}
+                    className={({ active }) =>
+                      classNames(
+                        active ? "text-white bg-indigo-600" : "text-gray-900",
+                        "relative cursor-default select-none py-2 pl-8 pr-4"
+                      )
+                    }
+                    value={option}
+                  >
+                    {({ selected, active }) => (
+                      <>
+                        <span
+                          className={classNames(
+                            selected ? "font-semibold" : "font-normal",
+                            "block truncate"
+                          )}
+                        >
+                          {option.name}
+                        </span>
+
+                        {selected ? (
                           <span
                             className={classNames(
-                              selected ? "font-semibold" : "font-normal",
-                              "block truncate"
+                              active ? "text-white" : "text-indigo-600",
+                              "absolute inset-y-0 left-0 flex items-center pl-1.5"
                             )}
                           >
-                            {option.name}
+                            <CheckIcon className="h-5 w-5" aria-hidden="true" />
                           </span>
-
-                          {selected ? (
-                            <span
-                              className={classNames(
-                                active ? "text-white" : "text-indigo-600",
-                                "absolute inset-y-0 left-0 flex items-center pl-1.5"
-                              )}
-                            >
-                              <CheckIcon
-                                className="h-5 w-5"
-                                aria-hidden="true"
-                              />
-                            </span>
-                          ) : null}
-                        </>
-                      )}
-                    </Listbox.Option>
-                  ))}
-                </Listbox.Options>
+                        ) : null}
+                      </>
+                    )}
+                  </Listbox.Option>
+                ))}
+              </Listbox.Options>
             </Transition>
           </div>
         </>
@@ -94,6 +98,5 @@ const SelectMenu = ({ label, options, onSelectedValueChange }) => {
     </Listbox>
   );
 };
-
 
 export default SelectMenu;

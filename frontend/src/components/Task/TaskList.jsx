@@ -3,7 +3,7 @@ import TaskTable from './TaskTable'
 import AddButton from '../AddButton'
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 
-const TaskList = ({taskList, reFetch}) => {
+const TaskList = ({taskList}) => {
 
   const navigate = useNavigate();
   const search = useLocation().search;
@@ -31,7 +31,7 @@ const TaskList = ({taskList, reFetch}) => {
         </div>
       </div>
       <div className="mt-6 flow-root">
-        <TaskTable taskList={taskList} reFetch={reFetch} />
+        <TaskTable taskList={taskList} />
       </div>
     </div>
   )

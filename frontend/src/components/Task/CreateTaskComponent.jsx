@@ -4,14 +4,19 @@ import SelectMenu from "../SelectMenu";
 import Toggle from "../Toggle";
 import { useNavigate, useLocation } from "react-router-dom";
 import { createTask } from "../../utils/TaskController";
-
-const options = [{ id: 1, name: "Test" }];
+import AppContext from "../../context/AppContext";
 
 const CreateTaskComponent = () => {
-
   const search = useLocation().search;
-  const project_id = new URLSearchParams(search).get('projectId');
-  const activity_id = new URLSearchParams(search).get('activityId');
+  const project_id = new URLSearchParams(search).get("projectId");
+  const activity_id = new URLSearchParams(search).get("activityId");
+  const { task: taskList, triggerRefetch } = React.useContext(AppContext);
+  const taskOptions = taskList.map((item) => {
+    return {
+      id: item.task_id,
+      name: item.task_name,
+    };
+  });
 
   const navigate = useNavigate();
 
@@ -20,7 +25,6 @@ const CreateTaskComponent = () => {
     activity_id: activity_id,
     task_number: "",
     task_name: "",
-    dependency: "",
     start_date: "",
     duration: "",
     note: "",
@@ -30,17 +34,17 @@ const CreateTaskComponent = () => {
   const [selectedValue, setSelectedValue] = useState(0);
 
   const handleSelectedValueChange = (value) => {
-    setSelectedValue(value);
+    setSelectedValue(value.id);
   };
 
   return (
     <Formik
       initialValues={task}
-      onSubmit={(values, { setSubmitting }) => {
-        values.dependency = selectedValue;
+      onSubmit={ async (values, { setSubmitting }) => {
+        values.task_number = selectedValue;
 
         try {
-          const response = createTask(values);
+          const response = await createTask(values);
           console.log(response);
 
           setSubmitting(false);
@@ -48,7 +52,11 @@ const CreateTaskComponent = () => {
           console.log(error);
         }
 
-        navigate(`/project/activity/task?projectId=${project_id}&activityId=${activity_id}`);
+        navigate(
+          `/project/activity/task?projectId=${project_id}&activityId=${activity_id}`
+        );
+
+        triggerRefetch();
       }}
     >
       {({
@@ -95,26 +103,6 @@ const CreateTaskComponent = () => {
                   </div>
                 </div>
 
-                {/* Activity Number */}
-                <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
-                  <label
-                    htmlFor="task_number"
-                    className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
-                  >
-                    Task Number
-                  </label>
-                  <div className="mt-1 sm:col-span-2 sm:mt-0">
-                    <input
-                      className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
-                      type="number"
-                      name="task_number"
-                      id="task_number"
-                      value={values.task_number}
-                      onChange={handleChange}
-                    />
-                  </div>
-                </div>
-
                 {/* Start Date */}
                 <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
                   <label
@@ -139,7 +127,7 @@ const CreateTaskComponent = () => {
                 <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
                   <SelectMenu
                     label={"Dependency"}
-                    options={options}
+                    options={taskOptions}
                     onSelectedValueChange={handleSelectedValueChange}
                   />
                 </div>
@@ -156,6 +144,7 @@ const CreateTaskComponent = () => {
                     <input
                       className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
                       type="number"
+                      min={1}
                       name="duration"
                       id="duration"
                       value={values.duration}
@@ -195,7 +184,9 @@ const CreateTaskComponent = () => {
                 <button
                   type="button"
                   onClick={() => {
-                    // router.push("/product");
+                    navigate(
+                      `/project/activity/task?projectId=${project_id}&activityId=${activity_id}`
+                    );
                   }}
                   className="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 >

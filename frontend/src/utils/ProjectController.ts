@@ -7,7 +7,8 @@ export interface Project {
     project_name: string;
     project_start_date: Date;
     duration: number;
-    days_till_renew: boolean;
+    renrew: boolean;
+    days_till_renew?: number;
     save_as_cycle: boolean;
     user_id: string;
     completed: boolean;

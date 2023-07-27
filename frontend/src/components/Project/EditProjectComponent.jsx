@@ -4,12 +4,14 @@ import SelectMenu from "../SelectMenu";
 import Modal from "../Modal";
 import Toggle from "../Toggle";
 import { updateProject } from "../../utils/ProjectController";
+import { AppContext } from "../../context/AppContext";
 
 const options = [{ id: 1, name: "Test" }];
 
-const EditProjectComponent = ({ onClose, project, reFetch }) => {
+const EditProjectComponent = ({ onClose, project }) => {
   const [selectedValue, setSelectedValue] = useState(0);
   const [selectedCycle, setSelectedCycle] = useState(false);
+  const {triggerRefetch} = React.useContext(AppContext)
 
   const handleSelectedCycleChange = (value) => {
     setSelectedCycle(value);
@@ -38,7 +40,7 @@ const EditProjectComponent = ({ onClose, project, reFetch }) => {
           }
 
           onClose();
-          reFetch();
+          triggerRefetch();
         }}
       >
         {({
@@ -125,6 +127,7 @@ const EditProjectComponent = ({ onClose, project, reFetch }) => {
                       <input
                         className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
                         type="number"
+                        min={1}
                         name="duration"
                         id="duration"
                         value={values.duration}
@@ -145,6 +148,7 @@ const EditProjectComponent = ({ onClose, project, reFetch }) => {
                       <input
                         className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
                         type="number"
+                        min={0}
                         name="days_till_renew"
                         id="days_till_renew"
                         value={values.days_till_renew}

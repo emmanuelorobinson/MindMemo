@@ -4,37 +4,42 @@ import SelectMenu from "../SelectMenu";
 import Toggle from "../Toggle";
 import { createActivity } from "../../utils/ActivityController";
 import { useNavigate, useLocation } from "react-router-dom";
+import AppContext from "../../context/AppContext";
 
 const options = [{ id: 1, name: "Test" }];
 
 const CreateActivityComponent = () => {
   const search = useLocation().search;
   const project_id = new URLSearchParams(search).get("id");
-
   const navigate = useNavigate();
 
+  const { activity, setActivity } = React.useContext(AppContext);
+  const activityList = activity.map((item) => {
+    return {
+      id: item.activity_id,
+      name: item.activity_name,
+    };
+  });
+  const [selectedValue, setSelectedValue] = useState(0);
   const [projects, setProjects] = useState({
     project_id: project_id,
     activity_number: "",
     activity_name: "",
-    dependency: "",
     start_date: "",
     duration: "",
     note: "",
     completed: false,
   });
 
-  const [selectedValue, setSelectedValue] = useState(0);
-
   const handleSelectedValueChange = (value) => {
-    setSelectedValue(value);
+    setSelectedValue(value.activity_id);
   };
 
   return (
     <Formik
       initialValues={projects}
       onSubmit={async (values, { setSubmitting }) => {
-        values.dependency = selectedValue;
+        values.activity_number = selectedValue;
 
         try {
           const response = await createActivity(values);
@@ -92,26 +97,6 @@ const CreateActivityComponent = () => {
                   </div>
                 </div>
 
-                {/* Activity Number */}
-                <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
-                  <label
-                    htmlFor="activity_number"
-                    className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
-                  >
-                    Activity Number
-                  </label>
-                  <div className="mt-1 sm:col-span-2 sm:mt-0">
-                    <input
-                      className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
-                      type="number"
-                      name="activity_number"
-                      id="activity_number"
-                      value={values.activity_number}
-                      onChange={handleChange}
-                    />
-                  </div>
-                </div>
-
                 {/* Start Date */}
                 <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
                   <label
@@ -136,7 +121,7 @@ const CreateActivityComponent = () => {
                 <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
                   <SelectMenu
                     label={"Dependency"}
-                    options={options}
+                    options={activityList}
                     onSelectedValueChange={handleSelectedValueChange}
                   />
                 </div>
@@ -153,6 +138,7 @@ const CreateActivityComponent = () => {
                     <input
                       className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
                       type="number"
+                      min={1}
                       name="duration"
                       id="duration"
                       value={values.duration}
@@ -192,7 +178,7 @@ const CreateActivityComponent = () => {
                 <button
                   type="button"
                   onClick={() => {
-                    // router.push("/product");
+                    navigate(`/project/activity?id=${project_id}`);
                   }}
                   className="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 >

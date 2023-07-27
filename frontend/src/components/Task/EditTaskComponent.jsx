@@ -3,14 +3,19 @@ import { Form, Formik, ErrorMessage } from "formik";
 import SelectMenu from "../SelectMenu";
 import Modal from "../Modal";
 import { updateTask } from "../../utils/TaskController";
+import { AppContext } from "../../context/AppContext";
 
-const options = [{ id: 1, name: "Test" }];
-
-const EditActivityComponent = ({ show, onClose, task, reFetch }) => {
-  const [selectedValue, setSelectedValue] = useState(0);
-
+const EditActivityComponent = ({ show, onClose, task }) => {
+  const [selectedValue, setSelectedValue] = useState(task.task_number);
+  const { task: taskList, triggerRefetch } = React.useContext(AppContext);
+  const taskOptions = taskList.map((item) => {
+    return {
+      id: item.task_id,
+      name: item.task_name,
+    };
+  });
   const handleSelectedValueChange = (value) => {
-    setSelectedValue(value);
+    setSelectedValue(value.id);
   };
 
   return (
@@ -19,7 +24,7 @@ const EditActivityComponent = ({ show, onClose, task, reFetch }) => {
       <Formik
         initialValues={task}
         onSubmit={async (values, { setSubmitting }) => {
-          values.previous_cycle = selectedValue;
+          values.task_number = selectedValue;
           values.start_date = new Date(values.start_date);
 
           try {
@@ -32,7 +37,7 @@ const EditActivityComponent = ({ show, onClose, task, reFetch }) => {
           }
 
           onClose();
-          reFetch();
+          triggerRefetch();
         }}
       >
         {({
@@ -78,26 +83,6 @@ const EditActivityComponent = ({ show, onClose, task, reFetch }) => {
                     </div>
                   </div>
 
-                  {/* Activity Number */}
-                  <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
-                    <label
-                      htmlFor="task_number"
-                      className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
-                    >
-                      Task Number
-                    </label>
-                    <div className="mt-1 sm:col-span-2 sm:mt-0">
-                      <input
-                        className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
-                        type="number"
-                        name="task_number"
-                        id="task_number"
-                        value={values.task_number}
-                        onChange={handleChange}
-                      />
-                    </div>
-                  </div>
-
                   {/* Start Date */}
                   <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
                     <label
@@ -122,7 +107,17 @@ const EditActivityComponent = ({ show, onClose, task, reFetch }) => {
                   <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
                     <SelectMenu
                       label={"Dependency"}
-                      options={options}
+                      options={taskOptions}
+                      value={{
+                        id: selectedValue,
+                        name: taskOptions.find(
+                          (item) => item.id === selectedValue
+                        )
+                          ? taskOptions.find(
+                              (item) => item.id === selectedValue
+                            ).name
+                          : "none",
+                      }}
                       onSelectedValueChange={handleSelectedValueChange}
                     />
                   </div>
@@ -139,6 +134,7 @@ const EditActivityComponent = ({ show, onClose, task, reFetch }) => {
                       <input
                         className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
                         type="number"
+                        min={1}
                         name="duration"
                         id="duration"
                         value={values.duration}

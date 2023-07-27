@@ -5,11 +5,14 @@ import Breadcrumbs from '../components/Breadcrumbs'
 import { getProjects } from '../utils/ProjectController'
 import { useClerk } from '@clerk/clerk-react'
 import { useNavigate } from 'react-router-dom'
+import AppContext from '../context/AppContext'
 
 
 // const project = [1, 2]
 
 const Project = () => {
+
+  const {refetch, setProjectCycles} = React.useContext(AppContext)
 
   const { user } = useClerk()
   // console.log('use.id', user.id)
@@ -22,15 +25,16 @@ const Project = () => {
   useEffect(() => {
     const fetchProjects = async () => {
       const response = await getProjects(user.id)
+      // filter by project with save_as_cycle = true
+      const filteredResponse = response.filter((item) => item.save_as_cycle === true)
+      setProjectCycles(filteredResponse)
       setProject(response)
+
     }
     fetchProjects()
-  }, [reFetch])
+  }, [refetch])
 
-  const triggerReFetch = () => {
-    setReFetch(!reFetch)
-    console.log('triggered')
-  }
+
 
 
   const onEmptyButtonClick = () => {
@@ -42,7 +46,7 @@ const Project = () => {
   return (
     <div className='p-5 h-[100vh]'>
       <Breadcrumbs />
-      {project.length ? <ProjectList projectList={project} reFetch={triggerReFetch} /> : <EmptyItem title={"No projects"} subtitle={"Get started by creating a new project."} buttonText={"New Project"} onButtonClick={onEmptyButtonClick}/>}
+      {project.length ? <ProjectList projectList={project} /> : <EmptyItem title={"No projects"} subtitle={"Get started by creating a new project."} buttonText={"New Project"} onButtonClick={onEmptyButtonClick}/>}
     </div>
   )
 }

@@ -4,6 +4,7 @@ import Breadcrumbs from '../components/Breadcrumbs'
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { getTasks } from '../utils/TaskController'
 import EmptyItem from '../components/EmptyItem';
+import AppContext from '../context/AppContext';
 
 const Task = () => {
 
@@ -12,33 +13,27 @@ const Task = () => {
   const activityId = new URLSearchParams(search).get('activityId');
   const navigate = useNavigate();
 
-  const [task, setTask] = React.useState([])
+  // const [task, setTask] = React.useState([])
+  const { task, setTask, refetch } = React.useContext(AppContext);
   const [reFetch, setReFetch] = React.useState(false)
 
   useEffect(() => {
     const fetchTask = async () => {
       const response = await getTasks(activityId)
-      console.log('response', response)
       setTask(response)
     }
     fetchTask()
-  }, [reFetch])
+  }, [refetch])
 
   const onEmptyButtonClick = () => {
     navigate(`/project/activity/task/create?projectId=${projectId}&activityId=${activityId}`);
   }
 
-  const triggerReFetch = () => {
-    setReFetch(!reFetch)
-    console.log('triggered')
-  }
-
-
 
   return (
     <div className='p-5 h-[100vh]'>
       <Breadcrumbs />
-      {task.length ? <TaskList taskList={task} reFetch={triggerReFetch} /> : <EmptyItem title={"No task"} subtitle={"Get started by creating a new task."} buttonText={"New Task"} onButtonClick={onEmptyButtonClick}/>}
+      {task.length ? <TaskList taskList={task} /> : <EmptyItem title={"No task"} subtitle={"Get started by creating a new task."} buttonText={"New Task"} onButtonClick={onEmptyButtonClick}/>}
     </div>
   )
 }

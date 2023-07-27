@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import MenuDropdown from "../MenuDropdown";
 import { deleteProject } from "../../utils/ProjectController";
 import EditProjectComponent from "./EditProjectComponent";
+import { AppContext } from "../../context/AppContext";
 
 const colorScheme = (status) => {
   switch (status) {
@@ -18,6 +19,7 @@ const colorScheme = (status) => {
 
 const ProjectItem = ({ data, reFetch }) => {
   const [showEditModal, setShowEditModal] = React.useState(false);
+  const {triggerRefetch} = useContext(AppContext);
 
   const onEditClick = () => {
     showEditModal ? setShowEditModal(false) : setShowEditModal(true);
@@ -33,7 +35,7 @@ const ProjectItem = ({ data, reFetch }) => {
       console.log(error);
     }
 
-    reFetch();
+    triggerRefetch();
   };
 
   // project due date is data.project_start_date + data.duration (duration in days)
@@ -96,7 +98,6 @@ const ProjectItem = ({ data, reFetch }) => {
           show={showEditModal}
           onClose={() => setShowEditModal(false)}
           project={data}
-          reFetch={reFetch}
         />
       )}
     </>

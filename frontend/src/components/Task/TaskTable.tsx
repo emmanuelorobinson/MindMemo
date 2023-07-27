@@ -3,12 +3,14 @@ import Pagination from "./Pagination";
 import MenuDropdown from "../MenuDropdown";
 import { updateTask, deleteTask } from "../../utils/TaskController";
 import EditTaskComponent from "./EditTaskComponent";
+import AppContext from "../../context/AppContext";
 
 const pageSize = 7;
 
-const TaskTable = ({ taskList, reFetch }: any) => {
+const TaskTable = ({ taskList }: any) => {
   const [currentPage, setCurrentPage] = React.useState(1);
   const [showEditModal, setShowEditModal] = React.useState(false);
+  const { triggerRefetch } = React.useContext<any>(AppContext);
 
   const formatDate = (date: any, duration: any) => {
     const dueDate = new Date(date);
@@ -41,11 +43,22 @@ const TaskTable = ({ taskList, reFetch }: any) => {
     return taskList.slice(firstPageIndex, lastPageIndex);
   }, [currentPage, taskList]);
 
-  const onEditClick = () => {
-    console.log("edit");
-    showEditModal ? setShowEditModal(false) : setShowEditModal(true);
+  const [selectedTask, setSelectedTask] = useState(null);
+
+  const onEditClick = (index: number) => {
+    // Find the task with the matching index
+    const task = currentTableData.find((task: any) => task.task_id === index);
+
+    // Set the selected task and show the edit modal
+    setSelectedTask(task);
+    setShowEditModal(true);
   };
 
+  const onCloseEditModal = () => {
+    // Clear the selected task and hide the edit modal
+    setSelectedTask(null);
+    setShowEditModal(false);
+  };
   const onDeleteClick = async (task_id: number) => {
     try {
       const res = await deleteTask(task_id);
@@ -54,7 +67,7 @@ const TaskTable = ({ taskList, reFetch }: any) => {
       console.log(err);
     }
 
-    reFetch();
+    triggerRefetch();
   };
 
   const onCheckboxClick = async (e: any, task_id: number) => {
@@ -72,7 +85,7 @@ const TaskTable = ({ taskList, reFetch }: any) => {
       console.log(err);
     }
 
-    reFetch();
+    triggerRefetch();
   };
 
   return (
@@ -163,7 +176,7 @@ const TaskTable = ({ taskList, reFetch }: any) => {
                 </td>
                 <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                   <MenuDropdown
-                    onEdit={onEditClick}
+                    onEdit={() => onEditClick(task.task_id)}
                     onDelete={onDeleteClick}
                     index={task.task_id}
                   />
@@ -171,9 +184,8 @@ const TaskTable = ({ taskList, reFetch }: any) => {
                 {showEditModal && (
                   <EditTaskComponent
                     show={showEditModal}
-                    onClose={(e: any) => setShowEditModal(false)}
-                    task={task}
-                    reFetch={reFetch}
+                    onClose={onCloseEditModal}
+                    task={selectedTask}
                   />
                 )}
               </tr>

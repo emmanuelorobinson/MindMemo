@@ -3,7 +3,7 @@ import ProjectItem from "./ProjectItem";
 import AddButton from "../AddButton";
 import { useNavigate } from "react-router-dom";
 
-const ProjectList = ({projectList, reFetch}) => {
+const ProjectList = ({projectList}) => {
 
   const navigate = useNavigate();
 
@@ -33,7 +33,7 @@ const ProjectList = ({projectList, reFetch}) => {
         <ul role="list" className="divide-y divide-gray-100">
           {projectList.map((project) => (
             <li key={project.project_id} className="flex justify-between gap-x-6 py-5">
-              <ProjectItem data={project} reFetch={reFetch} />
+              <ProjectItem data={project} />
             </li>
           ))}
         </ul>

@@ -24,8 +24,7 @@ const Home = () => {
         console.log(error);
       }
       setLoading(false);
-      
-    }, 5000);
+    }, 2000);
   }, []);
 
   if (loading) {
@@ -41,7 +40,8 @@ const Home = () => {
   return (
     <div>
       <Calendar />
-      {!task.length ? "" : <Task taskList={task} />}
+      {/* {!task.length ? "" : <Task taskList={task} />} */}
+      <Task taskList={task} />
     </div>
   );
 };
