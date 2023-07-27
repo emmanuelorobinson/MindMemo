@@ -87,6 +87,7 @@ export const getCyclesByUser = async (user_id: string): Promise<Project[]> => {
             project_name: true,
             project_start_date: true,
             duration: true,
+            renew: true,
             days_till_renew: true,
             completed: true,
             save_as_cycle: true,

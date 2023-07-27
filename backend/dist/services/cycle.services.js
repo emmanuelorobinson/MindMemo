@@ -93,6 +93,7 @@ const getCyclesByUser = (user_id) => __awaiter(void 0, void 0, void 0, function*
             project_name: true,
             project_start_date: true,
             duration: true,
+            renew: true,
             days_till_renew: true,
             completed: true,
             save_as_cycle: true,
