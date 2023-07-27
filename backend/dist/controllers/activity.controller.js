@@ -35,6 +35,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getActivityTagList = exports.deleteActivity = exports.updateActivity = exports.createActivity = exports.getActivityByID = exports.getActivities = void 0;
 const ActivityService = __importStar(require("../services/activity.services"));
 const reminder_services_1 = require("../services/reminder.services");
+const tag_controller_1 = require("./tag.controller");
 const getActivities = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { project_id } = req.params;
@@ -68,6 +69,7 @@ const createActivity = (req, res) => __awaiter(void 0, void 0, void 0, function*
         let reminder_date = req.body.reminder_datetime == "" ? new Date() : new Date(req.body.reminder_datetime);
         let user_id = req.body.user_id == "" ? "null" : req.body.user_id;
         let acitivtyNote = req.body.note;
+        let tags = req.body.tags;
         const activity = {
             activity_name: activityName,
             activity_number: activityNumber,
@@ -79,6 +81,9 @@ const createActivity = (req, res) => __awaiter(void 0, void 0, void 0, function*
         };
         const newActivity = yield ActivityService.createActivity(activity);
         const newReminder = yield (0, reminder_services_1.createActivityReminder)({ activity_id: newActivity.activity_id, reminder_date, user_id });
+        tags.forEach((tag) => __awaiter(void 0, void 0, void 0, function* () {
+            (0, tag_controller_1.addTagsToActivity)(tag, newActivity.activity_id);
+        }));
         res.json(newActivity);
     }
     catch (error) {
@@ -98,6 +103,7 @@ const updateActivity = (req, res) => __awaiter(void 0, void 0, void 0, function*
         let acitivtyNote = req.body.note;
         let reminder_date = req.body.reminder_datetime == "" ? new Date() : new Date(req.body.reminder_datetime);
         let user_id = req.body.user_id == "" ? "null" : req.body.user_id;
+        let tags = req.body.tags;
         const activity = {
             activity_id: activity_id,
             activity_name: activityName,
@@ -111,6 +117,11 @@ const updateActivity = (req, res) => __awaiter(void 0, void 0, void 0, function*
         console.log(activity);
         const updatedActivity = yield ActivityService.updateActivity(activity);
         const newReminder = yield (0, reminder_services_1.createActivityReminder)({ activity_id, reminder_date, user_id });
+        const activityTagList = yield ActivityService.getTagsByActivity(activity_id);
+        tags.forEach((tag) => __awaiter(void 0, void 0, void 0, function* () {
+            if (!activityTagList.includes(tag))
+                (0, tag_controller_1.addTagsToActivity)(tag, updatedActivity.activity_id);
+        }));
         res.json(updatedActivity);
     }
     catch (error) {

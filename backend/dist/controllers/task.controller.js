@@ -35,6 +35,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getTaskTagList = exports.deleteTask = exports.updateTask = exports.createTask = exports.getTaskByID = exports.getTasks = void 0;
 const TaskService = __importStar(require("../services/task.services"));
 const reminder_services_1 = require("../services/reminder.services");
+const tag_controller_1 = require("./tag.controller");
 const getTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { activity_id } = req.params;
@@ -68,6 +69,7 @@ const createTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         let taskNote = req.body.note;
         let reminder_date = req.body.reminder_datetime == "" ? new Date() : new Date(req.body.reminder_datetime);
         let user_id = req.body.user_id == "" ? "null" : req.body.user_id;
+        let tags = req.body.tags;
         let task = {
             task_name: taskName,
             task_number: taskNumber,
@@ -79,6 +81,9 @@ const createTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         };
         const newTask = yield TaskService.createTask(task);
         const newReminder = yield (0, reminder_services_1.createTaskReminder)({ task_id: newTask.task_id, reminder_date, user_id });
+        tags.forEach((tag) => __awaiter(void 0, void 0, void 0, function* () {
+            (0, tag_controller_1.addTagsToTask)(tag, newTask.activity_id);
+        }));
         res.json(newTask);
     }
     catch (error) {
@@ -98,6 +103,7 @@ const updateTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         let taskNote = req.body.note;
         let reminder_date = req.body.reminder_datetime == "" ? new Date() : new Date(req.body.reminder_datetime);
         let user_id = req.body.user_id == "" ? "null" : req.body.user_id;
+        let tags = req.body.tags;
         let task = {
             task_id: task_id,
             task_name: taskName,
@@ -110,6 +116,11 @@ const updateTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         };
         const updatedTask = yield TaskService.updateTask(task);
         const newReminder = yield (0, reminder_services_1.createTaskReminder)({ task_id, reminder_date, user_id });
+        const activityTagList = yield TaskService.getTagsByTask(task_id);
+        tags.forEach((tag) => __awaiter(void 0, void 0, void 0, function* () {
+            if (!activityTagList.includes(tag))
+                (0, tag_controller_1.addTagsToTask)(tag, updatedTask.activity_id);
+        }));
         res.json(updatedTask);
     }
     catch (error) {

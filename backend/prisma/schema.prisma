@@ -30,6 +30,7 @@ model Project {
   duration Int
   days_till_renew Int
   completed Boolean
+  renew Boolean @default(false)
   save_as_cycle Boolean @default(false)
   cycle_id Int @default(0)
 
