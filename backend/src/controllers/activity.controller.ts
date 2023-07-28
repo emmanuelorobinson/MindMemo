@@ -68,7 +68,7 @@ export const updateActivity = async (req: any, res: any) => {
         let intduration = parseInt(req.body.duration);
         let complete = req.body.completed === 'true' ? true : false;
         let acitivtyNote = req.body.note;
-        let reminder_date = req.body.reminder_datetime == "" ? new Date() : new Date(req.body.reminder_datetime);
+        let reminder_date = req.body.reminder_date == "" ? new Date() : new Date(req.body.reminder_date);
         let user_id = req.body.user_id == "" ? "null" : req.body.user_id;
         let tags = req.body.tags;
         const activity = {
