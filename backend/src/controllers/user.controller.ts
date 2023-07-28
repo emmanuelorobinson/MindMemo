@@ -1,5 +1,5 @@
 import { getActivities, getUpcomingActivities } from "../services/activity.services";
-import { getProjects } from "../services/project.services";
+import { deleteProject, getProjects } from "../services/project.services";
 import { getUpcomingTasks } from "../services/task.services";
 import * as UserService from "../services/user.services";
 import { Request, Response } from "express";
@@ -52,6 +52,12 @@ export const updateUser = async (req: Request, res: Response) => {
 export const deleteUser = async (req: Request, res: Response) => {
     try {
         const { user_id } = req.params;
+        let projects = await getProjects(user_id);
+        if (projects != null) {
+            projects.forEach(async (project: any) => {
+                deleteProject(project.project_id);
+            });
+        }
         const deletedUser = await UserService.deleteUser(user_id);
         res.json(deletedUser);
     } catch (error: any) {
