@@ -65,7 +65,7 @@ const createProject = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     try {
         let userId = req.body.user_id;
         let intduration = parseInt(req.body.duration);
-        let intdays = parseInt(req.body.days_till_renew);
+        let intdays = (req.body.days_till_renew == "") ? 0 : parseInt(req.body.days_till_renew);
         let date = (new Date(req.body.project_start_date));
         let name = req.body.project_name;
         let renew = req.body.renew === "true" ? true : false;
@@ -84,9 +84,9 @@ const createProject = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             user_id: userId,
         };
         const newProject = yield ProjectService.createProject(project);
-        // if (cycle_id != 0) {
-        //     duplicateCycle(cycle_id, newProject.project_id);
-        // }
+        if (cycle_id != 0) {
+            (0, exports.duplicateCycle)(cycle_id, newProject.project_id);
+        }
         res.json(newProject);
     }
     catch (error) {
@@ -98,7 +98,7 @@ const updateProject = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     try {
         let userId = req.body.user_id;
         let intduration = parseInt(req.body.duration);
-        let intdays = parseInt(req.body.days_till_renew);
+        let intdays = (req.body.days_till_renew == "") ? 0 : parseInt(req.body.days_till_renew);
         let date = (new Date(req.body.project_start_date));
         let name = req.body.project_name;
         let renew = req.body.renew === "true" ? true : false;

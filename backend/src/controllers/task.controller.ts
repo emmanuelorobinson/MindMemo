@@ -47,9 +47,11 @@ export const createTask = async (req: any, res: any) => {
 
         const newTask = await TaskService.createTask(task);
         const newReminder = await createTaskReminder({task_id: newTask.task_id, reminder_date, user_id});
-        tags.forEach(async (tag: any) => {
-            addTagsToTask(tag, newTask.activity_id);
-        });
+        if (tags != undefined) {
+            tags.forEach(async (tag: any) => {
+                addTagsToTask(tag, newTask.activity_id);
+            });
+        }   
         res.json(newTask);
     } catch (error: any) {
         res.json({ message: error.message });
@@ -83,10 +85,12 @@ export const updateTask = async (req: any, res: any) => {
         const newReminder = await createTaskReminder({task_id, reminder_date, user_id});
 
         const activityTagList = await TaskService.getTagsByTask(task_id);
-        tags.forEach(async (tag: any) => {
-            if (!activityTagList.includes(tag))
-                addTagsToTask(tag, updatedTask!.activity_id);
-        });
+        if (tags != undefined) {
+            tags.forEach(async (tag: any) => {
+                if (!activityTagList.includes(tag))
+                    addTagsToTask(tag, updatedTask!.activity_id);
+            });
+        }
         res.json(updatedTask);
     } catch (error: any) {
         res.json({ message: error.message });

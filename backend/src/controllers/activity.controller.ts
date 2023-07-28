@@ -47,9 +47,11 @@ export const createActivity = async (req: any, res: any) => {
         const newActivity = await ActivityService.createActivity(activity);
         const newReminder = await createActivityReminder({activity_id: newActivity.activity_id, reminder_date, user_id});
 
-        tags.forEach(async (tag: any) => {
-            addTagsToActivity(tag, newActivity.activity_id);
-        });
+        if (tags != undefined) {
+                tags.forEach(async (tag: any) => {
+                addTagsToActivity(tag, newActivity.activity_id);
+            });
+        }
         res.json(newActivity);
     } catch (error: any) {
         res.json({ message: error.message });
@@ -85,10 +87,12 @@ export const updateActivity = async (req: any, res: any) => {
         const newReminder = await createActivityReminder({activity_id, reminder_date, user_id});
 
         const activityTagList = await ActivityService.getTagsByActivity(activity_id);
-        tags.forEach(async (tag: any) => {
-            if (!activityTagList.includes(tag))
-                addTagsToActivity(tag, updatedActivity!.activity_id);
-        });
+        if (tags != undefined) {
+            tags.forEach(async (tag: any) => {
+                if (!activityTagList.includes(tag))
+                    addTagsToActivity(tag, updatedActivity!.activity_id);
+            });
+        }
         res.json(updatedActivity);
     } catch (error: any) {
         res.json({ message: error.message });

@@ -88,6 +88,12 @@ exports.updateUser = updateUser;
 const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { user_id } = req.params;
+        let projects = yield (0, project_services_1.getProjects)(user_id);
+        if (projects != null) {
+            projects.forEach((project) => __awaiter(void 0, void 0, void 0, function* () {
+                (0, project_services_1.deleteProject)(project.project_id);
+            }));
+        }
         const deletedUser = yield UserService.deleteUser(user_id);
         res.json(deletedUser);
     }

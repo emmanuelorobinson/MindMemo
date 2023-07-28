@@ -81,9 +81,11 @@ const createTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         };
         const newTask = yield TaskService.createTask(task);
         const newReminder = yield (0, reminder_services_1.createTaskReminder)({ task_id: newTask.task_id, reminder_date, user_id });
-        tags.forEach((tag) => __awaiter(void 0, void 0, void 0, function* () {
-            (0, tag_controller_1.addTagsToTask)(tag, newTask.activity_id);
-        }));
+        if (tags != undefined) {
+            tags.forEach((tag) => __awaiter(void 0, void 0, void 0, function* () {
+                (0, tag_controller_1.addTagsToTask)(tag, newTask.activity_id);
+            }));
+        }
         res.json(newTask);
     }
     catch (error) {
@@ -117,10 +119,12 @@ const updateTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const updatedTask = yield TaskService.updateTask(task);
         const newReminder = yield (0, reminder_services_1.createTaskReminder)({ task_id, reminder_date, user_id });
         const activityTagList = yield TaskService.getTagsByTask(task_id);
-        tags.forEach((tag) => __awaiter(void 0, void 0, void 0, function* () {
-            if (!activityTagList.includes(tag))
-                (0, tag_controller_1.addTagsToTask)(tag, updatedTask.activity_id);
-        }));
+        if (tags != undefined) {
+            tags.forEach((tag) => __awaiter(void 0, void 0, void 0, function* () {
+                if (!activityTagList.includes(tag))
+                    (0, tag_controller_1.addTagsToTask)(tag, updatedTask.activity_id);
+            }));
+        }
         res.json(updatedTask);
     }
     catch (error) {
