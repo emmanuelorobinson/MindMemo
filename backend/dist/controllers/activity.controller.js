@@ -67,7 +67,7 @@ const createActivity = (req, res) => __awaiter(void 0, void 0, void 0, function*
         let startDate = (req.body.start_date == undefined) ? new Date() : new Date(req.body.start_date);
         let intduration = parseInt(req.body.duration);
         let complete = req.body.completed === 'true' ? true : false;
-        let reminder_date = req.body.reminder_date == "" ? new Date() : new Date(req.body.reminder_date);
+        let reminder_date = req.body.reminder == "" ? new Date() : new Date(req.body.reminder);
         let user_id = req.body.user_id == "" ? "null" : req.body.user_id;
         let acitivtyNote = req.body.note;
         let tags = req.body.tags;
@@ -104,7 +104,7 @@ const updateActivity = (req, res) => __awaiter(void 0, void 0, void 0, function*
         let intduration = parseInt(req.body.duration);
         let complete = String(req.body.completed) === 'true';
         let acitivtyNote = req.body.note;
-        let reminder_date = req.body.reminder_date == "" ? new Date() : new Date(req.body.reminder_date);
+        let reminder_date = req.body.reminder == "" ? new Date() : new Date(req.body.reminder);
         let user_id = req.body.user_id == "" ? "null" : req.body.user_id;
         let tags = req.body.tags;
         const activity = {

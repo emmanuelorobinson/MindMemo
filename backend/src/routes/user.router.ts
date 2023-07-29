@@ -23,3 +23,7 @@ userRouter
 userRouter
     .route("/:user_id/activities")
     .get(userController.getUpcomingActivity);
+
+userRouter
+    .route("/:user_id/events")
+    .get(userController.getEvents);

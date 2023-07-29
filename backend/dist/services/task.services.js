@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTagsByTask = exports.updateTaskTagList = exports.getTaskTagList = exports.getUpcomingTasks = exports.getAllTasks = exports.deleteTask = exports.updateTask = exports.createTask = exports.getTaskByID = exports.getTasks = void 0;
+exports.getAllTaskDates = exports.getTagsByTask = exports.updateTaskTagList = exports.getTaskTagList = exports.getUpcomingTasks = exports.getAllTasks = exports.deleteTask = exports.updateTask = exports.createTask = exports.getTaskByID = exports.getTasks = void 0;
 const db_server_1 = require("../utils/db.server");
 const tag_services_1 = require("./tag.services");
 //gTODO:
@@ -241,3 +241,25 @@ const getTagsByTask = (task_id) => __awaiter(void 0, void 0, void 0, function* (
     return results;
 });
 exports.getTagsByTask = getTagsByTask;
+const getAllTaskDates = (activity_id) => __awaiter(void 0, void 0, void 0, function* () {
+    let tasks = yield (0, exports.getTasks)(activity_id);
+    let results = [];
+    if (tasks !== undefined) {
+        tasks.forEach((task) => {
+            let start_date = new Date(task.start_date);
+            let duration = task.duration;
+            let end_date = new Date(start_date.getTime() + duration * 24 * 60 * 60 * 1000);
+            let name = task.task_name;
+            let existingEntry = results.find((entry) => entry.date.getTime() === end_date.getTime());
+            if (existingEntry) {
+                existingEntry.name.push(name);
+            }
+            else {
+                results.push({ date: end_date, name: [name] });
+            }
+        });
+    }
+    // console.log(_id + " Upcoming tasks within 3 days: " + upcomingTasks.length);
+    return results;
+});
+exports.getAllTaskDates = getAllTaskDates;

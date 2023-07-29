@@ -249,3 +249,30 @@ export const getTagsByTask = async (task_id: number): Promise<string[]> => {
     return results;
 }
 
+export const getAllTaskDates = async (activity_id: number): Promise<{date: Date, name: string[]}[]> => {
+    let tasks = await getTasks(activity_id);
+    let results: {date: Date, name: string[]}[] = [];
+    if (tasks !== undefined)
+    {
+        tasks.forEach((task) => {
+            let start_date = new Date(task.start_date);
+            let duration = task.duration;
+            let end_date = new Date(start_date.getTime() + duration * 24 * 60 * 60 * 1000);
+            let name = task.task_name;
+
+            let existingEntry = results.find((entry) => entry.date.getTime() === end_date.getTime());
+
+            if (existingEntry) {
+                existingEntry.name.push(name);
+            } else {
+                results.push({ date: end_date, name: [name] });
+            }            
+        });
+    }
+
+    // console.log(_id + " Upcoming tasks within 3 days: " + upcomingTasks.length);
+
+    return results;
+}
+
+

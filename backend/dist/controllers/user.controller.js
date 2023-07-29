@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUpcomingActivity = exports.getUpcomingTask = exports.deleteUser = exports.updateUser = exports.createUser = exports.getUserByID = exports.getUsers = void 0;
+exports.getEvents = exports.getUpcomingActivity = exports.getUpcomingTask = exports.deleteUser = exports.updateUser = exports.createUser = exports.getUserByID = exports.getUsers = void 0;
 const activity_services_1 = require("../services/activity.services");
 const project_services_1 = require("../services/project.services");
 const task_services_1 = require("../services/task.services");
@@ -154,3 +154,42 @@ const getUpcomingActivity = (req, res) => __awaiter(void 0, void 0, void 0, func
     }
 });
 exports.getUpcomingActivity = getUpcomingActivity;
+const getEvents = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { user_id } = req.params;
+        const projects = yield (0, project_services_1.getProjects)(user_id);
+        let results = [];
+        for (const project of projects) {
+            const activityList = yield (0, activity_services_1.getAllActivityDates)(project.project_id);
+            for (const activity of activityList) {
+                const existingDateIndex = results.findIndex((item) => item.date.getTime() === activity.date.getTime());
+                if (existingDateIndex !== -1) {
+                    results[existingDateIndex].name = [...results[existingDateIndex].name, ...activity.name];
+                }
+                else {
+                    results.push(activity);
+                }
+            }
+            let activities = yield (0, activity_services_1.getActivities)(project.project_id);
+            if (activities !== undefined) {
+                for (const activity of activities) {
+                    let taskList = yield (0, task_services_1.getAllTaskDates)(activity.activity_id);
+                    for (const task of taskList) {
+                        const existingDateIndex = results.findIndex((item) => item.date.getTime() === task.date.getTime());
+                        if (existingDateIndex !== -1) {
+                            results[existingDateIndex].name = [...results[existingDateIndex].name, ...task.name];
+                        }
+                        else {
+                            results.push(task);
+                        }
+                    }
+                }
+            }
+        }
+        res.json(results);
+    }
+    catch (error) {
+        res.json({ message: error.message });
+    }
+});
+exports.getEvents = getEvents;
