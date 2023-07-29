@@ -32,7 +32,7 @@ const CreateActivityComponent = () => {
   });
 
   const handleSelectedValueChange = (value) => {
-    setSelectedValue(value.activity_id);
+    setSelectedValue(value.id);
   };
 
   const handleSelectedReminderChange = (value) => {

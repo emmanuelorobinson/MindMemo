@@ -21,7 +21,7 @@ import { useUser } from "@clerk/clerk-react";
 const navigation = [
   { name: "Home", href: "/", icon: HomeIcon, current: false },
   { name: "Projects", href: "/project", icon: FolderIcon, current: false },
-  { name: "Calendar", href: "#", icon: CalendarIcon, current: false },
+  // { name: "Calendar", href: "#", icon: CalendarIcon, current: false },
 
   // { name: "Product", href: "/product", icon: FolderIcon, current: false },
   // { name: "Calendar", href: "#", icon: CalendarIcon, current: false },

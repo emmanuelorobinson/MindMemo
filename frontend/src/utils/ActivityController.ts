@@ -5,7 +5,6 @@ export interface Activity {
   project_id: number;
   activity_number: number;
   activity_name: string;
-  dependency: string;
   start_date: Date;
   duration: number;
   reminder?: Date;

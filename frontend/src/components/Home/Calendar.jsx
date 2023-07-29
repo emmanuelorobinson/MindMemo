@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Fragment } from "react";
 import {
   ChevronDownIcon,
@@ -8,167 +8,23 @@ import {
   EllipsisHorizontalIcon,
 } from "@heroicons/react/20/solid";
 import { Menu, Transition } from "@headlessui/react";
-
-function generateDays(currentMonth, currentYear, events) {
-  // fill in the days of the month for currentMonth and currentYear
-  const days = [];
-  const daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
-  // console.log("daysInMonth", daysInMonth);
-  for (let i = 1; i <= daysInMonth; i++) {
-    const date = new Date(currentYear, currentMonth, i)
-      .toISOString()
-      .slice(0, 10);
-    days.push({ date, events: [] });
-    // console.log('date', date)
-  }
-  // console.log("days", days);
-  // remove earliest date from array
-  days.shift();
-
-  // fill the days from the previous month for the first week of the month
-  const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
-  if (firstDayOfMonth !== 0) {
-    const daysInPreviousMonth = new Date(
-      currentYear,
-      currentMonth,
-      0
-    ).getDate();
-    for (let i = firstDayOfMonth; i > 0; i--) {
-      const date = new Date(
-        currentYear,
-        currentMonth - 1,
-        daysInPreviousMonth - i + 2
-      )
-        .toISOString()
-        .slice(0, 10);
-      days.unshift({ date, events: [] });
-    }
-  }
-
-  // sort the days in the previous month
-  days.sort((a, b) => {
-    return new Date(a.date) - new Date(b.date);
-  });
-  
-
-  // fill the days from the next month for the last week of the month
-  const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0).getDay();
-  if (lastDayOfMonth !== 6) {
-    for (let i = lastDayOfMonth; i < 6; i++) {
-      const date = new Date(
-        currentYear,
-        currentMonth + 1,
-        i - lastDayOfMonth + 2
-      )
-        .toISOString()
-        .slice(0, 10);
-      days.push({ date, events: [] });
-    }
-  }
-
-  // is today?
-  const today = new Date();
-  days.forEach((day) => {
-    // get the month from today
-    const todayMonth = today.getMonth();
-    // console.log("todayMonth", todayMonth);
-
-    const storedMonth = Number(day.date.slice(5, 7)) - 1;
-    // console.log("storedMonth", storedMonth);
-
-    if (todayMonth === storedMonth) {
-      day.isCurrentMonth = true;
-    }
-  });
-
-  days.forEach((day) => {
-    if (day.date === today.toISOString().slice(0, 10)) {
-      day.isToday = true;
-    }
-  });
-
-  // print the days to the console
-  // console.log("days", days);
-
-  return days;
-}
-
-// const days = [
-//   { date: '2021-12-27', events: [] },
-//   { date: '2021-12-28', events: [] },
-//   { date: '2021-12-29', events: [] },
-//   { date: '2021-12-30', events: [] },
-//   { date: '2021-12-31', events: [] },
-//   { date: '2022-01-01', isCurrentMonth: true, events: [] },
-//   { date: '2022-01-02', isCurrentMonth: true, events: [] },
-//   {
-//     date: '2022-01-03',
-//     isCurrentMonth: true,
-//     events: [
-//       { id: 1, name: 'Design review', time: '10AM', datetime: '2022-01-03T10:00', href: '#' },
-//       { id: 2, name: 'Sales meeting', time: '2PM', datetime: '2022-01-03T14:00', href: '#' },
-//     ],
-//   },
-//   { date: '2022-01-04', isCurrentMonth: true, events: [] },
-//   { date: '2022-01-05', isCurrentMonth: true, events: [] },
-//   { date: '2022-01-06', isCurrentMonth: true, events: [] },
-//   {
-//     date: '2022-01-07',
-//     isCurrentMonth: true,
-//     events: [{ id: 3, name: 'Date night', time: '6PM', datetime: '2022-01-08T18:00', href: '#' }],
-//   },
-//   { date: '2022-01-08', isCurrentMonth: true, events: [] },
-//   { date: '2022-01-09', isCurrentMonth: true, events: [] },
-//   { date: '2022-01-10', isCurrentMonth: true, events: [] },
-//   { date: '2022-01-11', isCurrentMonth: true, events: [] },
-//   {
-//     date: '2022-01-12',
-//     isCurrentMonth: true,
-//     isToday: true,
-//     events: [{ id: 6, name: "Sam's birthday party", time: '2PM', datetime: '2022-01-25T14:00', href: '#' }],
-//   },
-//   { date: '2022-01-13', isCurrentMonth: true, events: [] },
-//   { date: '2022-01-14', isCurrentMonth: true, events: [] },
-//   { date: '2022-01-15', isCurrentMonth: true, events: [] },
-//   { date: '2022-01-16', isCurrentMonth: true, events: [] },
-//   { date: '2022-01-17', isCurrentMonth: true, events: [] },
-//   { date: '2022-01-18', isCurrentMonth: true, events: [] },
-//   { date: '2022-01-19', isCurrentMonth: true, events: [] },
-//   { date: '2022-01-20', isCurrentMonth: true, events: [] },
-//   { date: '2022-01-21', isCurrentMonth: true, events: [] },
-//   {
-//     date: '2022-01-22',
-//     isCurrentMonth: true,
-//     isSelected: true,
-//     events: [
-//       { id: 4, name: 'Maple syrup museum', time: '3PM', datetime: '2022-01-22T15:00', href: '#' },
-//       { id: 5, name: 'Hockey game', time: '7PM', datetime: '2022-01-22T19:00', href: '#' },
-//     ],
-//   },
-//   { date: '2022-01-23', isCurrentMonth: true, events: [] },
-//   { date: '2022-01-24', isCurrentMonth: true, events: [] },
-//   { date: '2022-01-25', isCurrentMonth: true, events: [] },
-//   { date: '2022-01-26', isCurrentMonth: true, events: [] },
-//   { date: '2022-01-27', isCurrentMonth: true, events: [] },
-//   { date: '2022-01-28', isCurrentMonth: true, events: [] },
-//   { date: '2022-01-29', isCurrentMonth: true, events: [] },
-//   { date: '2022-01-30', isCurrentMonth: true, events: [] },
-//   { date: '2022-01-31', isCurrentMonth: true, events: [] },
-//   { date: '2022-02-01', events: [] },
-//   { date: '2022-02-02', events: [] },
-//   {
-//     date: '2022-02-03',
-//     events: [{ id: 7, name: 'Cinema with friends', time: '9PM', datetime: '2022-02-04T21:00', href: '#' }],
-//   },
-//   { date: '2022-02-04', events: [] },
-//   { date: '2022-02-05', events: [] },
-//   { date: '2022-02-06', events: [] },
-// ]
-// const days = generateDays(6, 2023, [])
+import { getEvents } from "../../utils/TaskController";
+import { useClerk } from "@clerk/clerk-react";
+import { generateDays } from "../../utils/CalendarHelper";
 
 const monthNames = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December"
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
 
 function classNames(...classes) {
@@ -181,15 +37,47 @@ export default function Calendar() {
 
   const [days, setDays] = useState(generateDays(month, year, []));
 
+  const { user } = useClerk();
+
+  useEffect(() => {
+    try {
+      const fetchEvents = async () => {
+        const response = await getEvents(user.id); // [{date: "2021-08-01", name: [{0: 'Task 1'}]}
+        console.log("events", response);
+        // for days.date === response.date, push response.name to days.events
+
+        const updatedDays = days.map((day) => {
+          response.forEach((event) => {
+            // make sure event.date yyyy-mm-dd is the same as day.date yyyy-mm-dd
+            //convert from '2023-09-22T00:00:00.000Z' to '2023-09-22'
+            const eventDate = event.date.slice(0, 10);
+            console.log("eventDate", eventDate);
+
+            if (day.date == eventDate) {
+              day.events.push(event.name);
+            }
+          });
+          return day;
+        });
+
+        setDays(updatedDays);
+        console.log("updatedDays", updatedDays);
+      };
+      fetchEvents();
+    } catch (error) {
+      console.log(error);
+    }
+
+    // console.log("dateAndEvents", dateAndEvents);
+  }, []);
 
   const selectedDay = days.find((day) => day.isSelected);
 
   return (
     <div className="lg:flex lg:h-full lg:flex-col md:p-20">
       <header className="flex items-center justify-between border-b border-gray-200 py-4 px-6 lg:flex-none">
-        <h1 className="text-lg font-semibold text-gray-900">{
-          `${monthNames[month]} ${year}`
-        }
+        <h1 className="text-lg font-semibold text-gray-900">
+          {`${monthNames[month]} ${year}`}
         </h1>
         <div className="flex items-center">
           <div className="flex items-center rounded-md shadow-sm md:items-stretch">
@@ -198,8 +86,7 @@ export default function Calendar() {
                 setMonth(month - 1);
                 month === 0 ? setYear(year - 1) : setYear(year);
                 setDays(generateDays(month - 1, year, []));
-              }
-              }
+              }}
               type="button"
               className="flex items-center justify-center rounded-l-md border border-r-0 border-gray-300 bg-white py-2 pl-3 pr-4 text-gray-400 hover:text-gray-500 focus:relative md:w-9 md:px-2 md:hover:bg-gray-50"
             >
@@ -210,7 +97,10 @@ export default function Calendar() {
               type="button"
               className="hidden border-t border-b border-gray-300 bg-white px-3.5 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900 focus:relative md:block"
             >
-              {month === new Date().getMonth() && year === new Date().getFullYear() ? "Today" : monthNames[month]}
+              {month === new Date().getMonth() &&
+              year === new Date().getFullYear()
+                ? "Today"
+                : monthNames[month]}
             </button>
             <span className="relative -mx-px h-5 w-px bg-gray-300 md:hidden" />
             <button
@@ -218,8 +108,7 @@ export default function Calendar() {
                 setMonth(month + 1);
                 month === 11 ? setYear(year + 1) : setYear(year);
                 setDays(generateDays(month + 1, year, []));
-              }
-              }
+              }}
               type="button"
               className="flex items-center justify-center rounded-r-md border border-l-0 border-gray-300 bg-white py-2 pl-4 pr-3 text-gray-400 hover:text-gray-500 focus:relative md:w-9 md:px-2 md:hover:bg-gray-50"
             >
@@ -478,15 +367,10 @@ export default function Calendar() {
                     {day.events.slice(0, 2).map((event) => (
                       <li key={event.id}>
                         <a href={event.href} className="group flex">
-                          <p className="flex-auto truncate font-medium text-gray-900 group-hover:text-indigo-600">
-                            {event.name}
+                          <p className="flex-auto truncate font-medium text-left cursor-default text-gray-900 group-hover:text-indigo-600">
+                            {/* Task and Activity Name */}
+                            {event}
                           </p>
-                          <time
-                            dateTime={event.datetime}
-                            className="ml-3 hidden flex-none text-gray-500 group-hover:text-indigo-600 xl:block"
-                          >
-                            {event.time}
-                          </time>
                         </a>
                       </li>
                     ))}

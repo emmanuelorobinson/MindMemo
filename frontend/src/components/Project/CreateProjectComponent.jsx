@@ -11,16 +11,15 @@ import AppContext from "../../context/AppContext";
 const options = [{ id: 1, name: "Test" }];
 
 const CreateProjectComponent = () => {
-
   const [options, setOptions] = useState([]);
   const [selectedValue, setSelectedValue] = useState(0);
   const [selectedCycle, setSelectedCycle] = useState(false);
   const [selectedRenew, setSelectedRenew] = useState(false);
-  const {refetch, setRefetch, projectCycles, setProjectCycles} = React.useContext(AppContext)
+  const { refetch, setRefetch, projectCycles, setProjectCycles } =
+    React.useContext(AppContext);
 
   const { user } = useClerk();
   const navigate = useNavigate();
-
 
   const [projects, setProjects] = useState({
     cycle_id: "",
@@ -41,11 +40,8 @@ const CreateProjectComponent = () => {
     };
     fetchProjects();
 
-    console.log('appcontext', refetch)
+    console.log("appcontext", refetch);
   }, []);
-
-
-
 
   const handleSelectedValueChange = (value) => {
     setSelectedValue(value);
