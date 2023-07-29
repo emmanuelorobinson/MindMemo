@@ -5,7 +5,7 @@ import { getTagByID, getTagByName, getTaskTagLists } from "./tag.services";
 //gTODO:
 // 1. tasks by date
 
-export const getTasks = async (activity_id: number): Promise<Task[]> => {
+export const getTasks = async (activity_id: number): Promise<Task[] | undefined> => {
     return db.task.findMany({
         where: {
             activity_id,
@@ -78,7 +78,26 @@ export const updateTask = async (task: Omit<Task, 'task_list_id'>): Promise<Task
     });
 }
 
-export const deleteTask = async (task_id: number): Promise<Task | null> => {
+export const deleteTask = async (task_id: number): Promise<Task | undefined> => {
+    await db.taskTagList.deleteMany({
+        where: {
+            task_id,
+        }
+    });
+
+    let reminder = await db.taskReminder.findUnique({
+        where: {
+            task_id,
+        },
+    });
+    if (reminder !== undefined) {
+        await db.taskReminder.deleteMany({
+            where: {
+                task_id,
+            }
+        });    
+    }
+    
     return db.task.delete({
         where: {
             task_id,
@@ -139,19 +158,21 @@ export const getUpcomingTasks = async (activity_id: number): Promise<Task[]> => 
     let today = new Date();
     let upcomingTasks: Task[] = [];
 
-    tasks.forEach((task) => {
-        let start_date = new Date(task.start_date);
-        let duration = task.duration;
-        let end_date = new Date(start_date.getTime() + duration * 24 * 60 * 60 * 1000);
-
-        // Calculate the date difference in days
-        let dateDifference = Math.floor((end_date.getTime() - today.getTime()) / (24 * 60 * 60 * 1000));
-
-        if (dateDifference >= 0 && dateDifference <= 3) {
-            upcomingTasks.push(task);
-        }
-    });
-
+    if (tasks !== undefined) {
+        tasks.forEach((task) => {
+            let start_date = new Date(task.start_date);
+            let duration = task.duration;
+            let end_date = new Date(start_date.getTime() + duration * 24 * 60 * 60 * 1000);
+    
+            // Calculate the date difference in days
+            let dateDifference = Math.floor((end_date.getTime() - today.getTime()) / (24 * 60 * 60 * 1000));
+    
+            if (dateDifference >= 0 && dateDifference <= 3) {
+                upcomingTasks.push(task);
+            }
+        });
+    
+    }
     console.log(activity_id + " Upcoming tasks within 3 days: " + upcomingTasks.length);
 
     return upcomingTasks;

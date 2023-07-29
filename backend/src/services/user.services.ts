@@ -1,6 +1,8 @@
+import { get } from "http";
 import { db } from "../utils/db.server";
 // import { User, Project, ProjectList } from "../utils/db.types";
 import { Project, Task, User } from "@prisma/client";
+import { deleteProject, getProjects } from "./project.services";
 //USER SERVICES
 
 export const getUsers = async (): Promise<User[]> => {
@@ -60,6 +62,13 @@ export const updateUser = async (user: User): Promise<User | null> => {
 }
 
 export const deleteUser = async (user_id: string): Promise<User | null> => {
+    let projects = await getProjects(user_id);
+    if (projects != null) {
+        projects.forEach(async (project) => {
+            deleteProject(project.project_id);
+        });
+    }
+
     return db.user.delete({
         where: {
             user_id,

@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteUser = exports.updateUser = exports.createUser = exports.getUserByID = exports.getUsers = void 0;
 const db_server_1 = require("../utils/db.server");
+const project_services_1 = require("./project.services");
 //USER SERVICES
 const getUsers = () => __awaiter(void 0, void 0, void 0, function* () {
     return db_server_1.db.user.findMany({
@@ -69,6 +70,12 @@ const updateUser = (user) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.updateUser = updateUser;
 const deleteUser = (user_id) => __awaiter(void 0, void 0, void 0, function* () {
+    let projects = yield (0, project_services_1.getProjects)(user_id);
+    if (projects != null) {
+        projects.forEach((project) => __awaiter(void 0, void 0, void 0, function* () {
+            (0, project_services_1.deleteProject)(project.project_id);
+        }));
+    }
     return db_server_1.db.user.delete({
         where: {
             user_id,

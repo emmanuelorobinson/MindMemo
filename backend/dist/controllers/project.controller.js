@@ -127,8 +127,8 @@ const updateProject = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 exports.updateProject = updateProject;
 const deleteProject = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { project_id } = req.params;
-        const deletedProject = yield ProjectService.deleteProject(parseInt(project_id));
+        const project_id = parseInt(req.params.project_id);
+        const deletedProject = yield ProjectService.deleteProject(project_id);
         res.json(deletedProject);
     }
     catch (error) {
@@ -142,40 +142,44 @@ const duplicateCycle = (cycle_id, project_id) => __awaiter(void 0, void 0, void 
     if (cycle != null) {
         cycle_project_id = cycle.project_id;
         let activities = yield (0, activity_services_1.getActivities)(cycle_project_id);
-        for (const activity of activities) {
-            let newActivity = {
-                activity_name: activity.activity_name,
-                activity_number: activity.activity_number,
-                start_date: activity.start_date,
-                duration: activity.duration,
-                completed: activity.completed,
-                note: activity.note,
-                project_id: project_id,
-            };
-            let createdActivity = yield (0, activity_services_1.createActivity)(newActivity);
-            let activityTags = yield (0, activity_services_1.getTagsByActivity)(activity.activity_id);
-            for (const tagName of activityTags) {
-                let tag = yield (0, tag_services_1.getTagByName)(tagName);
-                (0, tag_services_1.addTagToActivity)(tag, createdActivity.activity_id);
-            }
-            let tasks = yield (0, task_services_1.getTasks)(activity.activity_id);
-            for (const task of tasks) {
-                let newTask = {
-                    task_name: task.task_name,
-                    task_number: task.task_number,
-                    start_date: task.start_date,
-                    duration: task.duration,
-                    completed: task.completed,
-                    note: task.note,
-                    activity_id: createdActivity.activity_id,
+        if (activities !== undefined) {
+            for (const activity of activities) {
+                let newActivity = {
+                    activity_name: activity.activity_name,
+                    activity_number: activity.activity_number,
+                    start_date: activity.start_date,
+                    duration: activity.duration,
+                    completed: activity.completed,
+                    note: activity.note,
+                    project_id: project_id,
                 };
-                let createdTask = yield (0, task_services_1.createTask)(newTask);
-                // let taskTags = await getTagsByTask(task.task_id);
-                // console.log("TAGS:" + taskTags);
-                // for (const tagName of taskTags) {
-                //     let tag = await getTagByName(tagName);
-                //     addTagToTask(tag!, createdTask.task_id);
-                // }
+                let createdActivity = yield (0, activity_services_1.createActivity)(newActivity);
+                let activityTags = yield (0, activity_services_1.getTagsByActivity)(activity.activity_id);
+                for (const tagName of activityTags) {
+                    let tag = yield (0, tag_services_1.getTagByName)(tagName);
+                    (0, tag_services_1.addTagToActivity)(tag, createdActivity.activity_id);
+                }
+                let tasks = yield (0, task_services_1.getTasks)(activity.activity_id);
+                if (tasks !== undefined) {
+                    for (const task of tasks) {
+                        let newTask = {
+                            task_name: task.task_name,
+                            task_number: task.task_number,
+                            start_date: task.start_date,
+                            duration: task.duration,
+                            completed: task.completed,
+                            note: task.note,
+                            activity_id: createdActivity.activity_id,
+                        };
+                        let createdTask = yield (0, task_services_1.createTask)(newTask);
+                        // let taskTags = await getTagsByTask(task.task_id);
+                        // console.log("TAGS:" + taskTags);
+                        // for (const tagName of taskTags) {
+                        //     let tag = await getTagByName(tagName);
+                        //     addTagToTask(tag!, createdTask.task_id);
+                        // }
+                    }
+                }
             }
         }
     }

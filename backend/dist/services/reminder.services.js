@@ -198,14 +198,14 @@ const sendActivityReminder = (date) => __awaiter(void 0, void 0, void 0, functio
                 return html.replace(placeholderRegex, (matched) => placeholders[matched]);
             }
             // Use the replacePlaceholders function
-            // const replacedHtml = replacePlaceholders(html, placeholders);
+            const replacedHtml = replacePlaceholders(html, placeholders);
             const mailOptions = {
                 from: process.env.EMAIL,
                 to: {},
                 subject: 'Hello from MindMemo',
-                html: 'hello',
+                html: replacedHtml,
             };
-            mailOptions.to = 'bkghaghda@gmail.com';
+            mailOptions.to = user.email;
             transporter.sendMail(mailOptions, function (error, info) {
                 if (error) {
                     console.log('Error:', error);
@@ -265,9 +265,9 @@ const sendTaskReminder = (date) => __awaiter(void 0, void 0, void 0, function* (
                 from: process.env.EMAIL,
                 to: {},
                 subject: 'MindMemo',
-                html: 'hello',
+                html: replacedHtml,
             };
-            mailOptions.to = 'bkghaghda@gmail.com';
+            mailOptions.to = user.email;
             transporter.sendMail(mailOptions, function (error, info) {
                 if (error) {
                     console.log('Error:', error);

@@ -87,6 +87,23 @@ const updateTask = (task) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.updateTask = updateTask;
 const deleteTask = (task_id) => __awaiter(void 0, void 0, void 0, function* () {
+    yield db_server_1.db.taskTagList.deleteMany({
+        where: {
+            task_id,
+        }
+    });
+    let reminder = yield db_server_1.db.taskReminder.findUnique({
+        where: {
+            task_id,
+        },
+    });
+    if (reminder !== undefined) {
+        yield db_server_1.db.taskReminder.deleteMany({
+            where: {
+                task_id,
+            }
+        });
+    }
     return db_server_1.db.task.delete({
         where: {
             task_id,
@@ -141,16 +158,18 @@ const getUpcomingTasks = (activity_id) => __awaiter(void 0, void 0, void 0, func
     let tasks = yield (0, exports.getTasks)(activity_id);
     let today = new Date();
     let upcomingTasks = [];
-    tasks.forEach((task) => {
-        let start_date = new Date(task.start_date);
-        let duration = task.duration;
-        let end_date = new Date(start_date.getTime() + duration * 24 * 60 * 60 * 1000);
-        // Calculate the date difference in days
-        let dateDifference = Math.floor((end_date.getTime() - today.getTime()) / (24 * 60 * 60 * 1000));
-        if (dateDifference >= 0 && dateDifference <= 3) {
-            upcomingTasks.push(task);
-        }
-    });
+    if (tasks !== undefined) {
+        tasks.forEach((task) => {
+            let start_date = new Date(task.start_date);
+            let duration = task.duration;
+            let end_date = new Date(start_date.getTime() + duration * 24 * 60 * 60 * 1000);
+            // Calculate the date difference in days
+            let dateDifference = Math.floor((end_date.getTime() - today.getTime()) / (24 * 60 * 60 * 1000));
+            if (dateDifference >= 0 && dateDifference <= 3) {
+                upcomingTasks.push(task);
+            }
+        });
+    }
     console.log(activity_id + " Upcoming tasks within 3 days: " + upcomingTasks.length);
     return upcomingTasks;
 });

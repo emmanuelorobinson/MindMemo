@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getTagsByActivity = exports.updateActivityTagList = exports.getActivityTagList = exports.getUpcomingActivities = exports.deleteActivity = exports.updateActivity = exports.createActivity = exports.getActivityByID = exports.getActivities = void 0;
 const db_server_1 = require("../utils/db.server");
 const tag_services_1 = require("./tag.services");
+const task_services_1 = require("./task.services");
 //TODO: 
 // 1. today's activities
 // 2. upcoming activities
@@ -88,16 +89,32 @@ const updateActivity = (activity) => __awaiter(void 0, void 0, void 0, function*
 });
 exports.updateActivity = updateActivity;
 const deleteActivity = (activity_id) => __awaiter(void 0, void 0, void 0, function* () {
-    yield db_server_1.db.task.deleteMany({
+    const tasks = yield (0, task_services_1.getTasks)(activity_id);
+    if (tasks !== undefined) {
+        yield Promise.all(tasks.map((task) => (0, task_services_1.deleteTask)(task.task_id)));
+    }
+    let tagLists = yield (0, tag_services_1.getActivityTagLists)(activity_id);
+    if (tagLists !== null) {
+        tagLists.forEach((tagList) => __awaiter(void 0, void 0, void 0, function* () {
+            db_server_1.db.activityTagList.delete({
+                where: {
+                    activity_tag_list_id: tagList.activity_tag_list_id,
+                }
+            });
+        }));
+    }
+    let reminders = db_server_1.db.activityReminder.findUnique({
         where: {
             activity_id,
-        }
+        },
     });
-    yield db_server_1.db.activityTagList.deleteMany({
-        where: {
-            activity_id,
-        }
-    });
+    if (reminders !== undefined) {
+        yield db_server_1.db.activityReminder.delete({
+            where: {
+                activity_id,
+            }
+        });
+    }
     return db_server_1.db.activity.delete({
         where: {
             activity_id,
@@ -135,16 +152,18 @@ const getUpcomingActivities = (project_id) => __awaiter(void 0, void 0, void 0, 
     let activities = yield (0, exports.getActivities)(project_id);
     let today = new Date();
     let upcomingActivities = [];
-    activities.forEach((activity) => {
-        let start_date = new Date(activity.start_date);
-        let duration = activity.duration;
-        let end_date = new Date(start_date.getTime() + duration * 24 * 60 * 60 * 1000);
-        // Calculate the date difference in days
-        let dateDifference = Math.floor((end_date.getTime() - today.getTime()) / (24 * 60 * 60 * 1000));
-        if (dateDifference >= 0 && dateDifference <= 3) {
-            upcomingActivities.push(activity);
-        }
-    });
+    if (activities !== undefined) {
+        activities.forEach((activity) => {
+            let start_date = new Date(activity.start_date);
+            let duration = activity.duration;
+            let end_date = new Date(start_date.getTime() + duration * 24 * 60 * 60 * 1000);
+            // Calculate the date difference in days
+            let dateDifference = Math.floor((end_date.getTime() - today.getTime()) / (24 * 60 * 60 * 1000));
+            if (dateDifference >= 0 && dateDifference <= 3) {
+                upcomingActivities.push(activity);
+            }
+        });
+    }
     // console.log(_id + " Upcoming tasks within 3 days: " + upcomingTasks.length);
     return upcomingActivities;
 });

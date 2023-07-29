@@ -109,13 +109,15 @@ const updateProject = (project) => __awaiter(void 0, void 0, void 0, function* (
 exports.updateProject = updateProject;
 const deleteProject = (project_id) => __awaiter(void 0, void 0, void 0, function* () {
     let activities = yield (0, activity_services_1.getActivities)(project_id);
-    activities.forEach((activity) => __awaiter(void 0, void 0, void 0, function* () {
-        db_server_1.db.activity.delete({
-            where: {
-                activity_id: activity.activity_id,
-            },
-        });
-    }));
+    if (activities !== undefined) {
+        for (const activity of activities) {
+            yield (0, activity_services_1.deleteActivity)(activity.activity_id);
+        }
+    }
+    let cycles = yield (0, cycle_services_1.getCycleByProjectID)(project_id);
+    if (cycles !== null) {
+        (0, cycle_services_1.deleteCycle)(cycles.cycle_id);
+    }
     return db_server_1.db.project.delete({
         where: {
             project_id,

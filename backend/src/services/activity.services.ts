@@ -1,13 +1,13 @@
 import { db } from "../utils/db.server";
 import { Activity, ActivityTagList, Task, } from "@prisma/client";
 import { getActivityTagLists, getTagByID } from "./tag.services";
-import { getTasks } from "./task.services";
+import { deleteTask, getTasks } from "./task.services";
 
 //TODO: 
 // 1. today's activities
 // 2. upcoming activities
 
-export const getActivities = async (project_id: number): Promise<Activity[]> => {
+export const getActivities = async (project_id: number): Promise<Activity[] | undefined> => {
     return db.activity.findMany({
         where: {
             project_id: project_id,
@@ -81,17 +81,35 @@ export const updateActivity = async (activity: Activity): Promise<Activity | nul
 }
 
 export const deleteActivity = async (activity_id: number): Promise<Activity | null> => {
-    await db.task.deleteMany({
-        where: {
-            activity_id,
-        }
-    });
+    const tasks = await getTasks(activity_id);
+    if (tasks !== undefined) {
+        await Promise.all(tasks.map((task) => deleteTask(task.task_id)));
+    }
 
-    await db.activityTagList.deleteMany({
+    let tagLists = await getActivityTagLists(activity_id);
+    if (tagLists !== null) {
+        tagLists.forEach(async (tagList) => {
+            db.activityTagList.delete({
+                where: {
+                    activity_tag_list_id: tagList.activity_tag_list_id,
+                }
+            });
+        });
+    }
+
+    let reminders = db.activityReminder.findUnique({
         where: {
             activity_id,
-        }
-    });
+        },
+    })
+    if (reminders !== undefined) {
+        await db.activityReminder.delete({
+            where: {
+                activity_id,
+            }
+        });
+    }
+    
 
     return db.activity.delete({
         where: {
@@ -134,18 +152,21 @@ export const getUpcomingActivities = async (project_id: number): Promise<Activit
     let today = new Date();
     let upcomingActivities: Activity[] = [];
 
-    activities.forEach((activity) => {
-        let start_date = new Date(activity.start_date);
-        let duration = activity.duration;
-        let end_date = new Date(start_date.getTime() + duration * 24 * 60 * 60 * 1000);
-
-        // Calculate the date difference in days
-        let dateDifference = Math.floor((end_date.getTime() - today.getTime()) / (24 * 60 * 60 * 1000));
-
-        if (dateDifference >= 0 && dateDifference <= 3) {
-            upcomingActivities.push(activity);
-        }
-    });
+    if (activities !== undefined)
+    {
+        activities.forEach((activity) => {
+            let start_date = new Date(activity.start_date);
+            let duration = activity.duration;
+            let end_date = new Date(start_date.getTime() + duration * 24 * 60 * 60 * 1000);
+    
+            // Calculate the date difference in days
+            let dateDifference = Math.floor((end_date.getTime() - today.getTime()) / (24 * 60 * 60 * 1000));
+    
+            if (dateDifference >= 0 && dateDifference <= 3) {
+                upcomingActivities.push(activity);
+            }
+        });
+    }
 
     // console.log(_id + " Upcoming tasks within 3 days: " + upcomingTasks.length);
 

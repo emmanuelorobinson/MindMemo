@@ -197,16 +197,16 @@ export const sendActivityReminder = async (date: Date): Promise<Boolean> => {
               }
   
             // Use the replacePlaceholders function
-            // const replacedHtml = replacePlaceholders(html, placeholders);
+            const replacedHtml = replacePlaceholders(html, placeholders);
 
             const mailOptions = {
                 from: process.env.EMAIL,
                 to: {},
                 subject: 'Hello from MindMemo',
-                html: 'hello',
+                html: replacedHtml,
               };
 
-            mailOptions.to = 'bkghaghda@gmail.com';
+            mailOptions.to = user.email;
             transporter.sendMail(mailOptions, function (error: any, info: { response: any; }) {
                 if (error) {
                   console.log('Error:', error);
@@ -271,10 +271,10 @@ export const sendTaskReminder = async (date: Date): Promise<Boolean> => {
                 from: process.env.EMAIL,
                 to: {},
                 subject: 'MindMemo',
-                html: 'hello',
+                html: replacedHtml,
               };
 
-            mailOptions.to = 'bkghaghda@gmail.com';
+            mailOptions.to = user.email;
             transporter.sendMail(mailOptions, function (error: any, info: { response: any; }) {
                 if (error) {
                   console.log('Error:', error);

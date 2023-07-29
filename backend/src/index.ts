@@ -64,7 +64,7 @@ app.listen(port, () => {
   console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
 });
 
-cron.schedule('45 21 * * *', async () => {
-  sendActivityReminder(new Date("2023-07-07T00:00:00.000Z"));
-  sendTaskReminder(new Date("2023-07-07T00:00:00.000Z"));
+cron.schedule('00 10 * * *', async () => {
+  sendActivityReminder(new Date());
+  sendTaskReminder(new Date());
 });

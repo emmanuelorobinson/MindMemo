@@ -71,7 +71,7 @@ app.use("/reminders", reminder_router_1.reminderRouter);
 app.listen(port, () => {
     console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
 });
-cron.schedule('45 21 * * *', () => __awaiter(void 0, void 0, void 0, function* () {
-    (0, reminder_services_1.sendActivityReminder)(new Date("2023-07-07T00:00:00.000Z"));
-    (0, reminder_services_1.sendTaskReminder)(new Date("2023-07-07T00:00:00.000Z"));
+cron.schedule('00 10 * * *', () => __awaiter(void 0, void 0, void 0, function* () {
+    (0, reminder_services_1.sendActivityReminder)(new Date());
+    (0, reminder_services_1.sendTaskReminder)(new Date());
 }));

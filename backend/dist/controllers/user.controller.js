@@ -88,12 +88,6 @@ exports.updateUser = updateUser;
 const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { user_id } = req.params;
-        let projects = yield (0, project_services_1.getProjects)(user_id);
-        if (projects != null) {
-            projects.forEach((project) => __awaiter(void 0, void 0, void 0, function* () {
-                (0, project_services_1.deleteProject)(project.project_id);
-            }));
-        }
         const deletedUser = yield UserService.deleteUser(user_id);
         res.json(deletedUser);
     }
@@ -128,11 +122,13 @@ const getUpcomingTask = (req, res) => __awaiter(void 0, void 0, void 0, function
         let tasks = [];
         for (const project of projects) {
             const activities = yield (0, activity_services_1.getActivities)(project.project_id);
-            for (const activity of activities) {
-                let list = yield (0, task_services_1.getUpcomingTasks)(activity.activity_id);
-                console.log(activity.activity_id + " " + list.length);
-                tasks = [...tasks, ...list];
-                console.log("tasks: " + tasks.length);
+            if (activities !== undefined) {
+                for (const activity of activities) {
+                    let list = yield (0, task_services_1.getUpcomingTasks)(activity.activity_id);
+                    console.log(activity.activity_id + " " + list.length);
+                    tasks = [...tasks, ...list];
+                    console.log("tasks: " + tasks.length);
+                }
             }
         }
         res.json(tasks);

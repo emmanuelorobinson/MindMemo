@@ -2,7 +2,7 @@ import { get } from "http";
 import { getCycleByID } from "../services/cycle.services";
 import * as ProjectService from "../services/project.services";
 import { Request, Response } from "express";
-import { createActivity, getActivities, getTagsByActivity } from "../services/activity.services";
+import { createActivity, deleteActivity, getActivities, getTagsByActivity } from "../services/activity.services";
 import { createTask, getTagsByTask, getTasks } from "../services/task.services";
 import { addTagToActivity, addTagToTask, createTag, getTagByName } from "../services/tag.services";
 
@@ -95,8 +95,8 @@ export const updateProject = async (req: Request, res: Response) => {
 
 export const deleteProject = async (req: Request, res: Response) => {
     try {
-        const { project_id } = req.params;
-        const deletedProject = await ProjectService.deleteProject(parseInt(project_id));
+        const project_id = parseInt(req.params.project_id);
+        const deletedProject = await ProjectService.deleteProject(project_id);
         res.json(deletedProject);
     } catch (error: any) {
         res.status(500).json({ error: error.message});
@@ -109,45 +109,51 @@ export const duplicateCycle = async (cycle_id: number, project_id: number) => {
     if (cycle != null) {
         cycle_project_id = cycle.project_id;
         let activities = await getActivities(cycle_project_id!);
-        for (const activity of activities) {
-            let newActivity = {
-                activity_name: activity.activity_name,
-                activity_number: activity.activity_number,
-                start_date: activity.start_date,
-                duration: activity.duration,
-                completed: activity.completed,
-                note: activity.note,
-                project_id: project_id,
-            }
-            let createdActivity = await createActivity(newActivity);
-            
-            let activityTags = await getTagsByActivity(activity.activity_id);
-            for (const tagName of activityTags) {
-                let tag = await getTagByName(tagName);
-                addTagToActivity(tag!, createdActivity.activity_id);
-            }
-            
-            let tasks = await getTasks(activity.activity_id);
-            for (const task of tasks) {
-                let newTask = {
-                    task_name: task.task_name,
-                    task_number: task.task_number,
-                    start_date: task.start_date,
-                    duration: task.duration,
-                    completed: task.completed,
-                    note: task.note,
-                    activity_id: createdActivity.activity_id,
+        if (activities !== undefined) {
+            for (const activity of activities) {
+                let newActivity = {
+                    activity_name: activity.activity_name,
+                    activity_number: activity.activity_number,
+                    start_date: activity.start_date,
+                    duration: activity.duration,
+                    completed: activity.completed,
+                    note: activity.note,
+                    project_id: project_id,
                 }
-                let createdTask = await createTask(newTask);
+                let createdActivity = await createActivity(newActivity);
                 
-                // let taskTags = await getTagsByTask(task.task_id);
-                // console.log("TAGS:" + taskTags);
-                // for (const tagName of taskTags) {
-                //     let tag = await getTagByName(tagName);
-                //     addTagToTask(tag!, createdTask.task_id);
-                // }
+                let activityTags = await getTagsByActivity(activity.activity_id);
+                for (const tagName of activityTags) {
+                    let tag = await getTagByName(tagName);
+                    addTagToActivity(tag!, createdActivity.activity_id);
+                }
+                
+                let tasks = await getTasks(activity.activity_id);
+                if (tasks !== undefined){
+                    for (const task of tasks) {
+                        let newTask = {
+                            task_name: task.task_name,
+                            task_number: task.task_number,
+                            start_date: task.start_date,
+                            duration: task.duration,
+                            completed: task.completed,
+                            note: task.note,
+                            activity_id: createdActivity.activity_id,
+                        }
+                        let createdTask = await createTask(newTask);
+                        
+                        // let taskTags = await getTagsByTask(task.task_id);
+                        // console.log("TAGS:" + taskTags);
+                        // for (const tagName of taskTags) {
+                        //     let tag = await getTagByName(tagName);
+                        //     addTagToTask(tag!, createdTask.task_id);
+                        // }
+                    }
+                }
+                
             }
         }
+       
     }
 
     

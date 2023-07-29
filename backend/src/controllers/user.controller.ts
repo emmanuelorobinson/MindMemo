@@ -52,12 +52,6 @@ export const updateUser = async (req: Request, res: Response) => {
 export const deleteUser = async (req: Request, res: Response) => {
     try {
         const { user_id } = req.params;
-        let projects = await getProjects(user_id);
-        if (projects != null) {
-            projects.forEach(async (project: any) => {
-                deleteProject(project.project_id);
-            });
-        }
         const deletedUser = await UserService.deleteUser(user_id);
         res.json(deletedUser);
     } catch (error: any) {
@@ -98,12 +92,15 @@ export const getUpcomingTask = async (req: any, res: any) => {
         for (const project of projects) {
             const activities = await getActivities(project.project_id);
             
-            for (const activity of activities) {
-                let list = await getUpcomingTasks(activity.activity_id);
-                console.log(activity.activity_id + " " + list.length);
-                tasks = [...tasks, ...list];
-                console.log("tasks: " + tasks.length);
+            if (activities !== undefined) {
+                for (const activity of activities) {
+                    let list = await getUpcomingTasks(activity.activity_id);
+                    console.log(activity.activity_id + " " + list.length);
+                    tasks = [...tasks, ...list];
+                    console.log("tasks: " + tasks.length);
+                }
             }
+            
         }
    
         res.json(tasks);
