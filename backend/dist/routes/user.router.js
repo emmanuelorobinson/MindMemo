@@ -46,3 +46,6 @@ exports.userRouter
 exports.userRouter
     .route("/:user_id/activities")
     .get(userController.getUpcomingActivity);
+exports.userRouter
+    .route("/:user_id/events")
+    .get(userController.getEvents);
