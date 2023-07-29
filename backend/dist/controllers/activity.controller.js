@@ -118,7 +118,13 @@ const updateActivity = (req, res) => __awaiter(void 0, void 0, void 0, function*
         };
         console.log(activity);
         const updatedActivity = yield ActivityService.updateActivity(activity);
-        const newReminder = yield (0, reminder_services_1.createActivityReminder)({ activity_id, reminder_date, user_id });
+        let existingReminders = (yield (0, reminder_services_1.getActivityReminders)(user_id));
+        if (existingReminders != undefined) {
+            let reminderExists = existingReminders.find((reminder) => { reminder.activity_id == activity_id; });
+            if (!reminderExists) {
+                yield (0, reminder_services_1.createActivityReminder)({ activity_id, reminder_date, user_id });
+            }
+        }
         const activityTagList = yield ActivityService.getTagsByActivity(activity_id);
         if (tags != undefined) {
             tags.forEach((tag) => __awaiter(void 0, void 0, void 0, function* () {

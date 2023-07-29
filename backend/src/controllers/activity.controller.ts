@@ -1,5 +1,5 @@
 import * as ActivityService from '../services/activity.services';
-import { createActivityReminder } from '../services/reminder.services';
+import { createActivityReminder, getActivityReminders } from '../services/reminder.services';
 import { addTagsToActivity } from './tag.controller';
 
 export const getActivities = async (req: any, res: any) => {
@@ -84,7 +84,16 @@ export const updateActivity = async (req: any, res: any) => {
         console.log(activity);
 
         const updatedActivity = await ActivityService.updateActivity(activity);
-        const newReminder = await createActivityReminder({activity_id, reminder_date, user_id});
+        let existingReminders = (await getActivityReminders(user_id));
+        
+        if (existingReminders != undefined) {
+            let reminderExists = existingReminders.find((reminder: any) => {reminder.activity_id == activity_id});
+
+            if (!reminderExists) {
+                await createActivityReminder({activity_id, reminder_date, user_id});
+            }
+
+        }
 
         const activityTagList = await ActivityService.getTagsByActivity(activity_id);
         if (tags != undefined) {
