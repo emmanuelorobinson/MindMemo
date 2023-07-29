@@ -97,12 +97,13 @@ export const deleteActivity = async (activity_id: number): Promise<Activity | nu
         });
     }
 
-    let reminders = db.activityReminder.findUnique({
+    let reminders = await db.activityReminder.findUnique({
         where: {
             activity_id,
         },
     })
-    if (reminders !== undefined) {
+    console.log("reminder:", reminders);
+    if (reminders !== null) {
         await db.activityReminder.delete({
             where: {
                 activity_id,
@@ -242,7 +243,6 @@ export const getTagsByActivity = async (activity_id: number): Promise<string[]> 
 
 export const getAllActivityDates = async (project_id: number): Promise<{date: Date, name: string[]}[]> => {
     let activities = await getActivities(project_id);
-    let upcomingActivities: Activity[] = [];
     let results: {date: Date, name: string[]}[] = [];
     if (activities !== undefined)
     {

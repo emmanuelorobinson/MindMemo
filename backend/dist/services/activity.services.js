@@ -103,12 +103,13 @@ const deleteActivity = (activity_id) => __awaiter(void 0, void 0, void 0, functi
             });
         }));
     }
-    let reminders = db_server_1.db.activityReminder.findUnique({
+    let reminders = yield db_server_1.db.activityReminder.findUnique({
         where: {
             activity_id,
         },
     });
-    if (reminders !== undefined) {
+    console.log("reminder:", reminders);
+    if (reminders !== null) {
         yield db_server_1.db.activityReminder.delete({
             where: {
                 activity_id,
@@ -232,7 +233,6 @@ const getTagsByActivity = (activity_id) => __awaiter(void 0, void 0, void 0, fun
 exports.getTagsByActivity = getTagsByActivity;
 const getAllActivityDates = (project_id) => __awaiter(void 0, void 0, void 0, function* () {
     let activities = yield (0, exports.getActivities)(project_id);
-    let upcomingActivities = [];
     let results = [];
     if (activities !== undefined) {
         activities.forEach((activity) => {
