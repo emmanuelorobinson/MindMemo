@@ -8,6 +8,7 @@ export interface Activity {
   dependency: string;
   start_date: Date;
   duration: number;
+  reminder?: Date;
   note: string;
   tags?: Tag[];
   completed: boolean;

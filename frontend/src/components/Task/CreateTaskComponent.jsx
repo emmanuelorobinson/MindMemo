@@ -20,6 +20,7 @@ const CreateTaskComponent = () => {
 
   const navigate = useNavigate();
 
+  const [selectedReminder, setSelectedReminder] = useState(false);
   const [task, setTask] = useState({
     project_id: project_id,
     activity_id: activity_id,
@@ -27,6 +28,7 @@ const CreateTaskComponent = () => {
     task_name: "",
     start_date: "",
     duration: "",
+    reminder: "",
     note: "",
     completed: false,
   });
@@ -35,6 +37,10 @@ const CreateTaskComponent = () => {
 
   const handleSelectedValueChange = (value) => {
     setSelectedValue(value.id);
+  };
+
+  const handleSelectedReminderChange = (value) => {
+    setSelectedReminder(value);
   };
 
   return (
@@ -152,6 +158,41 @@ const CreateTaskComponent = () => {
                     />
                   </div>
                 </div>
+
+                {/* Reminder */}
+                <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+                  <label
+                    htmlFor="reminder_toggle"
+                    className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
+                  >
+                    Reminder
+                  </label>
+                  <div className="mt-1 sm:col-span-2 sm:mt-0">
+                    <Toggle onToggle={handleSelectedReminderChange} />
+                  </div>
+                </div>
+
+                {/* Reminder Date */}
+                {selectedReminder && (
+                  <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+                    <label
+                      htmlFor="reminder"
+                      className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
+                    >
+                      Reminder Date
+                    </label>
+                    <div className="mt-1 sm:col-span-2 sm:mt-0">
+                      <input
+                        className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
+                        type="date"
+                        name="reminder"
+                        id="reminder"
+                        value={values.reminder}
+                        onChange={handleChange}
+                      />
+                    </div>
+                  </div>
+                )}
 
                 {/* Note */}
                 <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">

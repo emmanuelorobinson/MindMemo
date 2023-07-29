@@ -8,6 +8,7 @@ export interface Task {
   task_name: string;
   start_date: Date;
   duration: number;
+  reminder?: Date;
   note: string;
   tags?: Tag[];
   completed: boolean;
