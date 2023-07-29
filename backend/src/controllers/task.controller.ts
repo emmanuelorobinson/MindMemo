@@ -32,7 +32,7 @@ export const createTask = async (req: any, res: any) => {
         let intduration = parseInt(req.body.duration);
         let complete = req.body.completed === 'true' ? true : false;
         let taskNote = req.body.note;
-        let reminder_date = req.body.reminder_date == "" ? new Date() : new Date(req.body.reminder_date);
+        let reminder_date = req.body.reminder == "" ? new Date() : new Date(req.body.reminder);
         let user_id = req.body.user_id == "" ? "null" : req.body.user_id;
         let tags = req.body.tags;
         let task = {
@@ -68,7 +68,7 @@ export const updateTask = async (req: any, res: any) => {
         let intduration = parseInt(req.body.duration);
         let complete = String(req.body.completed) === 'true';
         let taskNote = req.body.note;
-        let reminder_date = req.body.reminder_date == "" ? new Date() : new Date(req.body.reminder_date);
+        let reminder_date = req.body.reminder == "" ? new Date() : new Date(req.body.reminder);
         let user_id = req.body.user_id == "" ? "null" : req.body.user_id;
         let tags = req.body.tags;
         let task = {
