@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addTagsToActivity = exports.addTagsToTask = exports.getTagActivities = exports.getTagTasks = exports.addTagToActivity = exports.addTagToTask = exports.createTag = exports.getTagByName = exports.getTagByID = exports.getTags = void 0;
+exports.deleteTagFromTag = exports.deleteTagFromActivty = exports.addTagsToActivity = exports.addTagsToTask = exports.getTagActivities = exports.getTagTasks = exports.addTagToActivity = exports.addTagToTask = exports.createTag = exports.getTagByName = exports.getTagByID = exports.getTags = void 0;
 const TagService = __importStar(require("../services/tag.services"));
 const getTags = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -151,9 +151,32 @@ const addTagsToActivity = (tag_name, activity_id) => __awaiter(void 0, void 0, v
             tag = yield TagService.createTag(tag_name);
         }
         const newTag = yield TagService.addTagToActivity(tag, activity_id);
+        // res.json(newTag);
     }
     catch (error) {
         console.log(error.message);
     }
 });
 exports.addTagsToActivity = addTagsToActivity;
+const deleteTagFromActivty = (tag_name, activity_id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        // let tag = await TagService.getTagByName(tag_name);
+        yield TagService.deleteTagFromActivty(tag_name, activity_id);
+        // res.json(newTag);
+    }
+    catch (error) {
+        console.log(error.message);
+    }
+});
+exports.deleteTagFromActivty = deleteTagFromActivty;
+const deleteTagFromTag = (tag_name, tag_id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        // let tag = await TagService.getTagByName(tag_name);
+        yield TagService.deleteTagFromTag(tag_name, tag_id);
+        // res.json(newTag);
+    }
+    catch (error) {
+        console.log(error.message);
+    }
+});
+exports.deleteTagFromTag = deleteTagFromTag;

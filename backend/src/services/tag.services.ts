@@ -240,3 +240,27 @@ export const getActivitiesByTag = async (tag_id: number): Promise<Activity[]> =>
 
     return activities!;
 }
+
+export const deleteTagFromActivty = async (tag_name: string, activity_id: number)=> {
+    let tag = await getTagByName(tag_name);
+    let activityTag = await db.activityTagList.deleteMany({
+        where: {
+            tag_id: tag?.tag_id,
+            activity_id,
+        }
+    })    
+
+    console.log(activityTag);
+}
+
+export const deleteTagFromTag = async (tag_name: string, task_id: number)=> {
+    let tag = await getTagByName(tag_name);
+    let taskTag = await db.taskTagList.deleteMany({
+        where: {
+            tag_id: tag?.tag_id,
+            task_id,
+        }
+    })    
+
+    console.log(taskTag);
+}

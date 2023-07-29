@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getActivitiesByTag = exports.getTasksByTag = exports.getActivityTagListByID = exports.getTaskTagListByID = exports.addTagToActivity = exports.addTagToTask = exports.getActivityTagLists = exports.getTaskTagLists = exports.createTag = exports.getTagByName = exports.getTagByID = exports.getTags = void 0;
+exports.deleteTagFromTag = exports.deleteTagFromActivty = exports.getActivitiesByTag = exports.getTasksByTag = exports.getActivityTagListByID = exports.getTaskTagListByID = exports.addTagToActivity = exports.addTagToTask = exports.getActivityTagLists = exports.getTaskTagLists = exports.createTag = exports.getTagByName = exports.getTagByID = exports.getTags = void 0;
 const db_server_1 = require("../utils/db.server");
 const task_services_1 = require("./task.services");
 const activity_services_1 = require("./activity.services");
@@ -233,3 +233,25 @@ const getActivitiesByTag = (tag_id) => __awaiter(void 0, void 0, void 0, functio
     return activities;
 });
 exports.getActivitiesByTag = getActivitiesByTag;
+const deleteTagFromActivty = (tag_name, activity_id) => __awaiter(void 0, void 0, void 0, function* () {
+    let tag = yield (0, exports.getTagByName)(tag_name);
+    let activityTag = yield db_server_1.db.activityTagList.deleteMany({
+        where: {
+            tag_id: tag === null || tag === void 0 ? void 0 : tag.tag_id,
+            activity_id,
+        }
+    });
+    console.log(activityTag);
+});
+exports.deleteTagFromActivty = deleteTagFromActivty;
+const deleteTagFromTag = (tag_name, task_id) => __awaiter(void 0, void 0, void 0, function* () {
+    let tag = yield (0, exports.getTagByName)(tag_name);
+    let taskTag = yield db_server_1.db.taskTagList.deleteMany({
+        where: {
+            tag_id: tag === null || tag === void 0 ? void 0 : tag.tag_id,
+            task_id,
+        }
+    });
+    console.log(taskTag);
+});
+exports.deleteTagFromTag = deleteTagFromTag;

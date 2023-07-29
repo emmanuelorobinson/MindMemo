@@ -87,11 +87,16 @@ const updateTask = (task) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.updateTask = updateTask;
 const deleteTask = (task_id) => __awaiter(void 0, void 0, void 0, function* () {
-    yield db_server_1.db.taskTagList.deleteMany({
-        where: {
-            task_id,
-        }
-    });
+    let tagLists = yield (0, tag_services_1.getTaskTagLists)(task_id);
+    if (tagLists !== null) {
+        tagLists.forEach((tagList) => __awaiter(void 0, void 0, void 0, function* () {
+            db_server_1.db.taskTagList.delete({
+                where: {
+                    task_tag_list_id: tagList.task_tag_list_id,
+                }
+            });
+        }));
+    }
     let reminder = yield db_server_1.db.taskReminder.findUnique({
         where: {
             task_id,

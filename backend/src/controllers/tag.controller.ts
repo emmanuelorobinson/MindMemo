@@ -115,6 +115,32 @@ export const addTagsToActivity = async (tag_name: string, activity_id: number)=>
         }
 
         const newTag = await TagService.addTagToActivity(tag, activity_id);
+
+        // res.json(newTag);
+    } catch (error: any) {
+        console.log(error.message);
+    }
+}
+
+export const deleteTagFromActivty = async (tag_name: string, activity_id: number)=> {
+    try {
+        // let tag = await TagService.getTagByName(tag_name);
+
+        await TagService.deleteTagFromActivty(tag_name, activity_id);
+
+        // res.json(newTag);
+    } catch (error: any) {
+        console.log(error.message);
+    }
+}
+
+export const deleteTagFromTag = async (tag_name: string, tag_id: number)=> {
+    try {
+        // let tag = await TagService.getTagByName(tag_name);
+
+        await TagService.deleteTagFromTag(tag_name, tag_id);
+
+        // res.json(newTag);
     } catch (error: any) {
         console.log(error.message);
     }

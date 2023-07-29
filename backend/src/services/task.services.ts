@@ -79,11 +79,16 @@ export const updateTask = async (task: Omit<Task, 'task_list_id'>): Promise<Task
 }
 
 export const deleteTask = async (task_id: number): Promise<Task | undefined> => {
-    await db.taskTagList.deleteMany({
-        where: {
-            task_id,
-        }
-    });
+    let tagLists = await getTaskTagLists(task_id);
+    if (tagLists !== null) {
+        tagLists.forEach(async (tagList) => {
+            db.taskTagList.delete({
+                where: {
+                    task_tag_list_id: tagList.task_tag_list_id,
+                }
+            });
+        });
+    }
 
     let reminder = await db.taskReminder.findUnique({
         where: {

@@ -1,6 +1,7 @@
 import * as ActivityService from '../services/activity.services';
 import { createActivityReminder, getActivityReminders } from '../services/reminder.services';
-import { addTagsToActivity } from './tag.controller';
+import { getTasks, updateTask } from '../services/task.services';
+import { addTagsToActivity, deleteTagFromActivty } from './tag.controller';
 
 export const getActivities = async (req: any, res: any) => {
     try {
@@ -66,7 +67,7 @@ export const updateActivity = async (req: any, res: any) => {
         let activityNumber = (req.body.activity_number == '') ? 0 : parseInt(req.body.activity_number);
         let startDate = (req.body.start_date == undefined) ? new Date() : new Date(req.body.start_date);
         let intduration = parseInt(req.body.duration);
-        let complete = req.body.completed === 'true' ? true : false;
+        let complete = String(req.body.completed) === 'true';
         let acitivtyNote = req.body.note;
         let reminder_date = req.body.reminder_date == "" ? new Date() : new Date(req.body.reminder_date);
         let user_id = req.body.user_id == "" ? "null" : req.body.user_id;
@@ -81,14 +82,15 @@ export const updateActivity = async (req: any, res: any) => {
             note: acitivtyNote,
             project_id: projectId,
         }
-        console.log(activity);
+        // console.log(activity);
 
         const updatedActivity = await ActivityService.updateActivity(activity);
         let existingReminders = (await getActivityReminders(user_id));
-        
-        if (existingReminders != undefined) {
-            let reminderExists = existingReminders.find((reminder: any) => {reminder.activity_id == activity_id});
+        // console.log(existingReminders);
 
+        if (existingReminders.length > 0) {
+            let reminderExists = existingReminders.some(async (reminder: any) => {reminder.activity_id === activity_id});
+            // console.log(reminderExists);
             if (!reminderExists) {
                 await createActivityReminder({activity_id, reminder_date, user_id});
             }
@@ -97,11 +99,26 @@ export const updateActivity = async (req: any, res: any) => {
 
         const activityTagList = await ActivityService.getTagsByActivity(activity_id);
         if (tags != undefined) {
+            activityTagList.forEach(async (tag: any) => {
+                if (!tags.includes(tag))
+                    deleteTagFromActivty(tag, activity_id);
+            });
             tags.forEach(async (tag: any) => {
                 if (!activityTagList.includes(tag))
                     addTagsToActivity(tag, updatedActivity!.activity_id);
             });
         }
+
+        if (complete === true) {
+            let tasks = await getTasks(activity_id);
+            if (tasks !== undefined) {
+                tasks.forEach(async (task) => {
+                    task.completed = true;
+                    await updateTask(task);
+                });
+            }
+        }
+
         res.json(updatedActivity);
     } catch (error: any) {
         res.json({ message: error.message });
