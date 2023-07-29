@@ -69,7 +69,7 @@ const createProject = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         let date = (new Date(req.body.project_start_date));
         let name = req.body.project_name;
         let renew = req.body.renew === "true" ? true : false;
-        let save_as_cycle = req.body.save_as_cycle === "true" ? true : false;
+        let save_as_cycle = String(req.body.save_as_cycle) === "true";
         let cycle_id = (req.body.cycle_id == "" || req.body.cycle_id === undefined) ? 0 : parseInt(req.body.cycle_id);
         let complete = req.body.completed === "true" ? true : false;
         const project = {
