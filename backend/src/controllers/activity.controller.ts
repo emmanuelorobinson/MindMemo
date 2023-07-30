@@ -7,7 +7,14 @@ export const getActivities = async (req: any, res: any) => {
     try {
         const { project_id } = req.params;
         const activities = await ActivityService.getActivities(parseInt(project_id));
-        res.json(activities);
+        let results: {activity_id: number, activity_name: string, activity_number: number, start_date: Date, duration: number, completed: boolean, note: string, project_id: number, tag_list: string}[] = [];
+        if (activities !== undefined) {
+            for (const activity of activities) {
+                const activityTagList = await ActivityService.getTagsByActivity(activity.activity_id);
+                results.push({activity_id: activity.activity_id, activity_name: activity.activity_name, activity_number: activity.activity_number, start_date: activity.start_date, duration: activity.duration, completed: activity.completed, note: activity.note, project_id: activity.project_id, tag_list: activityTagList});
+            }}
+        console.log(results);
+        res.json(results);
     } catch (error: any) {
         res.json({ message: error.message });
     }
@@ -34,7 +41,8 @@ export const createActivity = async (req: any, res: any) => {
         let reminder_date = req.body.reminder == "" ? new Date() : new Date(req.body.reminder);
         let user_id = req.body.user_id == "" ? "null" : req.body.user_id;
         let acitivtyNote = req.body.note;
-        let tags = req.body.tags;
+        let tag_list = req.body.tag_list;
+        console.log("TAG LIST: ", tag_list);
         const activity = {
             activity_name: activityName,
             activity_number: activityNumber,
@@ -48,9 +56,11 @@ export const createActivity = async (req: any, res: any) => {
         const newActivity = await ActivityService.createActivity(activity);
         const newReminder = await createActivityReminder({activity_id: newActivity.activity_id, reminder_date, user_id});
 
-        if (tags != undefined) {
-                tags.forEach(async (tag: any) => {
-                addTagsToActivity(tag, newActivity.activity_id);
+        if (tag_list !== undefined) {
+            const tagsArray = tag_list.split(','); 
+            console.log("CHECK: ", tagsArray);
+            tagsArray.forEach(async (tag: string) => {
+                await addTagsToActivity(tag, newActivity.activity_id);
             });
         }
         res.json(newActivity);
@@ -71,7 +81,7 @@ export const updateActivity = async (req: any, res: any) => {
         let acitivtyNote = req.body.note;
         let reminder_date = req.body.reminder == "" ? new Date() : new Date(req.body.reminder);
         let user_id = req.body.user_id == "" ? "null" : req.body.user_id;
-        let tags = req.body.tags;
+        let tags = req.body.tag_list;
         const activity = {
             activity_id: activity_id,
             activity_name: activityName,
@@ -99,11 +109,13 @@ export const updateActivity = async (req: any, res: any) => {
 
         const activityTagList = await ActivityService.getTagsByActivity(activity_id);
         if (tags != undefined) {
-            activityTagList.forEach(async (tag: any) => {
-                if (!tags.includes(tag))
+            const tagsArray = tags.split(','); 
+            const tagList = activityTagList.split(',');
+            tagList.forEach(async (tag: any) => {
+                if (!tagsArray.includes(tag))
                     deleteTagFromActivty(tag, activity_id);
             });
-            tags.forEach(async (tag: any) => {
+            tagsArray.forEach(async (tag: any) => {
                 if (!activityTagList.includes(tag))
                     addTagsToActivity(tag, updatedActivity!.activity_id);
             });

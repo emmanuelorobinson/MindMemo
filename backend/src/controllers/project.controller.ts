@@ -53,6 +53,7 @@ export const createProject = async (req: Request, res: Response) => {
         const newProject = await ProjectService.createProject(project);
 
         if (cycle_id != 0) {
+            console.log("duplicate");
             duplicateCycle(cycle_id, newProject.project_id);
         }
         

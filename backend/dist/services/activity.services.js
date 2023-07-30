@@ -186,13 +186,17 @@ const updateActivityTagList = (activity_id, tag_list) => __awaiter(void 0, void 
     let activity = yield (0, exports.getActivityByID)(activity_id);
     let tagLists = yield (0, exports.getActivityTagList)(activity_id);
     tagLists = [...tagLists, tag_list];
+    // Assuming your ActivityTagList object has an `activity_tag_list_id` property
+    const tagListIds = tagLists.map((tagList) => ({ activity_tag_list_id: tagList.activity_tag_list_id }));
+    // Add the new tag_list object to the array
+    tagListIds.push({ activity_tag_list_id: tag_list.activity_tag_list_id });
     return db_server_1.db.activity.update({
         where: {
             activity_id,
         },
         data: {
             tag_list: {
-                connect: tagLists,
+                connect: tagListIds, // Use the array with unique objects
             }
         },
         select: {
@@ -209,7 +213,7 @@ const updateActivityTagList = (activity_id, tag_list) => __awaiter(void 0, void 
 });
 exports.updateActivityTagList = updateActivityTagList;
 const getTagsByActivity = (activity_id) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+    var _a, _b;
     let list = yield db_server_1.db.activityTagList.findMany({
         where: {
             activity_id,
@@ -221,11 +225,13 @@ const getTagsByActivity = (activity_id) => __awaiter(void 0, void 0, void 0, fun
         }
     });
     console.log(list);
-    let results = [];
-    for (let i = 0; i < list.length; i++) {
-        let name = (_a = (yield (0, tag_services_1.getTagByID)(list[i].tag_id))) === null || _a === void 0 ? void 0 : _a.tag_name;
+    let results = "";
+    if (list.length > 0)
+        results += (_a = (yield (0, tag_services_1.getTagByID)(list[0].tag_id))) === null || _a === void 0 ? void 0 : _a.tag_name;
+    for (let i = 1; i < list.length; i++) {
+        let name = (_b = (yield (0, tag_services_1.getTagByID)(list[i].tag_id))) === null || _b === void 0 ? void 0 : _b.tag_name;
         if (name !== undefined)
-            results.push(name);
+            results += "," + name;
     }
     console.log(results);
     return results;
