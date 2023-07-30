@@ -109,13 +109,15 @@ export const duplicateCycle = async (cycle_id: number, project_id: number) => {
     const cycle = await getCycleByID(cycle_id);
     if (cycle != null) {
         cycle_project_id = cycle.project_id;
+        let project_start = (await ProjectService.getProjectByID(project_id))?.project_start_date;
+        let cycle_start = (await ProjectService.getProjectByID(cycle_project_id))?.project_start_date;
         let activities = await getActivities(cycle_project_id!);
         if (activities !== undefined) {
             for (const activity of activities) {
                 let newActivity = {
                     activity_name: activity.activity_name,
                     activity_number: activity.activity_number,
-                    start_date: activity.start_date,
+                    start_date: new Date(activity.start_date.getTime() - (cycle_start!.getTime() - project_start!.getTime())),
                     duration: activity.duration,
                     completed: activity.completed,
                     note: activity.note,
@@ -135,7 +137,7 @@ export const duplicateCycle = async (cycle_id: number, project_id: number) => {
                         let newTask = {
                             task_name: task.task_name,
                             task_number: task.task_number,
-                            start_date: task.start_date,
+                            start_date: new Date(task.start_date.getTime() - (cycle_start!.getTime() - project_start!.getTime())),
                             duration: task.duration,
                             completed: task.completed,
                             note: task.note,

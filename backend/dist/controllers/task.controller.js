@@ -36,6 +36,7 @@ exports.getTaskTagList = exports.deleteTask = exports.updateTask = exports.creat
 const TaskService = __importStar(require("../services/task.services"));
 const reminder_services_1 = require("../services/reminder.services");
 const tag_controller_1 = require("./tag.controller");
+const activity_services_1 = require("../services/activity.services");
 const getTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { activity_id } = req.params;
@@ -147,6 +148,25 @@ const updateTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 if (!taskTagList.includes(tag))
                     (0, tag_controller_1.addTagsToTask)(tag, updatedTask.task_id);
             }));
+        }
+        if (complete === true) {
+            let tasks = yield TaskService.getTasks(activityId);
+            let activityComplete = true;
+            if (tasks === undefined) {
+                for (const task of tasks) {
+                    if (!task.completed) {
+                        activityComplete = false;
+                        break;
+                    }
+                }
+                if (activityComplete) {
+                    let activity = yield (0, activity_services_1.getActivityByID)(activityId);
+                    if (activity !== null) {
+                        activity.completed = true;
+                        yield (0, activity_services_1.updateActivity)(activity);
+                    }
+                }
+            }
         }
         res.json(updatedTask);
     }

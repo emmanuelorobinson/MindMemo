@@ -1,4 +1,5 @@
 import * as ActivityService from '../services/activity.services';
+import { getProjectByID, updateProject } from '../services/project.services';
 import { createActivityReminder, getActivityReminders } from '../services/reminder.services';
 import { getTasks, updateTask } from '../services/task.services';
 import { addTagsToActivity, deleteTagFromActivty } from './tag.controller';
@@ -129,7 +130,29 @@ export const updateActivity = async (req: any, res: any) => {
                     await updateTask(task);
                 });
             }
+
+            let activities = await ActivityService.getActivities(projectId);
+            let projectsComplete = true;
+            if (activities === undefined){
+                for (const a of activities!) {
+                    if (!a.completed) {
+                        projectsComplete = false;
+                        break;
+                    }
+                }
+                if (projectsComplete) {
+                    let activity = await getProjectByID(projectId);
+                    if (activity !== null) {
+                        activity!.completed = true;
+                    await updateProject(activity!);
+                    }
+                }
+            }
+
+
         }
+
+        
 
         res.json(updatedActivity);
     } catch (error: any) {

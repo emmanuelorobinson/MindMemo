@@ -138,17 +138,20 @@ const deleteProject = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 });
 exports.deleteProject = deleteProject;
 const duplicateCycle = (cycle_id, project_id) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b;
     let cycle_project_id;
     const cycle = yield (0, cycle_services_1.getCycleByID)(cycle_id);
     if (cycle != null) {
         cycle_project_id = cycle.project_id;
+        let project_start = (_a = (yield ProjectService.getProjectByID(project_id))) === null || _a === void 0 ? void 0 : _a.project_start_date;
+        let cycle_start = (_b = (yield ProjectService.getProjectByID(cycle_project_id))) === null || _b === void 0 ? void 0 : _b.project_start_date;
         let activities = yield (0, activity_services_1.getActivities)(cycle_project_id);
         if (activities !== undefined) {
             for (const activity of activities) {
                 let newActivity = {
                     activity_name: activity.activity_name,
                     activity_number: activity.activity_number,
-                    start_date: activity.start_date,
+                    start_date: new Date(activity.start_date.getTime() - (cycle_start.getTime() - project_start.getTime())),
                     duration: activity.duration,
                     completed: activity.completed,
                     note: activity.note,
@@ -166,7 +169,7 @@ const duplicateCycle = (cycle_id, project_id) => __awaiter(void 0, void 0, void 
                         let newTask = {
                             task_name: task.task_name,
                             task_number: task.task_number,
-                            start_date: task.start_date,
+                            start_date: new Date(task.start_date.getTime() - (cycle_start.getTime() - project_start.getTime())),
                             duration: task.duration,
                             completed: task.completed,
                             note: task.note,

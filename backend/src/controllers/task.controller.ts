@@ -2,6 +2,7 @@ import * as TaskService from '../services/task.services';
 import { getTaskTagListByID } from '../services/tag.services';
 import { createActivityReminder, createTaskReminder, getTaskReminders } from '../services/reminder.services';
 import { addTagsToTask, deleteTagFromTag } from './tag.controller';
+import { getActivityByID, updateActivity } from '../services/activity.services';
 
 export const getTasks = async (req: any, res: any) => {
     try {
@@ -114,6 +115,27 @@ export const updateTask = async (req: any, res: any) => {
                 if (!taskTagList.includes(tag))
                     addTagsToTask(tag, updatedTask!.task_id);
             });
+        }
+
+        if (complete === true) {
+            let tasks = await TaskService.getTasks(activityId);
+            let activityComplete = true;
+            if (tasks === undefined){
+                for (const task of tasks!) {
+                    if (!task.completed) {
+                        activityComplete = false;
+                        break;
+                    }
+                }
+                if (activityComplete) {
+                    let activity = await getActivityByID(activityId);
+                    if (activity !== null) {
+                        activity!.completed = true;
+                    await updateActivity(activity!);
+                    }
+                }
+            }
+            
         }
 
         res.json(updatedTask);

@@ -34,6 +34,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getActivityTagList = exports.deleteActivity = exports.updateActivity = exports.createActivity = exports.getActivityByID = exports.getActivities = void 0;
 const ActivityService = __importStar(require("../services/activity.services"));
+const project_services_1 = require("../services/project.services");
 const reminder_services_1 = require("../services/reminder.services");
 const task_services_1 = require("../services/task.services");
 const tag_controller_1 = require("./tag.controller");
@@ -159,6 +160,23 @@ const updateActivity = (req, res) => __awaiter(void 0, void 0, void 0, function*
                     task.completed = true;
                     yield (0, task_services_1.updateTask)(task);
                 }));
+            }
+            let activities = yield ActivityService.getActivities(projectId);
+            let projectsComplete = true;
+            if (activities === undefined) {
+                for (const a of activities) {
+                    if (!a.completed) {
+                        projectsComplete = false;
+                        break;
+                    }
+                }
+                if (projectsComplete) {
+                    let activity = yield (0, project_services_1.getProjectByID)(projectId);
+                    if (activity !== null) {
+                        activity.completed = true;
+                        yield (0, project_services_1.updateProject)(activity);
+                    }
+                }
             }
         }
         res.json(updatedActivity);
