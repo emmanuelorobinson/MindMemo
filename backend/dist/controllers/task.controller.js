@@ -44,9 +44,10 @@ const getTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (activities !== undefined) {
             for (const activity of activities) {
                 const activityTagList = yield TaskService.getTagsByTask(activity.activity_id);
-                results.push({ task_id: activity.task_id, task_name: activity.task_name, task_number: activity.task_number, start_date: activity.start_date, duration: activity.duration, completed: activity.completed, note: activity.note, activity_id: activity.activity_id, tags: activityTagList });
+                results.push({ task_id: activity.task_id, task_name: activity.task_name, task_number: activity.task_number, start_date: activity.start_date, duration: activity.duration, completed: activity.completed, note: activity.note, activity_id: activity.activity_id, tag_list: activityTagList });
             }
         }
+        console.log(results);
         res.json(results);
     }
     catch (error) {
