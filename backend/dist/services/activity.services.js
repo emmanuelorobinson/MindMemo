@@ -186,13 +186,17 @@ const updateActivityTagList = (activity_id, tag_list) => __awaiter(void 0, void 
     let activity = yield (0, exports.getActivityByID)(activity_id);
     let tagLists = yield (0, exports.getActivityTagList)(activity_id);
     tagLists = [...tagLists, tag_list];
+    // Assuming your ActivityTagList object has an `activity_tag_list_id` property
+    const tagListIds = tagLists.map((tagList) => ({ activity_tag_list_id: tagList.activity_tag_list_id }));
+    // Add the new tag_list object to the array
+    tagListIds.push({ activity_tag_list_id: tag_list.activity_tag_list_id });
     return db_server_1.db.activity.update({
         where: {
             activity_id,
         },
         data: {
             tag_list: {
-                connect: tagLists,
+                connect: tagListIds, // Use the array with unique objects
             }
         },
         select: {
