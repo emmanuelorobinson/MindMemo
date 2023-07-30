@@ -58,6 +58,26 @@ const CreateProjectComponent = () => {
   return (
     <Formik
       initialValues={projects}
+      validate={(values) => {
+        const errors = {};
+        if (!values.project_name) {
+          errors.project_name = "Required";
+        }
+
+        if (!values.project_start_date) {
+          errors.project_start_date = "Required";
+        }
+
+        if (!values.duration) {
+          errors.duration = "Required";
+        }
+
+        // if (selectedRenew && !values.days_till_renew) {
+        //   errors.days_till_renew = "Required";
+        // }
+
+        return errors;
+      }}
       onSubmit={async (values, { setSubmitting }) => {
         values.cycle_id = selectedValue;
         values.save_as_cycle = selectedCycle;
@@ -124,6 +144,11 @@ const CreateProjectComponent = () => {
                       value={values.project_name}
                       onChange={handleChange}
                     />
+                    <ErrorMessage
+                      name="project_name"
+                      component="div"
+                      className="text-red-500 text-sm"
+                    />
                   </div>
                 </div>
 
@@ -143,6 +168,11 @@ const CreateProjectComponent = () => {
                       id="project_start_date"
                       value={values.project_start_date}
                       onChange={handleChange}
+                    />
+                    <ErrorMessage
+                      name="project_start_date"
+                      component="div"
+                      className="text-red-500 text-sm"
                     />
                   </div>
                 </div>
@@ -164,6 +194,11 @@ const CreateProjectComponent = () => {
                       id="duration"
                       value={values.duration}
                       onChange={handleChange}
+                    />
+                    <ErrorMessage
+                      name="duration"
+                      component="div"
+                      className="text-red-500 text-sm"
                     />
                   </div>
                 </div>

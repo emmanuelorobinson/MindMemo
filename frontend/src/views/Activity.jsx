@@ -17,7 +17,7 @@ const Activity = () => {
   useEffect(() => {
     const fetchActivity = async () => {
       const response = await getActivities(id);
-      // console.log('response', response)
+      console.log('getActivities', response)
       setActivity(response);
     };
     fetchActivity();

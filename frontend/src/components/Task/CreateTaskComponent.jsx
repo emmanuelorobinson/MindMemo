@@ -46,7 +46,27 @@ const CreateTaskComponent = () => {
   return (
     <Formik
       initialValues={task}
-      onSubmit={ async (values, { setSubmitting }) => {
+      validate={(values) => {
+        const errors = {};
+        if (!values.task_name) {
+          errors.task_name = "Required";
+        }
+
+        if (!values.start_date) {
+          errors.start_date = "Required";
+        }
+
+        if (!values.duration) {
+          errors.duration = "Required";
+        }
+
+        // if (selectedReminder && !values.reminder) {
+        //   errors.reminder = "Required";
+        // }
+
+        return errors;
+      }}
+      onSubmit={async (values, { setSubmitting }) => {
         values.task_number = selectedValue;
 
         try {
@@ -106,6 +126,11 @@ const CreateTaskComponent = () => {
                       value={values.task_name}
                       onChange={handleChange}
                     />
+                    <ErrorMessage
+                      name="task_name"
+                      component="div"
+                      className="text-red-500 text-sm"
+                    />
                   </div>
                 </div>
 
@@ -125,6 +150,11 @@ const CreateTaskComponent = () => {
                       id="start_date"
                       value={values.start_date}
                       onChange={handleChange}
+                    />
+                    <ErrorMessage
+                      name="start_date"
+                      component="div"
+                      className="text-red-500 text-sm"
                     />
                   </div>
                 </div>
@@ -155,6 +185,11 @@ const CreateTaskComponent = () => {
                       id="duration"
                       value={values.duration}
                       onChange={handleChange}
+                    />
+                    <ErrorMessage
+                      name="duration"
+                      component="div"
+                      className="text-red-500 text-sm"
                     />
                   </div>
                 </div>

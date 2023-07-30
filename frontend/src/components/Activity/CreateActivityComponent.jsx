@@ -27,6 +27,7 @@ const CreateActivityComponent = () => {
     start_date: "",
     duration: "",
     reminder: "",
+    tag_list: "",
     note: "",
     completed: false,
   });
@@ -42,8 +43,25 @@ const CreateActivityComponent = () => {
   return (
     <Formik
       initialValues={projects}
+      validate={(values) => {
+        const errors = {};
+        if (!values.activity_name) {
+          errors.activity_name = "Required";
+        }
+        if (values.activity_name.length > 100) {
+          errors.activity_name = "Must be 100 characters or less";
+        }
+        if (!values.start_date) {
+          errors.start_date = "Required";
+        }
+        if (!values.duration) {
+          errors.duration = "Required";
+        }
+        return errors;
+      }}
       onSubmit={async (values, { setSubmitting }) => {
         values.activity_number = selectedValue;
+        console.log(values);
 
         try {
           const response = await createActivity(values);
@@ -57,13 +75,7 @@ const CreateActivityComponent = () => {
         navigate(`/project/activity?id=${project_id}`);
       }}
     >
-      {({
-        values,
-        handleChange,
-        handleSubmit,
-        isSubmitting,
-        setFieldValue,
-      }) => (
+      {({ values, handleChange, handleSubmit, isSubmitting }) => (
         <div className=" flex w-[100%] text-left bg-white p-6 pl-10 mt-5 border border-[#E7E7E9] rounded-lg">
           <form
             className="space-y-8 divide-y divide-gray-200 w-[90%]"
@@ -98,6 +110,11 @@ const CreateActivityComponent = () => {
                       value={values.activity_name}
                       onChange={handleChange}
                     />
+                    <ErrorMessage
+                      name="activity_name"
+                      component="div"
+                      className="text-red-500 text-sm"
+                    />
                   </div>
                 </div>
 
@@ -117,6 +134,11 @@ const CreateActivityComponent = () => {
                       id="start_date"
                       value={values.start_date}
                       onChange={handleChange}
+                    />
+                    <ErrorMessage
+                      name="start_date"
+                      component="div"
+                      className="text-red-500 text-sm"
                     />
                   </div>
                 </div>
@@ -147,6 +169,11 @@ const CreateActivityComponent = () => {
                       id="duration"
                       value={values.duration}
                       onChange={handleChange}
+                    />
+                    <ErrorMessage
+                      name="duration"
+                      component="div"
+                      className="text-red-500 text-sm"
                     />
                   </div>
                 </div>
@@ -206,6 +233,26 @@ const CreateActivityComponent = () => {
                     <p className="mt-2 text-sm text-gray-500">
                       Write a few sentences about the activity.
                     </p>
+                  </div>
+                </div>
+
+                {/* Tags */}
+                <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+                  <label
+                    htmlFor="tag_list"
+                    className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
+                  >
+                    Tags (separated by commas)
+                  </label>
+                  <div className="mt-1 sm:col-span-2 sm:mt-0">
+                    <input
+                      className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
+                      type="text"
+                      name="tag_list"
+                      id="tag_list"
+                      value={values.tag_list}
+                      onChange={handleChange}
+                    />
                   </div>
                 </div>
               </div>

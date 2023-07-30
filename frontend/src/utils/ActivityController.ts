@@ -9,7 +9,7 @@ export interface Activity {
   duration: number;
   reminder?: Date;
   note: string;
-  tags?: Tag[];
+  tag_list ?: string
   completed: boolean;
 }
 

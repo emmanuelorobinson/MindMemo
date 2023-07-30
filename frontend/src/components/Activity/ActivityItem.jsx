@@ -128,11 +128,11 @@ const ActivityItem = ({ data, reFetch }) => {
                     stroke-linejoin="round"
                   />
                 </svg>
-                {/* {data.tags.map((tag) => (
+                {data.tags.map((tag) => (
                   <span className="text-sm font-medium text-gray-500 mt-0.5 bg-[#F9FAFB] px-2 border rounded-lg">
                     {tag}
                   </span>
-                ))} */}
+                ))}
               </div>
             )}
           </div>

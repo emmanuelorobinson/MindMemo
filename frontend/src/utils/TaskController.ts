@@ -10,7 +10,7 @@ export interface Task {
   duration: number;
   reminder?: Date;
   note: string;
-  tags?: Tag[];
+  tag_list ?: string;
   completed: boolean;
 }
 
