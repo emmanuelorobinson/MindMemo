@@ -219,7 +219,7 @@ const updateTaskTagList = (task_id, tag_list) => __awaiter(void 0, void 0, void 
 });
 exports.updateTaskTagList = updateTaskTagList;
 const getTagsByTask = (task_id) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+    var _a, _b;
     let list = yield db_server_1.db.taskTagList.findMany({
         where: {
             task_id,
@@ -231,11 +231,13 @@ const getTagsByTask = (task_id) => __awaiter(void 0, void 0, void 0, function* (
         }
     });
     console.log(list);
-    let results = [];
-    for (let i = 0; i < list.length; i++) {
-        let name = (_a = (yield (0, tag_services_1.getTagByID)(list[i].tag_id))) === null || _a === void 0 ? void 0 : _a.tag_name;
+    let results = "";
+    if (list.length > 0)
+        results += (_a = (yield (0, tag_services_1.getTagByID)(list[0].tag_id))) === null || _a === void 0 ? void 0 : _a.tag_name;
+    for (let i = 1; i < list.length; i++) {
+        let name = (_b = (yield (0, tag_services_1.getTagByID)(list[i].tag_id))) === null || _b === void 0 ? void 0 : _b.tag_name;
         if (name !== undefined)
-            results.push(name);
+            results += "," + name;
     }
     console.log(results);
     return results;
