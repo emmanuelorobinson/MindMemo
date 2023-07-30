@@ -47,7 +47,7 @@ const getTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 results.push({ task_id: activity.task_id, task_name: activity.task_name, task_number: activity.task_number, start_date: activity.start_date, duration: activity.duration, completed: activity.completed, note: activity.note, activity_id: activity.activity_id, tags: activityTagList });
             }
         }
-        res.json(activities);
+        res.json(results);
     }
     catch (error) {
         res.json({ message: error.message });

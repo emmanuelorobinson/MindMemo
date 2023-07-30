@@ -13,7 +13,7 @@ export const getTasks = async (req: any, res: any) => {
                 const activityTagList = await TaskService.getTagsByTask(activity.activity_id);
                 results.push({task_id: activity.task_id, task_name: activity.task_name, task_number: activity.task_number, start_date: activity.start_date, duration: activity.duration, completed: activity.completed, note: activity.note, activity_id: activity.activity_id, tags: activityTagList});
             }}
-        res.json(activities);
+        res.json(results);
     } catch (error: any) {
         res.json({ message: error.message });
     }

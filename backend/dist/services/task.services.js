@@ -196,6 +196,10 @@ const updateTaskTagList = (task_id, tag_list) => __awaiter(void 0, void 0, void 
     let task = yield (0, exports.getTaskByID)(task_id);
     let tagLists = yield (0, exports.getTaskTagList)(task_id);
     tagLists = [...tagLists, tag_list];
+    // Assuming your ActivityTagList object has an `activity_tag_list_id` property
+    const tagListIds = tagLists.map((tagList) => ({ activity_tag_list_id: tagList.task_tag_list_id }));
+    // Add the new tag_list object to the array
+    tagListIds.push({ activity_tag_list_id: tag_list.task_tag_list_id });
     return db_server_1.db.task.update({
         where: {
             task_id,
