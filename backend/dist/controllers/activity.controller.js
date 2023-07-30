@@ -41,7 +41,15 @@ const getActivities = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     try {
         const { project_id } = req.params;
         const activities = yield ActivityService.getActivities(parseInt(project_id));
-        res.json(activities);
+        let results = [];
+        if (activities !== undefined) {
+            for (const activity of activities) {
+                const activityTagList = yield ActivityService.getTagsByActivity(activity.activity_id);
+                results.push({ activity_id: activity.activity_id, activity_name: activity.activity_name, activity_number: activity.activity_number, start_date: activity.start_date, duration: activity.duration, completed: activity.completed, note: activity.note, project_id: activity.project_id, tags: activityTagList });
+            }
+        }
+        console.log(results);
+        res.json(results);
     }
     catch (error) {
         res.json({ message: error.message });

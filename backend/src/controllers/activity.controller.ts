@@ -7,7 +7,14 @@ export const getActivities = async (req: any, res: any) => {
     try {
         const { project_id } = req.params;
         const activities = await ActivityService.getActivities(parseInt(project_id));
-        res.json(activities);
+        let results: {activity_id: number, activity_name: string, activity_number: number, start_date: Date, duration: number, completed: boolean, note: string, project_id: number, tags: string[]}[] = [];
+        if (activities !== undefined) {
+            for (const activity of activities) {
+                const activityTagList = await ActivityService.getTagsByActivity(activity.activity_id);
+                results.push({activity_id: activity.activity_id, activity_name: activity.activity_name, activity_number: activity.activity_number, start_date: activity.start_date, duration: activity.duration, completed: activity.completed, note: activity.note, project_id: activity.project_id, tags: activityTagList});
+            }}
+        console.log(results);
+        res.json(results);
     } catch (error: any) {
         res.json({ message: error.message });
     }

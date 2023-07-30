@@ -85,6 +85,7 @@ const createProject = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         };
         const newProject = yield ProjectService.createProject(project);
         if (cycle_id != 0) {
+            console.log("duplicate");
             (0, exports.duplicateCycle)(cycle_id, newProject.project_id);
         }
         res.json(newProject);
