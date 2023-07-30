@@ -6,7 +6,6 @@ import Toggle from "../Toggle";
 import { updateProject } from "../../utils/ProjectController";
 import { AppContext } from "../../context/AppContext";
 
-const options = [{ id: 1, name: "Test" }];
 
 const EditProjectComponent = ({ onClose, project }) => {
   const [selectedValue, setSelectedValue] = useState(0);
@@ -26,7 +25,6 @@ const EditProjectComponent = ({ onClose, project }) => {
       <Formik
         initialValues={project}
         onSubmit={async (values, { setSubmitting }) => {
-          values.cycle_id = selectedValue;
           values.save_as_cycle = selectedCycle;
           values.start_date = new Date(values.start_date);
 
@@ -66,14 +64,7 @@ const EditProjectComponent = ({ onClose, project }) => {
                 </div>
 
                 <div className="space-y-6 sm:space-y-5">
-                  {/*Previous Cycle*/}
-                  <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
-                    <SelectMenu
-                      label={"Previous Cycle"}
-                      options={options}
-                      onSelectedValueChange={handleSelectedValueChange}
-                    />
-                  </div>
+
 
                   {/* Name */}
                   <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">

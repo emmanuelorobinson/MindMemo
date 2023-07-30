@@ -8,8 +8,6 @@ import { useNavigate } from "react-router-dom";
 import { getProjects } from "../../utils/ProjectController";
 import AppContext from "../../context/AppContext";
 
-const options = [{ id: 1, name: "Test" }];
-
 const CreateProjectComponent = () => {
   const [options, setOptions] = useState([]);
   const [selectedValue, setSelectedValue] = useState(0);
@@ -36,7 +34,19 @@ const CreateProjectComponent = () => {
   useEffect(() => {
     const fetchProjects = async () => {
       const response = await getProjects(user.id);
-      setOptions(response);
+
+      // loop through and store in options if save_as_cycle is true
+      const temp = [];
+      response.map((i) => {
+        if (i.save_as_cycle) {
+          temp.push({
+            id: i.project_id,
+            name: i.project_name,
+          });
+        }
+      });
+
+      setOptions(temp);
     };
     fetchProjects();
 
@@ -79,7 +89,7 @@ const CreateProjectComponent = () => {
         return errors;
       }}
       onSubmit={async (values, { setSubmitting }) => {
-        values.cycle_id = selectedValue;
+        values.cycle_id = selectedValue.id;
         values.save_as_cycle = selectedCycle;
 
         try {

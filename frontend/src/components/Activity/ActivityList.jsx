@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ActivityItem from "./ActivityItem";
 import AddButton from "../AddButton";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
@@ -9,6 +9,16 @@ const ActivityList = ({ activityList, reFetch }) => {
   const { search } = useLocation();
   const id = new URLSearchParams(search).get("id");
 
+  useEffect(() => {
+    // put array of tags in first index of activityList array
+
+    if (activityList.length > 0) {
+      const tags = ["Demo"]
+      activityList[0].tag_list = tags;
+    }
+
+    console.log(activityList);
+  }, []);
 
   const onAddClick = () => {
     navigate(`/project/activity/create?id=${id}`);

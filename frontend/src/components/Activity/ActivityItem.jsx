@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import MenuDropdown from "../MenuDropdown";
 import EditActivityComponent from "./EditActvityComponent";
@@ -29,6 +29,7 @@ const ActivityItem = ({ data, reFetch }) => {
   // console.log(data);
   const [showEditModal, setShowEditModal] = React.useState(false);
   const [itemChecked, setItemChecked] = React.useState(data.completed);
+
 
   const onEditClick = () => {
     showEditModal ? setShowEditModal(false) : setShowEditModal(true);
@@ -111,7 +112,7 @@ const ActivityItem = ({ data, reFetch }) => {
                 {data.activity_name}
               </p>
             </div>
-            {data.tags && (
+            {data.tag_list && (
               <div className="flex align-middle gap-x-2 mt-2">
                 <svg
                   width="24"
@@ -128,7 +129,7 @@ const ActivityItem = ({ data, reFetch }) => {
                     stroke-linejoin="round"
                   />
                 </svg>
-                {data.tags.map((tag) => (
+                {data.tag_list.map((tag) => (
                   <span className="text-sm font-medium text-gray-500 mt-0.5 bg-[#F9FAFB] px-2 border rounded-lg">
                     {tag}
                   </span>
