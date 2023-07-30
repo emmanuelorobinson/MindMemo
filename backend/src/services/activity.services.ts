@@ -215,7 +215,7 @@ export const updateActivityTagList = async (activity_id: number, tag_list: Activ
     });
 }
 
-export const getTagsByActivity = async (activity_id: number): Promise<string[]> => {
+export const getTagsByActivity = async (activity_id: number): Promise<string> => {
     let list = await db.activityTagList.findMany({
         where: {
             activity_id,
@@ -228,12 +228,14 @@ export const getTagsByActivity = async (activity_id: number): Promise<string[]> 
     })
     console.log(list);
 
-    let results = [];
+    let results = "";
+    if (list.length > 0)
+        results += (await getTagByID(list[0].tag_id))?.tag_name;
 
-    for (let i = 0; i < list.length; i++) {
+    for (let i = 1; i < list.length; i++) {
         let name = (await getTagByID(list[i].tag_id))?.tag_name;
         if (name !== undefined)
-            results.push(name);
+            results += "," + name;
     }
 
     console.log(results);
